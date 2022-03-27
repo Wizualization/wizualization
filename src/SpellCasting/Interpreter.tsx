@@ -3,7 +3,7 @@ function Interpreter(props:any) {
       //useFrame((state) => {      })
   
       return (
-        <p>{props.gesture +' '+ props.words}</p>
+        <p>{props.key + ' ' + props.gesture +' '+ props.words}</p>
       )
   }
   

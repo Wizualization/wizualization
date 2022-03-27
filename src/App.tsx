@@ -39,6 +39,7 @@ class App extends Component {
   const grimoire = Object.keys(state.spells).map(key=>{
     //let fn_arr = state.spells[key]?.spellname.split('.')
     return {
+      key: key,
       gesture:state.spells[key]?.gesture, 
       //words:'.'+fn_arr[(fn_arr.length-1)]
       words:state.spells[key]?.words
@@ -59,7 +60,7 @@ class App extends Component {
       <div>
       {isHL ? 
           <VRCanvas>
-          <Pinchable />
+          <Pinchable grimoire={grimoire} />
           <Hands />
           <OrbitControls />
           <ambientLight />
@@ -73,7 +74,7 @@ class App extends Component {
           grimoire.map((spell, index) => {
               console.log(spell);
               return (
-                <Interpreter key={index.toString()} gesture={spell.gesture} words={spell.words}/>
+                <Interpreter key={spell.key} gesture={spell.gesture} words={spell.words}/>
                 )})
         }
 

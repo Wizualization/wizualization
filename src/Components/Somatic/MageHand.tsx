@@ -19,12 +19,20 @@ const start = new Vector3(-0.25, 1.0, -0.3)
 const end = new Vector3(0.25, 1.0, -0.3)
 const startEnd = new Vector3().copy(end).sub(start)
 
+
 function getTargetPos(handle: Vector3) {
   return new Vector3().copy(handle).sub(start).projectOnVector(startEnd).add(start)
 }
+//relative importance of each finger
+const finger_weights = {
+  'thumb': 2, 
+  'index': 2, 
+  'middle': 1, 
+  'ring': 0.5, 
+  'pinky': 1
+}
 
 //for now we will just store these for a given session but we NEED TO CONNECT TO SERVER DB
-let crafted_spells:any[] = [];
 let last_craft:any[] = [];
 
 const curve = new CatmullRomCurve3([start, new Vector3().lerpVectors(start, end, 0.5), end], false, 'catmullrom', 0.25)
@@ -47,7 +55,9 @@ let targetPos = getTargetPos(new Vector3(0, 0, 0))
 let frame = 0
 let prev_frame = 0
 
-function Pinchable({ children }: any) {
+function Pinchable(props: any) {
+  let crafted_spells:any[] = [...props.grimoire];
+
   const jointNames = [
     "wrist",
   
@@ -88,15 +98,7 @@ function Pinchable({ children }: any) {
     "ring-finger-tip",
     "pinky-finger-tip"
   ]
-  
-  //may as well do it this way
-  /*const tipCurves = {
-    "thumb-tip": new CatmullRomCurve3([start, new Vector3().lerpVectors(start, end, 0.5), end], false, 'catmullrom', 0.25),
-    "index-finger-tip": new CatmullRomCurve3([start, new Vector3().lerpVectors(start, end, 0.5), end], false, 'catmullrom', 0.25),
-    "middle-finger-tip": new CatmullRomCurve3([start, new Vector3().lerpVectors(start, end, 0.5), end], false, 'catmullrom', 0.25),
-    "ring-finger-tip": new CatmullRomCurve3([start, new Vector3().lerpVectors(start, end, 0.5), end], false, 'catmullrom', 0.25),
-    "pinky-finger-tip": new CatmullRomCurve3([start, new Vector3().lerpVectors(start, end, 0.5), end], false, 'catmullrom', 0.25)
-  }*/
+
 
   const fingstart = new THREE.Vector3(0, 0, 0)
   const [curveThum, setCurveThum] = useState(new CatmullRomCurve3([fingstart, fingstart], false, 'catmullrom', 0.25));
@@ -123,8 +125,6 @@ function Pinchable({ children }: any) {
   const ref = useRef<Mesh | null>(null)
   const v = new Vector3()
   const [label, setLabel] = useState(0)
-
-  const [props, set] = useSpring(() => ({ scale: 1, config: config.wobbly }))
 
   useEffect(() => {
     if (!ref.current ) return
@@ -180,31 +180,17 @@ function Pinchable({ children }: any) {
           ring1: ring1 ? {...ring1.position} : dummyVec, 
           pinky1: pinky1 ? {...pinky1.position} : dummyVec
         })
-        //wait until finished casting to emit
-        /*
-        socket.emit('spellcast', JSON.stringify({
-          thumb0: thumb0, 
-          index0: index0, 
-          middle0: middle0, 
-          ring0: ring0, 
-          pinky0: pinky0,
-          thumb1: thumb1, 
-          index1: index1, 
-          middle1: middle1, 
-          ring1: ring1, 
-          pinky1: pinky1
-        }));
-        */
+
         prev_frame = frame;
 
         //stop crafting if it has been more than 5 seconds
         if(Date.now() > (crafting_startTime + 5000)){
-          crafted_spells.push(last_craft);
-          //setMagicDustCount(0);
+          //crafted_spells 
+          /* we only need the emit because our props will update, not the push*/
+          //crafted_spells.push(last_craft);
           if(dustRef.current){
             dustRef.current.visible = false;
           }
-      
           socket.emit('spellcast', JSON.stringify({'gesture':last_craft, 'words':''}))
           crafting = false;
         }
@@ -214,7 +200,6 @@ function Pinchable({ children }: any) {
     if(prev_frame < frame - 5 && casting){
       //start casting if it has been more than 1 second
       if(Date.now() > (casting_startTime + 1000)){
-        //setMagicDustCount(5000);
         if(dustRef.current){
           dustRef.current.visible = true;
         }
@@ -236,18 +221,30 @@ function Pinchable({ children }: any) {
 
         //stop casting if it has been more than 5 seconds
         if(Date.now() > (casting_startTime + 5000)){
-          //setMagicDustCount(0);
           if(dustRef.current){
             dustRef.current.visible = false;
           }
       
           if(crafted_spells.length > 0){
             let spell_dtws:any = []
+            let min_dist = 10000;
+            let best_match_idx = -1;
             for (var i = 0; i < crafted_spells.length; i++) {
-              spell_dtws.push(ComputeDTW(last_cast, crafted_spells[i]))
+              const dtw = ComputeDTW(last_cast, crafted_spells[i]);
+              spell_dtws.push(dtw)
+              let dthumb = finger_weights['thumb'] * (dtw['dist']['thumb0'] + dtw['dist']['thumb1'])
+              let dindex = finger_weights['index'] * (dtw['dist']['index0'] + dtw['dist']['index1'])
+              let dmiddle = finger_weights['middle'] * (dtw['dist']['middle0'] + dtw['dist']['middle1'])
+              let dring = finger_weights['ring'] * (dtw['dist']['ring0'] + dtw['dist']['ring1'])
+              let dpinky = finger_weights['pinky'] * (dtw['dist']['pinky0'] + dtw['dist']['pinky1'])
+              let weighted_dist = dthumb + dindex + dmiddle + dring + dpinky;
+              if(min_dist > weighted_dist){
+                best_match_idx = 1*i;
+                min_dist = weighted_dist;
+              }
             }
-            console.log(spell_dtws);
-          }
+            socket.emit('spellmatched', JSON.stringify(crafted_spells[best_match_idx]));
+         }
 
           casting = false;
         }
@@ -255,36 +252,6 @@ function Pinchable({ children }: any) {
     }
 
     frame++
-
-    //have to do it by individual finger?
-    //at some point we can probs just push those positions to a websocket instead.
-    //then we can just loop.
-    /*
-    if(thumb0){
-      setCurveThum(new CatmullRomCurve3([...curveThum.points, thumb0.position], false, 'catmullrom', 0.25))
-    }
-    if(index0){
-      setCurveIndx(new CatmullRomCurve3([...curveIndx.points, index0.position], false, 'catmullrom', 0.25))
-    }
-    if(middle0){
-      setCurveMidl(new CatmullRomCurve3([...curveMidl.points, middle0.position], false, 'catmullrom', 0.25))
-    }
-    if(ring0){
-      setCurveRing(new CatmullRomCurve3([...curveRing.points, ring0.position], false, 'catmullrom', 0.25))
-    }
-    if(pinky0){
-      setCurvePink(new CatmullRomCurve3([...curvePink.points, pinky0.position], false, 'catmullrom', 0.25))
-    }
-  */
-
-    /*
-    for(let jointName in justTheTips){
-      const thisJoint = hand0.joints[jointName];
-      if (thisJoint){
-        tipCurves[jointName].points.push(thisJoint.position);
-      }
-    }
-    */
 
     //Update: I switched from left & right pinch for craft vs cast, to using both hands to pinch for craft vs putting hands together to cast
     if (index0 && thumb0 && index1 && thumb1) {
@@ -299,30 +266,6 @@ function Pinchable({ children }: any) {
         last_craft = [];
         crafting_startTime = Date.now();
       }
-      /*
-      const pointer = v.lerpVectors(index0.position, thumb0.position, 0.5)
-      const distance = pointer.distanceTo(handle.position)
-
-      const tDistance = 0.2
-      if (distance < tDistance) {
-        let scale = 1 + (0.8 - craftPinch) * 0.4 * (1 - distance / tDistance)
-        handle.scale.set(scale, scale, scale)
-      }
-
-      handle.material.color.set(craftPinching ? 'hotpink' : 'white');
-        
-      // Save offset when starting to ping
-      if (craftPinching && !prev_craftPinching) {
-        offset.copy(pointer).sub(handle.position)
-      }
-
-      // Move pointer to the hand
-      if (craftPinching) {
-        handle.position.copy(pointer).sub(offset)
-        curve.points[1].copy(handle.position)
-      }
-      */
-    
 
     // Released
     if (prev_craftPinching && !craftPinching) {
@@ -365,35 +308,6 @@ function Pinchable({ children }: any) {
 
     prev_craftPinching = craftPinching
   })
-
-/* //previous contents of return; will this kill the hand model?
- 
-      <Sphere args={[0.01]} position={start} />
-      <Sphere args={[0.01]} position={end} />
-      <RoundedBox args={[0.03, 0.08, 0.08]} radius={0.01} ref={ref} position={[0, 1.2, -0.3]}>
-        <meshStandardMaterial />
-        <Text fontSize={0.02} position={[0, 0.07, 0]}>
-          {label}
-        </Text>
-      </RoundedBox>
-      <CurveModifier ref={curveRefThum} curve={curveThum}>
-        <mesh><Sphere args={[0.01]} position={start} /></mesh>
-      </CurveModifier>
-      <CurveModifier ref={curveRefIndx} curve={curveIndx}>
-        <mesh><Sphere args={[0.01]} position={start} /></mesh>
-      </CurveModifier>
-      <CurveModifier ref={curveRefMidl} curve={curveMidl}>
-        <mesh><Sphere args={[0.01]} position={start} /></mesh>
-      </CurveModifier>
-      <CurveModifier ref={curveRefRing} curve={curveRing}>
-        <mesh><Sphere args={[0.01]} position={start} /></mesh>
-      </CurveModifier>
-      <CurveModifier ref={curveRefPink} curve={curvePink}>
-        <mesh><Sphere args={[0.01]} position={start} /></mesh>
-      </CurveModifier>
-
-
- */
 
   return (
     <>
