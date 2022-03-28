@@ -70,7 +70,7 @@ class App extends Component {
           <ambientLight />
           <pointLight position={[1, 1, 1]} />
           <color args={['black']} attach="background" />
-          {/* <Sky sunPosition={[500, 500, 500]} /> */}
+          <Block code={`var hello="hello world!";`} language={'.js'} />
         </VRCanvas>
         : <Dictaphone />
       }

@@ -30,3 +30,6 @@ This is the rendering system for the Optomancy grammar of graphics.
               }
             }
 ```
+solution credit: https://stackoverflow.com/a/57912572
+
+Added [our config](./REFERENCE_webpack.config.js) for posterity.
