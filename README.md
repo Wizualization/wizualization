@@ -33,3 +33,18 @@ This is the rendering system for the Optomancy grammar of graphics.
 solution credit: https://stackoverflow.com/a/57912572
 
 Added [our config](./REFERENCE_webpack.config.js) for posterity.
+
+Finally, to avoid package dependency issues, 
+* `npm link` the following dependencies from the spellbook repo (run `npm link` in spellbook/node_modules dirs for the corresponding packages)
+
+```
+npm link react
+npm link react-dom
+npm link @types/react
+npm link @types/react-dom
+npm link three
+npm link @types/three
+npm link react-three-fiber
+npm link @react-three/fiber
+npm link @react-three/drei
+```

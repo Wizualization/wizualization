@@ -41,7 +41,7 @@
   },
   "scripts": {
     "start": "set PORT=3333 && set HTTPS=true && serve -s build",
-    "dev": "set PORT=3339 && set HTTPS=true && react-scripts start",
+    "dev": "set PORT=3333 && set HTTPS=true && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test"
   },

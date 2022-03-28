@@ -2,7 +2,7 @@
 import { OrbitControls } from '@react-three/drei/core/OrbitControls'
 import { Sky } from '@react-three/drei/core/Sky';
 import ReactDOM from 'react-dom';
-import React, { Component, useEffect, useReducer } from 'react';
+import React, { Component, useEffect, useReducer, useState } from 'react';
 import { VRCanvas, Hands, DefaultXRControllers } from '@react-three/xr';
 import { Dictaphone } from './Components/Verbal/SpeechToText.js';
 import './App.css';
@@ -10,7 +10,7 @@ import MageHand from './Components/Somatic/MageHand';
 import Interpreter from './SpellCasting/Interpreter';
 import { reducer, initialState, DispatchContext } from './utils/Reducer';
 import { socket, setupSocketEvents } from './utils/Socket';
-import { Primitives, Block } from 'spellbook';
+import { GesturePrimitives, SpellBlock } from 'spellbook';
 //const spellbook = require('spellbook');
 //import client from './utils/socketConfig';
 
@@ -19,7 +19,10 @@ import { Primitives, Block } from 'spellbook';
 let ua = navigator.userAgent.toLowerCase();
 console.log(ua)
 let isHL = ua.replace('edg', '').length < ua.length;
-const primitives = Primitives();
+let primitives : any = []
+for(let prim in GesturePrimitives()){
+  primitives.push(prim)
+}
 //const primitives: any = [];
 //console.log(primitives);
  
@@ -39,6 +42,7 @@ class App extends Component {
 */
   export default function App(){
     const [state, dispatch] = useReducer(reducer, initialState);
+    //const [errState, setErrState] = useState({ error: false })
 
     const grimoire = Object.keys(state.spells).map(key=>{
       //let fn_arr = state.spells[key]?.spellname.split('.')
@@ -56,6 +60,8 @@ class App extends Component {
       setupSocketEvents(dispatch);
     }, []);
 
+    //why am i getting max call stack exceeded errors from this?
+    //<Block code={`var hello="hello world!";`} language={'javascript'} />
 
   //render() {
 
@@ -64,13 +70,12 @@ class App extends Component {
       <div>
       {isHL ? 
           <VRCanvas>
-          <MageHand grimoire={[...primitives, ...grimoire]} />
-          <Hands />
+          <MageHand grimoire={[...primitives, ...grimoire]} /> 
+          <Hands /> 
           <OrbitControls />
           <ambientLight />
           <pointLight position={[1, 1, 1]} />
           <color args={['black']} attach="background" />
-          <Block code={`var hello="hello world!";`} language={'.js'} />
         </VRCanvas>
         : <Dictaphone />
       }
