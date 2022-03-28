@@ -8,18 +8,19 @@ import Dictaphone from './Components/Verbal/SpeechToText.js';
 import './App.css';
 import MageHand from './Components/Somatic/MageHand';
 import Interpreter from './SpellCasting/Interpreter';
-import { Primitives } from 'spellbook';
+import { reducer, initialState, DispatchContext } from './utils/Reducer';
+import { socket, setupSocketEvents } from './utils/Socket';
+import { Primitives, Block } from 'spellbook';
+//const spellbook = require('spellbook');
 //import client from './utils/socketConfig';
 
 
-import { reducer, initialState, DispatchContext } from './utils/Reducer';
-import { socket, setupSocketEvents } from './utils/Socket';
 // Hololens user agent is going to be a version of edge above the latest release
 let ua = navigator.userAgent.toLowerCase();
 console.log(ua)
 let isHL = ua.replace('edg', '').length < ua.length;
 const primitives = Primitives();
-console.log(primitives);
+//console.log(primitives);
  
 
 // Not sure why other joint pos demo breaks, but https://codesandbox.io/s/47vqp?file=/src/App.tsx works.
