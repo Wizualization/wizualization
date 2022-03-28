@@ -22,6 +22,7 @@
     "@types/three": "^0.139.0",
     "@types/websocket": "^1.0.4",
     "canvas-sketch-util": "^1.10.0",
+    "commonjs": "^0.0.1",
     "dynamic-time-warping": "^1.0.0",
     "express": "^4.17.2",
     "http-proxy-middleware": "^2.0.2",

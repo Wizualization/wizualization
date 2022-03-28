@@ -4,7 +4,7 @@ import { Sky } from '@react-three/drei/core/Sky';
 import ReactDOM from 'react-dom';
 import React, { Component, useEffect, useReducer } from 'react';
 import { VRCanvas, Hands, DefaultXRControllers } from '@react-three/xr';
-import Dictaphone from './Components/Verbal/SpeechToText.js';
+import { Dictaphone } from './Components/Verbal/SpeechToText.js';
 import './App.css';
 import MageHand from './Components/Somatic/MageHand';
 import Interpreter from './SpellCasting/Interpreter';

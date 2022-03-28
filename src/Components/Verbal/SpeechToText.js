@@ -1,7 +1,12 @@
 import React from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+//import * as SpeechRecognitionDefault from 'react-speech-recognition';
+//import { useSpeechRecognition } from 'react-speech-recognition';
 import {socket} from '../../utils/Socket';
 //import client from '../../utils/socketConfig';
+
+//const SpeechRecognition = SpeechRecognitionDefault.default;
+//const useSpeechRecognition = SpeechRecognitionDefault.useSpeechRecognition;
 
 const Dictaphone = () => {
   const {
@@ -14,6 +19,7 @@ const Dictaphone = () => {
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;
   }
+
 
   const listenContinuously = () => SpeechRecognition.startListening({
     continuous: true, 
@@ -68,4 +74,4 @@ return (
   </div>
 );*/
 };
-export default Dictaphone;
+export { Dictaphone };
