@@ -55,7 +55,7 @@ let targetPos = getTargetPos(new Vector3(0, 0, 0))
 let frame = 0
 let prev_frame = 0
 
-function Pinchable(props: any) {
+function MageHand(props: any) {
   let crafted_spells:any[] = [...props.grimoire];
 
   const jointNames = [
@@ -224,6 +224,7 @@ function Pinchable(props: any) {
           if(dustRef.current){
             dustRef.current.visible = false;
           }
+          casting = false;
       
           if(crafted_spells.length > 0){
             let spell_dtws:any = []
@@ -246,7 +247,6 @@ function Pinchable(props: any) {
             socket.emit('spellmatched', JSON.stringify(crafted_spells[best_match_idx]));
          }
 
-          casting = false;
         }
       }
     }
@@ -320,4 +320,4 @@ function Pinchable(props: any) {
   )
 }
 
-export default Pinchable;
+export default MageHand;
