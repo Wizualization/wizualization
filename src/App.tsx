@@ -10,7 +10,7 @@ import MageHand from './Components/Somatic/MageHand';
 import Interpreter from './SpellCasting/Interpreter';
 import { reducer, initialState, DispatchContext } from './utils/Reducer';
 import { socket, setupSocketEvents } from './utils/Socket';
-//import { Primitives, Block } from 'spellbook';
+import { Primitives, Block } from 'spellbook';
 //const spellbook = require('spellbook');
 //import client from './utils/socketConfig';
 
@@ -19,8 +19,8 @@ import { socket, setupSocketEvents } from './utils/Socket';
 let ua = navigator.userAgent.toLowerCase();
 console.log(ua)
 let isHL = ua.replace('edg', '').length < ua.length;
-//const primitives = Primitives();
-const primitives: any = [];
+const primitives = Primitives();
+//const primitives: any = [];
 //console.log(primitives);
  
 
