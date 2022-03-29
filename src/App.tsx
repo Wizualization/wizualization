@@ -61,8 +61,7 @@ class App extends Component {
     }, []);
 
     //why am i getting max call stack exceeded errors from this?
-    //<Block code={`var hello="hello world!";`} language={'javascript'} />
-
+    
   //render() {
 
     return (
@@ -76,6 +75,7 @@ class App extends Component {
           <ambientLight />
           <pointLight position={[1, 1, 1]} />
           <color args={['black']} attach="background" />
+          <SpellBlock code={`var hello="hello world!";`} language={'javascript'} />
         </VRCanvas>
         : <Dictaphone />
       }

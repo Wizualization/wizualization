@@ -253,11 +253,7 @@ function MageHand(props: any) {
                       min_dist = weighted_dist;
                     }
                   }
-                  try{
-                    socket.emit('spellmatched', JSON.stringify(crafted_spells[best_match_idx]));
-                  } catch(err){
-                    console.log(err);
-                  }
+                  socket.emit('spellmatched', JSON.stringify(crafted_spells[best_match_idx]));
               }
 
               }
