@@ -113,7 +113,7 @@ class App extends Component {
       <DispatchContext.Provider value={dispatch}>
       <div>
       {isHL ? 
-          <VRCanvas>
+        <VRCanvas>
           <MageHand grimoire={[...primitives, ...grimoire]} /> 
           <Hands /> 
           <OrbitControls />

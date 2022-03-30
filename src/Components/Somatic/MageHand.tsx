@@ -7,11 +7,11 @@
 
 import * as THREE from 'three';
 import React, { useEffect, useRef, useState } from 'react';
-import { RoundedBox, Sphere, Text, CurveModifier } from '@react-three/drei';
+//import { RoundedBox, Sphere, Text, CurveModifier } from '@react-three/drei';
 import { extend, reconciler, useFrame, useThree } from '@react-three/fiber';
 import { useXR } from '@react-three/xr';
 import { BufferGeometry, CatmullRomCurve3, Line, Material, Mesh, MeshBasicMaterial, MeshPhongMaterial, SplineCurve, Vector3 } from 'three';
-import { useSpring, config } from 'react-spring';
+//import { useSpring, config } from 'react-spring';
 import {socket} from '../../utils/Socket';
 import ComputeDTW from './GestureRecognition';
 import Swarm from '../../SpellCasting/Swarm'
