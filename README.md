@@ -47,4 +47,6 @@ npm link @types/three
 npm link react-three-fiber
 npm link @react-three/fiber
 npm link @react-three/drei
+npm link @react-three/cannon
+npm link @react-three/xr
 ```

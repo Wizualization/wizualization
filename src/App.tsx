@@ -10,7 +10,7 @@ import MageHand from './Components/Somatic/MageHand';
 import Interpreter from './SpellCasting/Interpreter';
 import { reducer, initialState, DispatchContext } from './utils/Reducer';
 import { socket, setupSocketEvents } from './utils/Socket';
-import { GesturePrimitives, SpellBlock } from 'spellbook';
+import { GesturePrimitives, SpellPages } from 'spellbook';
 //const spellbook = require('spellbook');
 //import client from './utils/socketConfig';
 
@@ -43,7 +43,52 @@ class App extends Component {
   export default function App(){
     const [state, dispatch] = useReducer(reducer, initialState);
     //const [errState, setErrState] = useState({ error: false })
+    const exampleSpells = [
+      {
+        'code': `var hello = "hello World";
+        console.log(hello);`,
+        'language': 'javascript'
+      },
+      {
+        'code': `  componentWillMount() {
+          client.onopen = () => {
+            console.log('WebSocket Client Connected');
+          };
+          client.onmessage = (message) => {
+            console.log(message);
+          };
+        }`,
+        'language': 'javascript'
+      },
+      {
+        'code': `const grimoire = Object.keys(state.spells).map(key=>{
+          return {
+            key: key,
+            gesture:state.spells[key]?.gesture, 
+            words:state.spells[key]?.words
+          };
+        });`,
+        'language': 'javascript'
+      },
 
+      /*
+      {
+        'code': `PROGRAM HELLO
+    WRITE (*,100)
+    STOP
+100 FORMAT (' Hello World! ' /)
+    END`,
+    'language': 'fortran'},
+    {
+      'code': `print("Hello World")`,
+      'language': 'python'
+    },
+    {
+      'code': `main = putStrLn "Hello World"`,
+      'language': 'haskell'
+    }
+    */
+    ]
     const grimoire = Object.keys(state.spells).map(key=>{
       //let fn_arr = state.spells[key]?.spellname.split('.')
       return {
@@ -75,7 +120,7 @@ class App extends Component {
           <ambientLight />
           <pointLight position={[1, 1, 1]} />
           <color args={['black']} attach="background" />
-          <SpellBlock code={`var hello="hello world!";`} language={'javascript'} />
+          <SpellPages spells={exampleSpells} />
         </VRCanvas>
         : <Dictaphone />
       }
