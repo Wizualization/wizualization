@@ -2,7 +2,7 @@
 import { OrbitControls } from '@react-three/drei/core/OrbitControls'
 import { Sky } from '@react-three/drei/core/Sky';
 import ReactDOM from 'react-dom';
-import React, { Component, useEffect, useReducer, useState } from 'react';
+import React, { Component, Suspense, useEffect, useReducer, useState } from 'react';
 import { VRCanvas, Hands, DefaultXRControllers } from '@react-three/xr';
 import { Dictaphone } from './Components/Verbal/SpeechToText.js';
 import './App.css';
@@ -106,6 +106,9 @@ class App extends Component {
     }, []);
 
     //why am i getting max call stack exceeded errors from this?
+    // suspense doesnt really help in this case bc wont error out until it actually hits the max call stack 
+    // is this a new problem from my latest version of the @react-three/xr package?
+    //<Suspense fallback={<></>}></Suspense>
     
   //render() {
 
@@ -114,13 +117,13 @@ class App extends Component {
       <div>
       {isHL ? 
         <VRCanvas>
-          <MageHand grimoire={[...primitives, ...grimoire]} /> 
           <Hands /> 
+          <MageHand grimoire={[...primitives, ...grimoire]} /> 
+          <SpellPages spells={exampleSpells} />
           <OrbitControls />
           <ambientLight />
           <pointLight position={[1, 1, 1]} />
           <color args={['black']} attach="background" />
-          <SpellPages spells={exampleSpells} />
         </VRCanvas>
         : <Dictaphone />
       }
