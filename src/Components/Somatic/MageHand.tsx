@@ -124,7 +124,7 @@ function MageHand(props: any) {
 
   
   const { gl } = useThree();
-  const { player } = useXR()
+  //const { player } = useXR()
 
   const hand0 = gl.xr.getHand(0) as any
   const hand1 = gl.xr.getHand(1) as any
@@ -153,7 +153,7 @@ function MageHand(props: any) {
         const index1 = hand1.joints['index-finger-tip']
 
       if(index0 && index1){
-        if(player.position.y - 0.5 > index0.position.y && player.position.y - 0.5 > index1.position.y && player.position.y + 0.5 < index0.position.y && player.position.y + 0.5 < index1.position.y ){
+        //if(player.position.y - 0.5 > index0.position.y && player.position.y - 0.5 > index1.position.y && player.position.y + 0.5 < index0.position.y && player.position.y + 0.5 < index1.position.y ){
           const thumb0 = hand0.joints['thumb-tip']
           const middle0 = hand0.joints['middle-finger-tip']
           const ring0 = hand0.joints['ring-finger-tip']
@@ -317,7 +317,7 @@ function MageHand(props: any) {
         }
         */
         prev_craftPinching = craftPinching
-      }
+      //}
     }
   })
 

@@ -6,11 +6,11 @@ import React, { Component, Suspense, useEffect, useReducer, useState } from 'rea
 import { VRCanvas, Hands, DefaultXRControllers } from '@react-three/xr';
 import { Dictaphone } from './Components/Verbal/SpeechToText.js';
 import './App.css';
-import MageHand from './Components/Somatic/MageHand';
-import Interpreter from './SpellCasting/Interpreter';
 import { reducer, initialState, DispatchContext } from './utils/Reducer';
 import { socket, setupSocketEvents } from './utils/Socket';
 import { GesturePrimitives, SpellPages } from 'spellbook';
+import MageHand from './Components/Somatic/MageHand';
+import Interpreter from './SpellCasting/Interpreter';
 //const spellbook = require('spellbook');
 //import client from './utils/socketConfig';
 
@@ -118,8 +118,8 @@ class App extends Component {
       {isHL ? 
         <VRCanvas>
           <Hands /> 
-          <MageHand grimoire={[...primitives, ...grimoire]} /> 
           <SpellPages spells={exampleSpells} />
+          <MageHand grimoire={[...primitives, ...grimoire]} /> 
           <OrbitControls />
           <ambientLight />
           <pointLight position={[1, 1, 1]} />
