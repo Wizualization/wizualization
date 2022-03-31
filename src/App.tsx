@@ -8,7 +8,7 @@ import { Dictaphone } from './Components/Verbal/SpeechToText.js';
 import './App.css';
 import { reducer, initialState, DispatchContext } from './utils/Reducer';
 import { socket, setupSocketEvents } from './utils/Socket';
-import { GesturePrimitives, SpellPages } from 'spellbook';
+import { GesturePrimitives, SpellPages } from 'spellbook'; 
 import MageHand from './Components/Somatic/MageHand';
 import Interpreter from './SpellCasting/Interpreter';
 //const spellbook = require('spellbook');
@@ -111,7 +111,9 @@ class App extends Component {
     //<Suspense fallback={<></>}></Suspense>
     
   //render() {
-
+    //before magehands
+//          
+ 
     return (
       <DispatchContext.Provider value={dispatch}>
       <div>
