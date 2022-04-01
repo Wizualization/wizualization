@@ -26,7 +26,7 @@
     "dynamic-time-warping": "1.0.0",
     "express": "4.17.2",
     "http-proxy-middleware": "2.0.2",
-    "microsoft-cognitiveservices-speech-sdk": "1.19.0",
+    "js-levenshtein": "^1.1.6",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-scripts": "4.0.3",
