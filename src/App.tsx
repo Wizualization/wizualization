@@ -16,29 +16,10 @@ import { reducer, initialState, DispatchContext } from "./utils/Reducer";
 import { socket, setupSocketEvents } from "./utils/Socket";
 import { GesturePrimitives, SpellPages } from "spellbook";
 import MageHand from "./Components/Somatic/MageHand";
-import Interpreter from "./SpellCasting/Interpreter";
+import { Interpreter } from "./SpellCasting/Interpreter.jsx";
 //const spellbook = require('spellbook');
 //import client from './utils/socketConfig';
-import * as THREE from "three";
 
-// ******************** Optomancy ********************
-import Optomancy from "optomancy";
-import iris from "./assets/iris.json";
-declare global {
-  interface Window {
-    OptomancyNS: any;
-  }
-}
-
-window.OptomancyNS = window.OptomancyNS || {};
-const transitionConfig = {
-  title: "The Iris Flower Dataset",
-  data: { values: iris },
-};
-const optomancyConfig = {
-  data: iris,
-};
-// ***************************************************
 
 // Hololens user agent is going to be a version of edge above the latest release
 let ua = navigator.userAgent.toLowerCase();
@@ -136,31 +117,6 @@ export default function App() {
 
   //render() {
 
-  // ******************** Optomancy ********************
-
-  // ******************** Optomancy ********************
-  window.OptomancyNS.optomancy = new Optomancy(optomancyConfig);
-  window.OptomancyNS.optomancy.cast("x", {
-    field: "petalWidth",
-    type: "continuous",
-  });
-  window.OptomancyNS.optomancy.cast("y", {
-    field: "petalLength",
-    type: "continuous",
-  });
-  window.OptomancyNS.optomancy.cast("z", {
-    field: "sepalWidth",
-    type: "continuous",
-  });
-  window.OptomancyNS.optomancy.cast("color", {
-    field: "species",
-    type: "categorical",
-  });
-  // ***************************************************
-
-  const { data } = window.OptomancyNS.optomancy.config;
-  const { scales } = window.OptomancyNS.optomancy.propsExport;
-  // ***************************************************
 
   return (
     <DispatchContext.Provider value={dispatch}>
@@ -170,84 +126,16 @@ export default function App() {
             <Hands />
             <SpellPages spells={exampleSpells} />
             <MageHand grimoire={[...primitives, ...grimoire]} />
+            <Interpreter />
             <OrbitControls />
             <ambientLight />
             <pointLight position={[1, 1, 1]} />
             <color args={["black"]} attach="background" />
 
-            {/* VISUALIZATION */}
-            {/* <mesh position={[0, 0, 3]}> */}
-            <mesh position={[-1, 1, -1]}>
-              <>
-                {data.map((el: any, i: number) => {
-                  return (
-                    <mesh
-                      key={`geom${i}`}
-                      position={[
-                        scales.x(el.petalWidth),
-                        scales.y(el.petalLength),
-                        scales.z(el.sepalWidth),
-                      ]}
-                    >
-                      <sphereGeometry attach="geometry" args={[0.01, 8, 8]} />
-                      <meshStandardMaterial
-                        attach="material"
-                        color={new THREE.Color(scales.color(el.species))}
-                        roughness={0.1}
-                        metalness={0.1}
-                      />
-                    </mesh>
-                  );
-                })}
-                {/* Z */}
-                <mesh
-                  position={[0, 0, 0.25]}
-                  rotation={[THREE.MathUtils.degToRad(90), 0, 0]}
-                >
-                  <cylinderGeometry
-                    attach="geometry"
-                    args={[0.01, 0.01, 0.5]}
-                  />
-                  <meshBasicMaterial attach="material" color="white" />
-                </mesh>
-                {/* Y */}
-                <mesh
-                  position={[0, 0.25, 0.5]}
-                  rotation={[0, THREE.MathUtils.degToRad(90), 0]}
-                >
-                  <cylinderGeometry
-                    attach="geometry"
-                    args={[0.01, 0.01, 0.5]}
-                  />
-                  <meshBasicMaterial attach="material" color="white" />
-                </mesh>
-                {/* X */}
-                <mesh
-                  position={[0.25, 0, 0.5]}
-                  rotation={[0, 0, THREE.MathUtils.degToRad(90)]}
-                >
-                  <cylinderGeometry
-                    attach="geometry"
-                    args={[0.01, 0.01, 0.5]}
-                  />
-                  <meshBasicMaterial attach="material" color="white" />
-                </mesh>
-              </>
-            </mesh>
           </VRCanvas>
         ) : (
           <Dictaphone />
         )}
-        {grimoire.map((spell, index) => {
-          console.log(spell);
-          return (
-            <Interpreter
-              key={spell.key}
-              gesture={spell.gesture}
-              words={spell.words}
-            />
-          );
-        })}
       </div>
     </DispatchContext.Provider>
   );

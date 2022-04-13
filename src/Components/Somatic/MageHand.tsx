@@ -147,23 +147,34 @@ function MageHand(props: any) {
         //console.log(hand0)
         //console.log(hand1)
       
-        const handle = ref.current as any
         //actually need to do it this way
-        const index0 = hand0.joints['index-finger-tip']
-        const index1 = hand1.joints['index-finger-tip']
-
-      if(index0 && index1){
+        const index0 = hand0.joints['index-finger-tip'] as any;
+        if(index0 === undefined) return
+        const index1 = hand1.joints['index-finger-tip'] as any;
+        if(index1 === undefined) return
+      //if(index0 && index1){
         //if(player.position.y - 0.5 > index0.position.y && player.position.y - 0.5 > index1.position.y && player.position.y + 0.5 < index0.position.y && player.position.y + 0.5 < index1.position.y ){
-          const thumb0 = hand0.joints['thumb-tip']
-          const middle0 = hand0.joints['middle-finger-tip']
-          const ring0 = hand0.joints['ring-finger-tip']
-          const pinky0 = hand0.joints['pinky-finger-tip']
+          const thumb0 = hand0.joints['thumb-tip'] as any;
+          if(thumb0 === undefined) return
+          const middle0 = hand0.joints['middle-finger-tip'] as any;
+          //if(middle0 === undefined) return
+          const ring0 = hand0.joints['ring-finger-tip'] as any;
+          //if(ring0 === undefined) return
+          const pinky0 = hand0.joints['pinky-finger-tip'] as any;
+          //if(pinky0 === undefined) return
   
-          const thumb1 = hand1.joints['thumb-tip']
-          const middle1 = hand1.joints['middle-finger-tip']
-          const ring1 = hand1.joints['ring-finger-tip']
-          const pinky1 = hand1.joints['pinky-finger-tip']
-  
+          const thumb1 = hand1.joints['thumb-tip'] as any;
+          //if(thumb1 === undefined) return
+          const middle1 = hand1.joints['middle-finger-tip'] as any;
+          //if(middle1 === undefined) return
+          const ring1 = hand1.joints['ring-finger-tip'] as any;
+          //if(ring1 === undefined) return
+          const pinky1 = hand1.joints['pinky-finger-tip'] as any;
+          //if(pinky1 === undefined) return
+
+
+          const handle = ref.current as any
+          
           let craftPinching = false
           let castPinching = false
 
@@ -263,7 +274,7 @@ function MageHand(props: any) {
           frame++
 
           //Update: I switched from left & right pinch for craft vs cast, to using both hands to pinch for craft vs putting hands together to cast
-          if (index0 && thumb0 && index1 && thumb1) {
+          //if (index0 && thumb0 && index1 && thumb1) {
             const craftPinch_left = Math.max(0, 1 - index0.position.distanceTo(thumb0.position) / 0.1)
             craftPinching = craftPinch_left > 0.52
             const craftPinch_right = Math.max(0, 1 - index1.position.distanceTo(thumb1.position) / 0.1)
@@ -302,7 +313,7 @@ function MageHand(props: any) {
             casting = true;
             casting_startTime = Date.now();
           }
-        }
+        //}
 
 
 
@@ -318,7 +329,7 @@ function MageHand(props: any) {
         */
         prev_craftPinching = craftPinching
       //}
-    }
+    //}
   })
 
 
