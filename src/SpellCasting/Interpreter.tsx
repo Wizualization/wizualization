@@ -5,11 +5,11 @@ import { useThree, useFrame } from '@react-three/fiber';
 import {useRef} from 'react';
 import Optomancy from "optomancy";
 import iris from "../assets/iris.json";
-/*declare global {
+declare global {
   interface Window {
     OptomancyNS: any;
   }
-}*/
+}
 
 window.OptomancyNS = window.OptomancyNS || {};
 const transitionConfig = {
@@ -75,16 +75,16 @@ export const joints = [
   const { scales } = window.OptomancyNS.optomancy.propsExport;
   // ***************************************************
 
-function Interpreter(props) {//:any
-  //const optoRef = useRef<Mesh | null>();
-  const optoRef = useRef();
+function Interpreter(props:any) {//:any
+  const optoRef = useRef<Mesh | null>();
+  //const optoRef = useRef();
   const { gl } = useThree();
      
     
-  //const hand0 = (gl.xr as any).getHand(0) as any;
-  //const hand1 = (gl.xr as any).getHand(1) as any;
-  const hand0 = (gl.xr).getHand(0);
-  const hand1 = (gl.xr).getHand(1);
+  const hand0 = (gl.xr as any).getHand(0) as any;
+  const hand1 = (gl.xr as any).getHand(1) as any;
+  //const hand0 = (gl.xr).getHand(0);
+  //const hand1 = (gl.xr).getHand(1);
   useFrame(() => {
     if (!optoRef.current) return
     const index0 = hand0.joints['index-finger-tip']
@@ -128,7 +128,7 @@ function Interpreter(props) {//:any
 
   return <mesh ref={optoRef} position={[-1, 1, -1]}>
               <mesh>
-                {data.map((el, i) => {//(el: any, i: number)
+                {data.map((el: any, i: number) => {//(el: any, i: number)
                   return (
                     <mesh
                       key={`geom${i}`}

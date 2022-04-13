@@ -16,7 +16,7 @@ import { reducer, initialState, DispatchContext } from "./utils/Reducer";
 import { socket, setupSocketEvents } from "./utils/Socket";
 import { GesturePrimitives, SpellPages } from "spellbook";
 import MageHand from "./Components/Somatic/MageHand";
-import { Interpreter } from "./SpellCasting/Interpreter.jsx";
+import { Interpreter } from "./SpellCasting/Interpreter";
 //const spellbook = require('spellbook');
 //import client from './utils/socketConfig';
 
