@@ -165,70 +165,79 @@ export default function App() {
   return (
     <DispatchContext.Provider value={dispatch}>
       <div>
-        {/* {isHL ? ( */}
-        <VRCanvas>
-          <Hands />
-          <SpellPages spells={exampleSpells} />
-          <MageHand grimoire={[...primitives, ...grimoire]} />
-          <OrbitControls />
-          <ambientLight />
-          <pointLight position={[1, 1, 1]} />
-          <color args={["black"]} attach="background" />
+        {isHL || new URLSearchParams(window.location.search).get("dev") ? (
+          <VRCanvas>
+            <Hands />
+            <SpellPages spells={exampleSpells} />
+            <MageHand grimoire={[...primitives, ...grimoire]} />
+            <OrbitControls />
+            <ambientLight />
+            <pointLight position={[1, 1, 1]} />
+            <color args={["black"]} attach="background" />
 
-          {/* VISUALIZATION */}
-          {/* <mesh position={[0, 0, 3]}> */}
-          <mesh position={[-1, 1, -1]}>
-            <>
-              {data.map((el: any, i: number) => {
-                return (
-                  <mesh
-                    key={`geom${i}`}
-                    position={[
-                      scales.x(el.petalWidth),
-                      scales.y(el.petalLength),
-                      scales.z(el.sepalWidth),
-                    ]}
-                  >
-                    <sphereGeometry attach="geometry" args={[0.01, 8, 8]} />
-                    <meshStandardMaterial
-                      attach="material"
-                      color={new THREE.Color(scales.color(el.species))}
-                      roughness={0.1}
-                      metalness={0.1}
-                    />
-                  </mesh>
-                );
-              })}
-              {/* Z */}
-              <mesh
-                position={[0, 0, 0.25]}
-                rotation={[THREE.MathUtils.degToRad(90), 0, 0]}
-              >
-                <cylinderGeometry attach="geometry" args={[0.01, 0.01, 0.5]} />
-                <meshBasicMaterial attach="material" color="white" />
-              </mesh>
-              {/* Y */}
-              <mesh
-                position={[0, 0.25, 0.5]}
-                rotation={[0, THREE.MathUtils.degToRad(90), 0]}
-              >
-                <cylinderGeometry attach="geometry" args={[0.01, 0.01, 0.5]} />
-                <meshBasicMaterial attach="material" color="white" />
-              </mesh>
-              {/* X */}
-              <mesh
-                position={[0.25, 0, 0.5]}
-                rotation={[0, 0, THREE.MathUtils.degToRad(90)]}
-              >
-                <cylinderGeometry attach="geometry" args={[0.01, 0.01, 0.5]} />
-                <meshBasicMaterial attach="material" color="white" />
-              </mesh>
-            </>
-          </mesh>
-        </VRCanvas>
-        {/* ) : ( */}
-        {/* <Dictaphone /> */}
-        {/* )} */}
+            {/* VISUALIZATION */}
+            {/* <mesh position={[0, 0, 3]}> */}
+            <mesh position={[-1, 1, -1]}>
+              <>
+                {data.map((el: any, i: number) => {
+                  return (
+                    <mesh
+                      key={`geom${i}`}
+                      position={[
+                        scales.x(el.petalWidth),
+                        scales.y(el.petalLength),
+                        scales.z(el.sepalWidth),
+                      ]}
+                    >
+                      <sphereGeometry attach="geometry" args={[0.01, 8, 8]} />
+                      <meshStandardMaterial
+                        attach="material"
+                        color={new THREE.Color(scales.color(el.species))}
+                        roughness={0.1}
+                        metalness={0.1}
+                      />
+                    </mesh>
+                  );
+                })}
+                {/* Z */}
+                <mesh
+                  position={[0, 0, 0.25]}
+                  rotation={[THREE.MathUtils.degToRad(90), 0, 0]}
+                >
+                  <cylinderGeometry
+                    attach="geometry"
+                    args={[0.01, 0.01, 0.5]}
+                  />
+                  <meshBasicMaterial attach="material" color="white" />
+                </mesh>
+                {/* Y */}
+                <mesh
+                  position={[0, 0.25, 0.5]}
+                  rotation={[0, THREE.MathUtils.degToRad(90), 0]}
+                >
+                  <cylinderGeometry
+                    attach="geometry"
+                    args={[0.01, 0.01, 0.5]}
+                  />
+                  <meshBasicMaterial attach="material" color="white" />
+                </mesh>
+                {/* X */}
+                <mesh
+                  position={[0.25, 0, 0.5]}
+                  rotation={[0, 0, THREE.MathUtils.degToRad(90)]}
+                >
+                  <cylinderGeometry
+                    attach="geometry"
+                    args={[0.01, 0.01, 0.5]}
+                  />
+                  <meshBasicMaterial attach="material" color="white" />
+                </mesh>
+              </>
+            </mesh>
+          </VRCanvas>
+        ) : (
+          <Dictaphone />
+        )}
         {grimoire.map((spell, index) => {
           console.log(spell);
           return (
