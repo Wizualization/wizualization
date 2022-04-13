@@ -20,13 +20,10 @@
     "dynamic-time-warping": "1.0.0",
     "express": "4.17.2",
     "http-proxy-middleware": "2.0.2",
-<<<<<<< HEAD
     "js-levenshtein": "^1.1.6",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-=======
     "microsoft-cognitiveservices-speech-sdk": "1.19.0",
->>>>>>> 92de1a00b0488451e4a20c890ce51ff800313d2f
     "react-scripts": "4.0.3",
     "react-speech-recognition": "3.9.0",
     "react-spring": "9.3.2",
