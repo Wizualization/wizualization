@@ -5,7 +5,7 @@ const spellUpdate = (state: State, action: Action) => {
   console.log(state)
   console.log(action)
   console.log('action.spellUpdate: Updated spell in VSCode');
-  return JSON.parse(action.payload);
+  return {...JSON.parse(action.payload), matchedSpell: null};
   /*{
     ...state, 
     spells: {
@@ -15,4 +15,18 @@ const spellUpdate = (state: State, action: Action) => {
   };*/
 };
 
-export default spellUpdate;
+const spellMatched = (state: State, action: Action) => {
+  console.log(state)
+  console.log(action)
+  console.log('action.spellMatched: A spell has been cast and identified');
+  //return JSON.parse(action.payload);
+  return {
+    spells: {
+      ...state.spells
+    },
+    matchedSpell:action.payload
+  };
+};
+
+
+export { spellUpdate, spellMatched };

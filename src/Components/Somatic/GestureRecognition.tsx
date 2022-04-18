@@ -81,10 +81,10 @@ export default function ComputeDTW(ser1: any[], ser2: any[]){
     [{"thumb0": {"matrix": [], [...]}}, [...]]
     we only care about the matrices, but we need to convert them to vector3s
     */
-    console.log(ser1)
+    //console.log(ser1)
     const vecs1 = jointsToVecs(ser1);
     const vecs2 = jointsToVecs(ser2);
-    console.log(vecs1);
+    //console.log(vecs1);
     /*var distFunc = function( a: any, b: any) {
         return Math.abs( a - b );
     };*/
@@ -118,7 +118,7 @@ export default function ComputeDTW(ser1: any[], ser2: any[]){
     sig2['ring1'] = prepareSignature(vecs2.ring1);
     sig2['pinky1'] = prepareSignature(vecs2.pinky1);
 
-    console.log(sig1)
+    //console.log(sig1)
     var dtw = {}
     var dist = {} 
     var path = {}

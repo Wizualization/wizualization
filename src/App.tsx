@@ -46,8 +46,12 @@ class App extends Component {
   }
 */
 export default function App() {
+  //Suppress/unsuppress during dev sprints
+
   const [state, dispatch] = useReducer(reducer, initialState);
   //const [errState, setErrState] = useState({ error: false })
+
+  //todo: change this into sequence of cast spells
   const exampleSpells = [
     {
       code: `var hello = "hello World";
@@ -110,16 +114,22 @@ export default function App() {
     setupSocketEvents(dispatch);
   }, []);
 
+  useEffect(() => {
+    // Set up socketio here
+    console.log("STATE", state);
+  })
   //why am i getting max call stack exceeded errors from this?
   // suspense doesnt really help in this case bc wont error out until it actually hits the max call stack
   // is this a new problem from my latest version of the @react-three/xr package?
   //<Suspense fallback={<></>}></Suspense>
 
   //render() {
-
+  //Suppress/unsuppress during build for pre-release
+  //return (<div>This site will be available beginning April 21, 2022.</div>)
 
   return (
     <DispatchContext.Provider value={dispatch}>
+      {(typeof state.matchedSpell == 'string') ? <div>Cast spell: {state.matchedSpell}</div> : <></>}
       <div>
         {isHL || new URLSearchParams(window.location.search).get("dev") ? (
           <VRCanvas>

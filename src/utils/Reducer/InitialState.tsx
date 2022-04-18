@@ -3,7 +3,8 @@ import { State } from '../Types'
 // Type
   
   const initialState: State = {
-    spells: {}
+    spells: {},
+    matchedSpell: null
   };
   
   export default initialState;
