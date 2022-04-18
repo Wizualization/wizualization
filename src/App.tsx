@@ -143,7 +143,7 @@ function interpreterMap(el : any, i : number, arr: any) {
             <Hands />
             <SpellPages spells={exampleSpells} />
             <MageHand grimoire={[...primitives, ...grimoire]} />
-            <Interpreter castSpells={[...primitives, ...grimoire].map(interpreterMap)}/>
+            <Interpreter castSpells={state.matchedSpells}/>
             <OrbitControls />
             <ambientLight />
             <pointLight position={[1, 1, 1]} />
