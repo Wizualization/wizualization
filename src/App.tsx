@@ -126,13 +126,17 @@ export default function App() {
 
   //render() {
   //Suppress/unsuppress during build for pre-release
-  //return (<div>This site will be available beginning April 21, 2022.</div>)
   //{(typeof state.matchedSpells == 'string') ? <div>Cast spell: {state.matchedSpells}</div> : <></>}
 
 function interpreterMap(el : any, i : number, arr: any) {
   console.log('spell', el, typeof el.key);
   console.log('state.matchedSpells', state.matchedSpells);
   return state.matchedSpells.includes(el.key) ?  el : null
+}
+
+const urlRoom = new URLSearchParams(window.location.search).get("room");
+if(urlRoom != 'test'){
+  return (<div>This site will be available beginning April 21, 2022.</div>)
 }
 
   return (
