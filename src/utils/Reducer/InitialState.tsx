@@ -4,7 +4,7 @@ import { State } from '../Types'
   
   const initialState: State = {
     spells: {},
-    matchedSpell: null
+    matchedSpells: []
   };
   
   export default initialState;

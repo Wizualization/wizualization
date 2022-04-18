@@ -26,7 +26,8 @@ let ua = navigator.userAgent.toLowerCase();
 console.log(ua);
 let isHL = ua.replace("edg", "").length < ua.length;
 let primitives: any = [];
-for (let prim in GesturePrimitives()) {
+for (let prim of GesturePrimitives()) {
+  console.log(prim);
   primitives.push(prim);
 }
 //const primitives: any = [];
@@ -107,7 +108,7 @@ export default function App() {
       words: state.spells[key]?.words,
     };
   });
-
+  
   // cdm
   useEffect(() => {
     // Set up socketio here
@@ -126,17 +127,23 @@ export default function App() {
   //render() {
   //Suppress/unsuppress during build for pre-release
   //return (<div>This site will be available beginning April 21, 2022.</div>)
+  //{(typeof state.matchedSpells == 'string') ? <div>Cast spell: {state.matchedSpells}</div> : <></>}
+
+function interpreterMap(el : any, i : number, arr: any) {
+  console.log('spell', el, typeof el.key);
+  console.log('state.matchedSpells', state.matchedSpells);
+  return state.matchedSpells.includes(el.key) ?  el : null
+}
 
   return (
     <DispatchContext.Provider value={dispatch}>
-      {(typeof state.matchedSpell == 'string') ? <div>Cast spell: {state.matchedSpell}</div> : <></>}
       <div>
         {isHL || new URLSearchParams(window.location.search).get("dev") ? (
           <VRCanvas>
             <Hands />
             <SpellPages spells={exampleSpells} />
             <MageHand grimoire={[...primitives, ...grimoire]} />
-            <Interpreter />
+            <Interpreter castSpells={[...primitives, ...grimoire].map(interpreterMap)}/>
             <OrbitControls />
             <ambientLight />
             <pointLight position={[1, 1, 1]} />

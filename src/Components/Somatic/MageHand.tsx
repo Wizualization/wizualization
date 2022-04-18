@@ -15,6 +15,7 @@ import { Mesh, Vector3 } from 'three';
 import {socket} from '../../utils/Socket';
 import ComputeDTW from './GestureRecognition';
 import Swarm from '../../SpellCasting/Swarm'
+import { ConsoleLoggingListener } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/ConsoleLoggingListener';
 
 const start = new Vector3(-0.25, 1.0, -0.3)
 const end = new Vector3(0.25, 1.0, -0.3)
@@ -251,20 +252,25 @@ function MageHand(props: any) {
                   let min_dist = 10000;
                   let best_match_idx = -1;
                   for (var i = 0; i < crafted_spells.length; i++) {
-                    const dtw = ComputeDTW(last_cast, crafted_spells[i]);
+                    const dtw = ComputeDTW(last_cast, crafted_spells[i].gesture);
                     spell_dtws.push(dtw)
                     let dthumb = finger_weights['thumb'] * (dtw['dist']['thumb0'] + dtw['dist']['thumb1'])
+                      dthumb = isNaN(dthumb) ? 0 : dthumb
                     let dindex = finger_weights['index'] * (dtw['dist']['index0'] + dtw['dist']['index1'])
+                      dindex = isNaN(dindex) ? 0 : dindex
                     let dmiddle = finger_weights['middle'] * (dtw['dist']['middle0'] + dtw['dist']['middle1'])
+                      dmiddle = isNaN(dmiddle) ? 0 : dmiddle
                     let dring = finger_weights['ring'] * (dtw['dist']['ring0'] + dtw['dist']['ring1'])
+                      dring = isNaN(dring) ? 0 : dring
                     let dpinky = finger_weights['pinky'] * (dtw['dist']['pinky0'] + dtw['dist']['pinky1'])
+                      dpinky = isNaN(dpinky) ? 0 : dpinky
                     let weighted_dist = dthumb + dindex + dmiddle + dring + dpinky;
                     if(min_dist > weighted_dist){
                       best_match_idx = 1*i;
-                      min_dist = weighted_dist;
+                      min_dist = 1*weighted_dist;
                     }
                   }
-                  socket.emit('spellmatched', JSON.stringify(crafted_spells[best_match_idx]));
+                  socket.emit('spellmatched', JSON.stringify(crafted_spells[best_match_idx].key));
               }
 
               }

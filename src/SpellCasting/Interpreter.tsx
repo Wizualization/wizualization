@@ -2,7 +2,7 @@
 import * as THREE from "three";
 import { Mesh } from 'three';
 import { useThree, useFrame } from '@react-three/fiber';
-import {useRef} from 'react';
+import {useRef, useEffect} from 'react';
 import Optomancy from "optomancy";
 import iris from "../assets/iris.json";
 declare global {
@@ -79,8 +79,11 @@ function Interpreter(props:any) {//:any
   const optoRef = useRef<Mesh | null>();
   //const optoRef = useRef();
   const { gl } = useThree();
-     
-    
+
+  useEffect(()=>{    
+    console.log('Interpreted: ', props.castSpells)
+  });
+
   const hand0 = (gl.xr as any).getHand(0) as any;
   const hand1 = (gl.xr as any).getHand(1) as any;
   //const hand0 = (gl.xr).getHand(0);

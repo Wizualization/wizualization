@@ -1,7 +1,7 @@
 // State.ts
 type State = {
     spells: any;
-    matchedSpell: any;
+    matchedSpells: any;
   };
   
   export default State;
