@@ -3,12 +3,13 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 //import * as SpeechRecognitionDefault from 'react-speech-recognition';
 //import { useSpeechRecognition } from 'react-speech-recognition';
 import {socket} from '../../utils/Socket';
+const levenshtein = require('js-levenshtein');
 //import client from '../../utils/socketConfig';
 
 //const SpeechRecognition = SpeechRecognitionDefault.default;
 //const useSpeechRecognition = SpeechRecognitionDefault.useSpeechRecognition;
 
-const Dictaphone = () => {
+const Dictaphone = (props) => {
   const {
     transcript,
     listening,
@@ -26,9 +27,25 @@ const Dictaphone = () => {
     language: "en-US"
   })
 
-  const endListener = () => {
+  const endListenerCraft = () => {
     //client.send(transcript)
     socket.emit('spellcast', JSON.stringify({'gesture': [], 'words': transcript}));
+    // replace this with socketio listener
+    SpeechRecognition.stopListening();
+  }
+
+  const endListenerCast = () => {
+    //client.send(transcript)
+    let minDist = 1000;
+    let matchedSpell = {};
+    for(let spell of props.grimoire){
+      let dist = levenshtein(transcript, spell.words)
+      if(dist < minDist){
+        matchedSpell = structuredClone(spell);
+        minDist = 1*dist;
+      }
+    }
+    socket.emit('spellmatched', JSON.stringify(matchedSpell.key));
     // replace this with socketio listener
     SpeechRecognition.stopListening();
   }
@@ -36,9 +53,10 @@ const Dictaphone = () => {
   return (
     <div>
       <p>Microphone: {listening ? 'on' : 'off'}</p>
-      <button onClick={listenContinuously}>Start</button>
-      <button onClick={endListener}>Stop</button>
-      <button onClick={resetTranscript}>Reset</button>
+      <button onClick={listenContinuously}>Start Recording</button>
+      <button onClick={endListenerCraft}>Use Rec. to Craft</button>
+      <button onClick={endListenerCast}>Use Rec. to Cast</button>
+      <button onClick={resetTranscript}>Reset Transcript</button>
       <p>{transcript}</p>      
     </div>
   );

@@ -128,17 +128,66 @@ function Interpreter(props:any) {//:any
     }
   });
 
+  // inputCastList = [{ ... optoClass: "point"}, { ... optoClass: "axis"}, "axis", "axis", "color"]
+
+  const Workspace = () => (
+    <mesh rotation={[THREE.MathUtils.degToRad(90), 0, 0]}>
+      <torusGeometry attach="geometry" args={[0.5, 0.01, 16, 100]}/>
+      <meshBasicMaterial attach="material" color="gold"/>
+    </mesh>
+  );
+
+  const setDemoState = (inputCastListLength: any) => {
+    console.log('INPUT_CAST_LIST_LENGTH', inputCastListLength);
+    // if(inputCastList?.length === 1 && inputCastList?.[0]?.optoClass === "point") {
+    //   return 0;
+    // }
+    // if (inputCastList?.length === 2 && inputCastList?.[1]?.optoClass === "axis") {
+    //   return 1;
+    // }
+    let state = 0;
+    switch(inputCastListLength) {
+      // Point
+      case 1:
+        state = 1;
+        break;
+      // Axis
+      case 2:
+        state = 2;
+        break;
+      // Axis
+      case 3:
+        state = 3;
+        break;
+      // Axis
+      case 4:
+        state = 4;
+        break;
+      // Color
+      case 5:
+        state = 5;
+        break;
+      default:
+        state = 0;
+        break;
+    }
+    return state;
+  }
+
+  // const demoState = setDemoState(props.castSpells.length);
+  const demoState = setDemoState(2);
 
   return <mesh ref={optoRef} position={[-1, 1, -1]}>
-              <mesh>
+              <Workspace/>
+              {demoState === 0 || demoState === 1 ? null : <mesh position={[-0.25, 0, -0.25]}>
                 {data.map((el: any, i: number) => {//(el: any, i: number)
                   return (
                     <mesh
                       key={`geom${i}`}
                       position={[
                         scales.x(el.petalWidth),
-                        scales.y(el.petalLength),
-                        scales.z(el.sepalWidth),
+                        demoState === 3 ? scales.y(el.petalLength) : 0,
+                        demoState === 3 || demoState === 4 ? scales.z(el.sepalWidth) : 0,
                       ]}
                     >
                       <sphereGeometry attach="geometry" args={[0.01, 8, 8]} />
@@ -184,7 +233,16 @@ function Interpreter(props:any) {//:any
                   />
                   <meshBasicMaterial attach="material" color="white" />
                 </mesh>
-              </mesh>
+              </mesh>}
+              {demoState === 1 ? <mesh>
+                <sphereGeometry attach="geometry" args={[0.1, 8, 8]} />
+                      <meshStandardMaterial
+                        attach="material"
+                        color="gold"
+                        roughness={0.1}
+                        metalness={0.1}
+                      />
+              </mesh> : null}
             </mesh>
 }
   

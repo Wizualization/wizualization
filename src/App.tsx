@@ -53,7 +53,7 @@ export default function App() {
   //const [errState, setErrState] = useState({ error: false })
 
   //todo: change this into sequence of cast spells
-  const exampleSpells = [
+  let exampleSpells : any = [
     {
       code: `var hello = "hello World";
         console.log(hello);`,
@@ -80,7 +80,6 @@ export default function App() {
         });`,
       language: "javascript",
     },
-
     /*
       {
         'code': `PROGRAM HELLO
@@ -99,6 +98,8 @@ export default function App() {
     }
     */
   ];
+  //unsuppress if we want to drop our example spells;
+  exampleSpells = []
   const grimoire = Object.keys(state.spells).map((key) => {
     //let fn_arr = state.spells[key]?.spellname.split('.')
     return {
@@ -118,6 +119,7 @@ export default function App() {
   useEffect(() => {
     // Set up socketio here
     console.log("STATE", state);
+    console.log("GRIMOIRE", grimoire);
   })
   //why am i getting max call stack exceeded errors from this?
   // suspense doesnt really help in this case bc wont error out until it actually hits the max call stack
@@ -155,7 +157,7 @@ if(urlRoom != 'test'){
 
           </VRCanvas>
         ) : (
-          <Dictaphone />
+          <Dictaphone grimoire={[...primitives, ...grimoire]}/>
         )}
       </div>
     </DispatchContext.Provider>
