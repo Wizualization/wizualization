@@ -174,8 +174,8 @@ function Interpreter(props:any) {//:any
     return state;
   }
 
-  // const demoState = setDemoState(props.castSpells.length);
-  const demoState = setDemoState(2);
+  const demoState = setDemoState(props.castSpells.length);
+  // const demoState = setDemoState(5);
 
   return <mesh ref={optoRef} position={[-1, 1, -1]}>
               <Workspace/>
@@ -186,14 +186,14 @@ function Interpreter(props:any) {//:any
                       key={`geom${i}`}
                       position={[
                         scales.x(el.petalWidth),
-                        demoState === 3 ? scales.y(el.petalLength) : 0,
-                        demoState === 3 || demoState === 4 ? scales.z(el.sepalWidth) : 0,
+                        demoState === 3 || demoState === 4 || demoState === 5? scales.y(el.petalLength) : demoState === 2 ? 0.02 : 0,
+                        demoState === 4 || demoState === 5 ? scales.z(el.sepalWidth) : 0,
                       ]}
                     >
                       <sphereGeometry attach="geometry" args={[0.01, 8, 8]} />
                       <meshStandardMaterial
                         attach="material"
-                        color={new THREE.Color(scales.color(el.species))}
+                        color={demoState === 5 ? new THREE.Color(scales.color(el.species)) : "white"}
                         roughness={0.1}
                         metalness={0.1}
                       />
@@ -201,7 +201,7 @@ function Interpreter(props:any) {//:any
                   );
                 })}
                 {/* Z */}
-                <mesh
+                {demoState === 2 || demoState === 3 ? null : <mesh
                   position={[0, 0, 0.25]}
                   rotation={[THREE.MathUtils.degToRad(90), 0, 0]}
                 >
@@ -210,10 +210,10 @@ function Interpreter(props:any) {//:any
                     args={[0.01, 0.01, 0.5]}
                   />
                   <meshBasicMaterial attach="material" color="white" />
-                </mesh>
+                </mesh>}
                 {/* Y */}
-                <mesh
-                  position={[0, 0.25, 0.5]}
+                {demoState === 2 ? null : <mesh
+                  position={[0, 0.25, 0]}
                   rotation={[0, THREE.MathUtils.degToRad(90), 0]}
                 >
                   <cylinderGeometry
@@ -221,10 +221,10 @@ function Interpreter(props:any) {//:any
                     args={[0.01, 0.01, 0.5]}
                   />
                   <meshBasicMaterial attach="material" color="white" />
-                </mesh>
+                </mesh>}
                 {/* X */}
                 <mesh
-                  position={[0.25, 0, 0.5]}
+                  position={[0.25, 0, 0]}
                   rotation={[0, 0, THREE.MathUtils.degToRad(90)]}
                 >
                   <cylinderGeometry
