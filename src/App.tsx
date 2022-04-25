@@ -167,6 +167,9 @@ if(urlRoom != 'test'){
         ) : (
           <Dictaphone grimoire={[...primitives, ...grimoire]}/>
         )}
+        <video width="768" height="452" controls>
+          <source src="./WizDemoSequence.mp4" type="video/mp4"></source>
+        </video>
       </div>
     </DispatchContext.Provider>
   );

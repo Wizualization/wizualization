@@ -17,7 +17,7 @@ export const PlotArea = (props:any) => {
                     <sphereGeometry attach="geometry" args={[0.01, 8, 8]} />
                     <meshStandardMaterial
                     attach="material"
-                    color={props.color ? new THREE.Color(props.scales.color(props.color)) : "white"}
+                    color={props.colorVar ? new THREE.Color(props.scales.color(el[props.colorVar])) : "white"}
                     roughness={0.1}
                     metalness={0.1}
                     />

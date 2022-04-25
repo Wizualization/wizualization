@@ -216,7 +216,7 @@ function Interpreter(props:any) {//:any
                   yVariableName={axisCount > 1 ? 'petalLength' : null} 
                   zVariableName={axisCount > 2 ? 'sepalWidth' : null}
                   markType={markType}
-                  color={markColorVar} /> : null }
+                  colorVar={markColorVar} /> : null }
                 {/* Z */}
                 {axisCount > 2 ? <Axis
                   position={[0, 0, 0.25]}
