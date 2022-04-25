@@ -138,15 +138,23 @@ function interpreterMap(el : any, i : number, arr: any) {
 
 const urlRoom = new URLSearchParams(window.location.search).get("room");
 if(urlRoom != 'test'){
-  return (<div>This site will be available beginning April 21, 2022.</div>)
+  return (<div>Updated release date: This site will now be available beginning April 25, 2022.
+      <br />
+      <br />
+      In the meantime, please enjoy this brief demo of a sequence of interactions: Solo gesture, collaborative gesture, and solo spoken word inputs.
+      <video width="768" height="452" controls>
+        <source src="./WizDemoSequence.mp4" type="video/mp4"></source>
+      </video>
+  </div>)
 }
+//<Hands />
 
   return (
     <DispatchContext.Provider value={dispatch}>
       <div>
         {isHL || new URLSearchParams(window.location.search).get("dev") ? (
           <VRCanvas>
-            <Hands />
+            <DefaultXRControllers />
             <SpellPages spells={exampleSpells} />
             <MageHand grimoire={[...primitives, ...grimoire]} />
             <Interpreter castSpells={state.matchedSpells}/>

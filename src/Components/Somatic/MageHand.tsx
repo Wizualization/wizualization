@@ -14,8 +14,7 @@ import { Mesh, Vector3 } from 'three';
 //import { useSpring, config } from 'react-spring';
 import {socket} from '../../utils/Socket';
 import ComputeDTW from './GestureRecognition';
-import Swarm from '../../SpellCasting/Swarm'
-import { ConsoleLoggingListener } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/ConsoleLoggingListener';
+import Swarm from '../../SpellCasting/Swarm';
 
 const start = new Vector3(-0.25, 1.0, -0.3)
 const end = new Vector3(0.25, 1.0, -0.3)
@@ -125,7 +124,7 @@ function MageHand(props: any) {
 
   
   const { gl } = useThree();
-  //const { player } = useXR()
+  const { player } = useXR()
 
   const hand0 = gl.xr.getHand(0) as any
   const hand1 = gl.xr.getHand(1) as any
@@ -153,8 +152,9 @@ function MageHand(props: any) {
         if(index0 === undefined) return
         const index1 = hand1.joints['index-finger-tip'] as any;
         if(index1 === undefined) return
-      //if(index0 && index1){
-        //if(player.position.y - 0.5 > index0.position.y && player.position.y - 0.5 > index1.position.y && player.position.y + 0.5 < index0.position.y && player.position.y + 0.5 < index1.position.y ){
+      if(index0 && index1){
+        if(player.position.y - 0.05 < hand0.position.y && player.position.y - 0.05 < hand1.position.y && player.position.y + 0.05 > hand0.position.y && player.position.y + 0.05 > hand1.position.y ){
+          
           const thumb0 = hand0.joints['thumb-tip'] as any;
           if(thumb0 === undefined) return
           const middle0 = hand0.joints['middle-finger-tip'] as any;
@@ -334,8 +334,8 @@ function MageHand(props: any) {
         }
         */
         prev_craftPinching = craftPinching
-      //}
-    //}
+      }
+    }
   })
 
 

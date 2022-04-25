@@ -3,8 +3,13 @@ import * as THREE from "three";
 import { Mesh } from 'three';
 import { useThree, useFrame } from '@react-three/fiber';
 import {useRef, useEffect} from 'react';
+import { Workspace } from './OptomanticElements/Workspace';
+import { Axis } from './OptomanticElements/Axis';
 import Optomancy from "optomancy";
+
+/**Demo dataset */
 import iris from "../assets/iris.json";
+
 declare global {
   interface Window {
     OptomancyNS: any;
@@ -130,13 +135,6 @@ function Interpreter(props:any) {//:any
 
   // inputCastList = [{ ... optoClass: "point"}, { ... optoClass: "axis"}, "axis", "axis", "color"]
 
-  const Workspace = () => (
-    <mesh rotation={[THREE.MathUtils.degToRad(90), 0, 0]}>
-      <torusGeometry attach="geometry" args={[0.5, 0.01, 16, 100]}/>
-      <meshBasicMaterial attach="material" color="gold"/>
-    </mesh>
-  );
-
   const setDemoState = (inputCastListLength: any) => {
     console.log('INPUT_CAST_LIST_LENGTH', inputCastListLength);
     // if(inputCastList?.length === 1 && inputCastList?.[0]?.optoClass === "point") {
@@ -179,27 +177,8 @@ function Interpreter(props:any) {//:any
 
   return <mesh ref={optoRef} position={[-1, 1, -1]}>
               <Workspace/>
-              {demoState === 0 || demoState === 1 ? null : <mesh position={[-0.25, 0, -0.25]}>
-                {data.map((el: any, i: number) => {//(el: any, i: number)
-                  return (
-                    <mesh
-                      key={`geom${i}`}
-                      position={[
-                        scales.x(el.petalWidth),
-                        demoState === 3 || demoState === 4 || demoState === 5? scales.y(el.petalLength) : demoState === 2 ? 0.02 : 0,
-                        demoState === 4 || demoState === 5 ? scales.z(el.sepalWidth) : 0,
-                      ]}
-                    >
-                      <sphereGeometry attach="geometry" args={[0.01, 8, 8]} />
-                      <meshStandardMaterial
-                        attach="material"
-                        color={demoState === 5 ? new THREE.Color(scales.color(el.species)) : "white"}
-                        roughness={0.1}
-                        metalness={0.1}
-                      />
-                    </mesh>
-                  );
-                })}
+              <mesh position={[-0.25, 0, -0.25]}>
+              {demoState === 0 || demoState === 1 ? null : <Axis />}
                 {/* Z */}
                 {demoState === 2 || demoState === 3 ? null : <mesh
                   position={[0, 0, 0.25]}
@@ -233,7 +212,7 @@ function Interpreter(props:any) {//:any
                   />
                   <meshBasicMaterial attach="material" color="white" />
                 </mesh>
-              </mesh>}
+              </mesh>
               {demoState === 1 ? <mesh>
                 <sphereGeometry attach="geometry" args={[0.1, 8, 8]} />
                       <meshStandardMaterial
