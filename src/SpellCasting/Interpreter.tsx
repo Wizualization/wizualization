@@ -185,7 +185,7 @@ function Interpreter(props:any) {//:any
 
   const setMarkType = (inputCastListLength: any) => {
     console.log('INPUT_CAST_MARKTYPE_LIST_LENGTH', inputCastListLength)
-    let marksCast = props.castSpells.filter((o:any)=>{return o.optoClass === 'color'})
+    let marksCast = props.castSpells.filter((o:any)=>{return ['point', 'bar', 'column', 'line'].includes(o.optoClass)});
     let state = marksCast[inputCastListLength-1];
     return state;
   }
@@ -236,7 +236,7 @@ function Interpreter(props:any) {//:any
                 /> : null
                 }
               </mesh>
-              {(axisCount === 0 && markType != null) ? <MarkIcon markType={markType} /> : null}
+              {((axisCount < 1) && (markType != null)) ? <MarkIcon markType={markType} /> : null}
             </mesh>
 }
   
