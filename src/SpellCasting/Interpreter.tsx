@@ -4,11 +4,21 @@ import { Mesh } from 'three';
 import { useThree, useFrame } from '@react-three/fiber';
 import {useRef, useEffect} from 'react';
 import { Workspace } from './OptomanticElements/Workspace';
+import { PlotArea } from "./OptomanticElements/PlotArea";
 import { Axis } from './OptomanticElements/Axis';
+import { MarkIcon } from './OptomanticElements/MarkIcon';
 import Optomancy from "optomancy";
 
 /**Demo dataset */
 import iris from "../assets/iris.json";
+//for later versions we will just get this from the dataset being used but for now we're out of time.
+const allVarNames = [
+  "sepalLength",
+  "sepalWidth",
+  "petalLength",
+  "petalWidth",
+  "species"
+]
 
 declare global {
   interface Window {
@@ -134,30 +144,31 @@ function Interpreter(props:any) {//:any
   });
 
   // inputCastList = [{ ... optoClass: "point"}, { ... optoClass: "axis"}, "axis", "axis", "color"]
-
-  const setDemoState = (inputCastListLength: any) => {
-    console.log('INPUT_CAST_LIST_LENGTH', inputCastListLength);
+  const setAxisCount = (inputCastListLength: any) => {
+    console.log('INPUT_CAST_AXIS_LIST_LENGTH', inputCastListLength);
     // if(inputCastList?.length === 1 && inputCastList?.[0]?.optoClass === "point") {
     //   return 0;
     // }
     // if (inputCastList?.length === 2 && inputCastList?.[1]?.optoClass === "axis") {
     //   return 1;
     // }
+    let state = inputCastListLength;
+    /*
     let state = 0;
     switch(inputCastListLength) {
-      // Point
+      // X Axis
       case 1:
         state = 1;
         break;
-      // Axis
+      // Y Axis
       case 2:
         state = 2;
         break;
-      // Axis
+      // Z Axis
       case 3:
         state = 3;
         break;
-      // Axis
+      // ?? Axis
       case 4:
         state = 4;
         break;
@@ -168,60 +179,64 @@ function Interpreter(props:any) {//:any
       default:
         state = 0;
         break;
+    }*/
+    return state;
+  }
+
+  const setMarkType = (inputCastListLength: any) => {
+    console.log('INPUT_CAST_MARKTYPE_LIST_LENGTH', inputCastListLength)
+    let marksCast = props.castSpells.filter((o:any)=>{return o.optoClass === 'color'})
+    let state = marksCast[inputCastListLength-1];
+    return state;
+  }
+  //probably want to change this to random
+  const setMarkColorVar = (inputCastListLength: any) => {
+    console.log('INPUT_CAST_COLOR_LIST_LENGTH', inputCastListLength)
+    let state = null;
+    if (inputCastListLength > 0) {
+      state = 'species'
     }
     return state;
   }
 
-  const demoState = setDemoState(props.castSpells.length);
+
+  const axisCount = setAxisCount(props.castSpells.filter((o:any)=>{return o.optoClass === 'axis'}).length);
+  const markColorVar = setMarkColorVar(props.castSpells.filter((o:any)=>{return o.optoClass === 'color'}).length);
+  const markType = setMarkType(props.castSpells.filter((o:any)=>{return ['point', 'bar', 'column', 'line'].includes(o.optoClass)}).length);
+  
   // const demoState = setDemoState(5);
 
   return <mesh ref={optoRef} position={[-1, 1, -1]}>
-              <Workspace/>
+              <Workspace />
               <mesh position={[-0.25, 0, -0.25]}>
-              {demoState === 0 || demoState === 1 ? null : <Axis />}
+                {axisCount > 0 ? <PlotArea 
+                  data={data} 
+                  scales={scales} 
+                  xVariableName={'petalWidth'} 
+                  yVariableName={axisCount > 1 ? 'petalLength' : null} 
+                  zVariableName={axisCount > 2 ? 'sepalWidth' : null}
+                  markType={markType}
+                  color={markColorVar} /> : null }
                 {/* Z */}
-                {demoState === 2 || demoState === 3 ? null : <mesh
+                {axisCount > 2 ? <Axis
                   position={[0, 0, 0.25]}
                   rotation={[THREE.MathUtils.degToRad(90), 0, 0]}
-                >
-                  <cylinderGeometry
-                    attach="geometry"
-                    args={[0.01, 0.01, 0.5]}
-                  />
-                  <meshBasicMaterial attach="material" color="white" />
-                </mesh>}
+                /> : null
+                }
                 {/* Y */}
-                {demoState === 2 ? null : <mesh
+                {axisCount > 1 ? <Axis
                   position={[0, 0.25, 0]}
                   rotation={[0, THREE.MathUtils.degToRad(90), 0]}
-                >
-                  <cylinderGeometry
-                    attach="geometry"
-                    args={[0.01, 0.01, 0.5]}
-                  />
-                  <meshBasicMaterial attach="material" color="white" />
-                </mesh>}
+                /> : null}
                 {/* X */}
-                <mesh
+                {axisCount > 0 ? 
+                <Axis
                   position={[0.25, 0, 0]}
                   rotation={[0, 0, THREE.MathUtils.degToRad(90)]}
-                >
-                  <cylinderGeometry
-                    attach="geometry"
-                    args={[0.01, 0.01, 0.5]}
-                  />
-                  <meshBasicMaterial attach="material" color="white" />
-                </mesh>
+                /> : null
+                }
               </mesh>
-              {demoState === 1 ? <mesh>
-                <sphereGeometry attach="geometry" args={[0.1, 8, 8]} />
-                      <meshStandardMaterial
-                        attach="material"
-                        color="gold"
-                        roughness={0.1}
-                        metalness={0.1}
-                      />
-              </mesh> : null}
+              {(axisCount === 0 && markType != null) ? <MarkIcon markType={markType} /> : null}
             </mesh>
 }
   
