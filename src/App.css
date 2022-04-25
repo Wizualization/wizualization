@@ -1,38 +1,41 @@
-.App {
-  text-align: center;
+.DemoGrid {
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  background-color: slategray;
+  grid-gap: 4px;
+  padding: 1px;
+  grid-template-areas: 
+    'video video docs docs'
+    'video video docs docs'
+    'demo demo demo demo'
+    'demo demo demo demo';
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.DemoVideo {
+  width: 50vw;
+  display:flex;
+  background-color: lightgray;
+  grid-area: video;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.DemoDocs {
+  width: 45vw;
+  padding: 5px;
+  background-color: lightgray;
+  overflow-x: hidden;
+  overflow-y: auto;
+  grid-area: docs;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.DemoDocs > p {
+  width: 40vw;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.DemoMain {
+  width: 98vw;
+  height: 50vh;
+  display:flex;
+  background-color: lightgray;
+  grid-area: demo;
 }

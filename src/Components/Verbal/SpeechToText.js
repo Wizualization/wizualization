@@ -12,7 +12,7 @@ const Dictaphone = (props) => {
   } = useSpeechRecognition();
 
   if (!browserSupportsSpeechRecognition) {
-    return <span>Browser doesn't support speech recognition.</span>;
+    return <span>Browser doesn't support speech recognition or WebXR. Please use a HoloLens/HL2 for WebXR view, or use a browser that supports the Web Speech API for speech recognition.</span>;
   }
 
 

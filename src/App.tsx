@@ -46,6 +46,22 @@ class App extends Component {
     };
   }
 */
+
+const S4 = function() {
+  //return (((1+Math.random())*0x10000)|0).toString(8).substring(1);
+  return Math.random().toString(36).replace(/[^a-z0-9]+/g, '').substr(0, 4)
+};
+
+function joinNewRoom(){
+  const { protocol, pathname, host } = window.location;
+  const newUrl = `${protocol}//${host}${pathname}?room=${S4()+S4()}`;
+  window.location.href = newUrl;
+}
+
+if(new URLSearchParams(window.location.search).get("room") == null){
+  joinNewRoom();
+}
+
 export default function App() {
   //Suppress/unsuppress during dev sprints
 
@@ -109,7 +125,6 @@ export default function App() {
       words: state.spells[key]?.words,
     };
   });
-  
   // cdm
   useEffect(() => {
     // Set up socketio here
@@ -136,6 +151,7 @@ function interpreterMap(el : any, i : number, arr: any) {
   return state.matchedSpells.includes(el.key) ?  el : null
 }
 
+/*
 const urlRoom = new URLSearchParams(window.location.search).get("room");
 if(urlRoom != 'test'){
   return (<div>Updated release date: This site will now be available beginning April 25, 2022.
@@ -147,12 +163,31 @@ if(urlRoom != 'test'){
       </video>
   </div>)
 }
+*/
 //<Hands />
 
   return (
     <DispatchContext.Provider value={dispatch}>
       <div>
+        <div className="DemoGrid">
+          <div className="DemoVideo">
+            <video  controls>
+              <source src="./WizDemoSequence.mp4" type="video/mp4"></source>
+            </video>
+          </div>
+          <div className="DemoDocs">
+          <p>You are currently in room {new URLSearchParams(window.location.search).get("room")}.</p>
+          <button onClick={joinNewRoom}>Join new room</button>
+          <p>Please review the brief demo video on the left of a sequence of interactions: Solo gesture, collaborative gesture, and solo spoken word inputs.</p>
+          <p>This demo currently implements a subset of the Optomancy grammar rules that can be called with American Sign Language (ASL) words using midair gestures on the HoloLens 2 (HL2), or spoken English words from your mobile device while your mobile device is in the same room as your HL2.</p>
+          <p>These rules are associated with the following words:</p>
+          <p>• Point mark types, which can be called using <a href="https://www.handspeak.com/word/search/index.php?id=10048">the word "Dot" in ASL</a> or the spoken English word "Point" from mobile;</p>
+          <p>• Axis creation for three variables from the Iris dataset, which can be called using <a href="https://www.handspeak.com/word/search/index.php?id=8843">the word "X-Axis" in ASL</a> or the spoken English word "Axis" from mobile; and</p>
+          <p>• Mark coloring using the species name from the Iris dataset, which can be called using <a href="https://www.handspeak.com/word/search/index.php?id=1591">the word "Paint" in ASL</a> or the spoken English word "Color" from mobile.</p>
+          <p>These commands can be called in any order.</p>
+          </div>
         {isHL || new URLSearchParams(window.location.search).get("dev") ? (
+          <div className="DemoMain">
           <VRCanvas>
             <DefaultXRControllers />
             <SpellPages spells={exampleSpells} />
@@ -164,12 +199,13 @@ if(urlRoom != 'test'){
             <color args={["black"]} attach="background" />
 
           </VRCanvas>
+          </div>
         ) : (
+          <div className="DemoMain">
           <Dictaphone grimoire={[...primitives, ...grimoire]}/>
+          </div>
         )}
-        <video width="768" height="452" controls>
-          <source src="./WizDemoSequence.mp4" type="video/mp4"></source>
-        </video>
+        </div>
       </div>
     </DispatchContext.Provider>
   );
