@@ -1,3 +1,9 @@
+/** TODO
+ *    * Wiz needs to create a config when a spell is cast that gets sent to optomancy,
+ *      and which will become what our spellbook code blocks display.
+ *    * Refer to https://docs.google.com/spreadsheets/d/1WdzG45G8_wPnhOeLuEgZEYGCOWJqBhzJeYFBL7Pbdf0/edit#gid=0 for contents of spec.
+ */
+
 //We know this demo from https://codesandbox.io/s/react-xr-hands-demo-gczkp?file=/src/index.tsx works;
 import { OrbitControls } from "@react-three/drei/core/OrbitControls";
 import { Sky } from "@react-three/drei/core/Sky";
