@@ -1,0 +1,7 @@
+{
+    "datasets": [{
+        "name": "name_1",
+        "data": "path_to_datafile_or_dataset_object"
+    }],
+    "workspaces": [{}]
+}
