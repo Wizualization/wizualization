@@ -3,7 +3,7 @@ import { View } from './View'
 import { Transform } from './Transform'
 
 export interface Workspace {
-    data: Data;
+    data: Data | string;
     views: View[];
     transforms?: Transform[];
 }
