@@ -1,7 +1,10 @@
 /** TODO
- *    * Wiz needs to create a config when a spell is cast that gets sent to optomancy,
- *      and which will become what our spellbook code blocks display.
- *    * Refer to https://docs.google.com/spreadsheets/d/1WdzG45G8_wPnhOeLuEgZEYGCOWJqBhzJeYFBL7Pbdf0/edit#gid=0 for contents of spec.
+ *    * Wiz needs to create a config (SCHEMA DONE uses ./models/config) 
+ *      when a spell is cast that gets sent to optomancy,
+ *      and which will become what our spellbook code blocks
+ *      display. Refer to 
+ *      https://docs.google.com/spreadsheets/d/1WdzG45G8_wPnhOeLuEgZEYGCOWJqBhzJeYFBL7Pbdf0/edit#gid=0 
+ *      for contents of spec.
  */
 
 //We know this demo from https://codesandbox.io/s/react-xr-hands-demo-gczkp?file=/src/index.tsx works;
@@ -16,6 +19,7 @@ import React, {
   useState,
 } from "react";
 import { VRCanvas, Hands, DefaultXRControllers } from "@react-three/xr";
+import { Counter } from "optomancy-r3f";
 import { Dictaphone } from "./Components/Verbal/SpeechToText.js";
 import "./App.css";
 import { reducer, initialState, DispatchContext } from "./utils/Reducer";
@@ -214,6 +218,7 @@ if(urlRoom != 'test'){
         )}
         </div>
       </div>
+      <Counter />
     </DispatchContext.Provider>
   );
   //}
