@@ -8,7 +8,7 @@ import { PlotArea } from "./OptomanticElements/PlotArea";
 import { Axis } from './OptomanticElements/Axis';
 import { MarkIcon } from './OptomanticElements/MarkIcon';
 import Optomancy from "optomancy";
-
+import { newroot } from "./ConfigGen";
 /**Demo dataset */
 import iris from "../assets/iris.json";
 //for later versions we will just get this from the dataset being used but for now we're out of time.
@@ -34,6 +34,10 @@ const transitionConfig = {
 const optomancyConfig = {
   data: iris,
 };
+
+console.log(newroot)
+
+
 export const joints = [
   /*    'wrist',
       'thumb-metacarpal',
