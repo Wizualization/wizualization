@@ -55,6 +55,14 @@ interface ScaleConfig {
     scale : scale
 }
 
+interface AxisConfig {
+    axis : axis
+}
+
+interface LegendConfig {
+    legend : legend
+}
+
 //let the variables be initialized
 let newdata : DataConfig[] = [{
     data:[
