@@ -8,7 +8,7 @@ import { PlotArea } from "./OptomanticElements/PlotArea";
 import { Axis } from './OptomanticElements/Axis';
 import { MarkIcon } from './OptomanticElements/MarkIcon';
 import Optomancy from "optomancy";
-import { newroot } from "./ConfigGen";
+import ConfigGen from "./ConfigGen";
 /**Demo dataset */
 import iris from "../assets/iris.json";
 //for later versions we will just get this from the dataset being used but for now we're out of time.
@@ -34,9 +34,6 @@ const transitionConfig = {
 const optomancyConfig = {
   data: iris,
 };
-
-console.log(newroot)
-
 
 export const joints = [
   /*    'wrist',
@@ -100,7 +97,9 @@ function Interpreter(props:any) {//:any
   const { gl } = useThree();
 
   useEffect(()=>{    
-    console.log('Interpreted: ', props.castSpells)
+    console.log('Interpreted: ', props.castSpells);
+    // eventually we're gonna want to change this to be what the user specifies
+    console.log(ConfigGen({dataset: transitionConfig, props: props}))
   });
 
   const hand0 = (gl.xr as any).getHand(0) as any;

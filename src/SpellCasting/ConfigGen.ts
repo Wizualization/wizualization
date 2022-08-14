@@ -63,8 +63,17 @@ interface LegendConfig {
     legend : legend
 }
 
+export default function ConfigGen(props: any){
+    //now we will have to "let varname : ConfigStructType[] = [props.etc]" and return
+    // this will just be called as a simple function to return a dataset shaped appropriately.
+    // the conversion into r3f happens in the interpreter. 
+    return props;
+}
+
+/*
+export class ConfigGen {
 //let the variables be initialized
-let newdata : DataConfig[] = [{
+public newdata : DataConfig[] = [{
     data:[
     {
         values: [
@@ -224,39 +233,28 @@ let newdata : DataConfig[] = [{
 ],
 }]
 
-let newview : ViewConfig = {
+public newview : ViewConfig = {
     view: {
         
     }
 }
 
-let newworkspace : WorkspaceConfig = {
+public newworkspace : WorkspaceConfig = {
     workspace: {
         data: "iris",
         views: [
-            newview
+            this.newview
         ]
     }
 }
 
-let newroot : RootConfig = {
+public newroot : RootConfig = {
     root: {
-        datasets: newdata,
-        workspaces: newworkspace
+        datasets: this.newdata,
+        workspaces: this.newworkspace
     }
 }
 
-export { newroot };
-/*
-export class ConfigGen {
-    public root = typeof Root;
-    //public root : Root; 
-    public workspace : Workspace;
-    testRoot() : Root {
-        
-    }
 }
+
 */
-
-
-
