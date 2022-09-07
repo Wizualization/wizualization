@@ -9,8 +9,8 @@
 
 //We know this demo from https://codesandbox.io/s/react-xr-hands-demo-gczkp?file=/src/index.tsx works;
 import { OrbitControls } from "@react-three/drei/core/OrbitControls";
-import { Sky } from "@react-three/drei/core/Sky";
-import ReactDOM from "react-dom";
+//import { Sky } from "@react-three/drei/core/Sky";
+//import ReactDOM from "react-dom";
 import React, {
   Component,
   Suspense,
@@ -19,7 +19,7 @@ import React, {
   useState,
 } from "react";
 import { VRCanvas, Hands, DefaultXRControllers } from "@react-three/xr";
-import { Counter } from "optomancy-r3f";
+import { OptomancyR3F } from "optomancy-r3f";
 import { Dictaphone } from "./Components/Verbal/SpeechToText.js";
 import "./App.css";
 import { reducer, initialState, DispatchContext } from "./utils/Reducer";
@@ -27,11 +27,14 @@ import { socket, setupSocketEvents } from "./utils/Socket";
 import { GesturePrimitives } from "./SpellBook/GesturePrimitives";
 import { SpellPages } from "./SpellBook/SpellPages";
 import MageHand from "./Components/Somatic/MageHand";
-import { Interpreter } from "./SpellCasting/Interpreter";
+import ConfigGen from "./SpellCasting/ConfigGen";
+import { iris, populations } from './examples/datasets';
+import { Workspace } from "optomancy";
+//import { Interpreter } from "./SpellCasting/Interpreter";
 //const spellbook = require('spellbook');
 //import client from './utils/socketConfig';
 
-
+const WorkspaceContext = React.createContext('workspace_0');
 // Hololens user agent is going to be a version of edge above the latest release
 let ua = navigator.userAgent.toLowerCase();
 console.log(ua);
@@ -136,6 +139,18 @@ export default function App() {
       words: state.spells[key]?.words,
     };
   });
+
+
+  const config = ConfigGen({
+    datasets: [
+      {values: iris, name: 'Iris'}, 
+      {values: populations, name: 'Populations'}
+    ], 
+    matchedSpells: state.matchedSpells, 
+    workspaces:  [...new Set(state.matchedSpells.map((spell: any) => spell.workspace))]
+  });
+
+
   // cdm
   useEffect(() => {
     // Set up socketio here
@@ -146,6 +161,7 @@ export default function App() {
     // Set up socketio here
     console.log("STATE", state);
     console.log("GRIMOIRE", grimoire);
+    console.log("CONFIG", config);
   })
   //why am i getting max call stack exceeded errors from this?
   // suspense doesnt really help in this case bc wont error out until it actually hits the max call stack
@@ -176,49 +192,55 @@ if(urlRoom != 'test'){
 }
 */
 //<Hands />
+//goes under magehand
+//<Interpreter castSpells={state.matchedSpells}/>
 
   return (
     <DispatchContext.Provider value={dispatch}>
-      <div>
-        <div className="DemoGrid">
-          <div className="DemoVideo">
-            <video  controls>
-              <source src="./WizDemoSequence.mp4" type="video/mp4"></source>
-            </video>
-          </div>
-          <div className="DemoDocs">
-          <p>You are currently in room {new URLSearchParams(window.location.search).get("room")}.</p>
-          <button onClick={joinNewRoom}>Join new room</button>
-          <p>Please review the brief demo video on the left of a sequence of interactions: Solo gesture, collaborative gesture, and solo spoken word inputs.</p>
-          <p>This demo currently implements a subset of the Optomancy grammar rules that can be called with American Sign Language (ASL) words using midair gestures on the HoloLens 2 (HL2), or spoken English words from your mobile device while your mobile device is in the same room as your HL2.</p>
-          <p>These rules are associated with the following words:</p>
-          <p>• Point mark types, which can be called using <a href="https://www.handspeak.com/word/search/index.php?id=10048">the word "Dot" in ASL</a> or the spoken English word "Point" from mobile;</p>
-          <p>• Axis creation for three variables from the Iris dataset, which can be called using <a href="https://www.handspeak.com/word/search/index.php?id=8843">the word "X-Axis" in ASL</a> or the spoken English word "Axis" from mobile; and</p>
-          <p>• Mark coloring using the species name from the Iris dataset, which can be called using <a href="https://www.handspeak.com/word/search/index.php?id=1591">the word "Paint" in ASL</a> or the spoken English word "Color" from mobile.</p>
-          <p>These commands can be called in any order.</p>
-          </div>
-        {isHL || new URLSearchParams(window.location.search).get("dev") ? (
-          <div className="DemoMain">
-          <VRCanvas>
-            <DefaultXRControllers />
-            <SpellPages spells={exampleSpells} />
-            <MageHand grimoire={[...primitives, ...grimoire]} />
-            <Interpreter castSpells={state.matchedSpells}/>
-            <OrbitControls />
-            <ambientLight />
-            <pointLight position={[1, 1, 1]} />
-            <color args={["black"]} attach="background" />
+      <WorkspaceContext.Provider value={'workspace_0'}>
+        <div>
+          <div className="DemoGrid">
+            <div className="DemoVideo">
+              <video  controls>
+                <source src="./WizDemoSequence.mp4" type="video/mp4"></source>
+              </video>
+            </div>
+            <div className="DemoDocs">
+            <p>You are currently in room {new URLSearchParams(window.location.search).get("room")}.</p>
+            <button onClick={joinNewRoom}>Join new room</button>
+            <p>Please review the brief demo video on the left of a sequence of interactions: Solo gesture, collaborative gesture, and solo spoken word inputs.</p>
+            <p>This demo currently implements a subset of the Optomancy grammar rules that can be called with American Sign Language (ASL) words using midair gestures on the HoloLens 2 (HL2), or spoken English words from your mobile device while your mobile device is in the same room as your HL2.</p>
+            <p>These rules are associated with the following words:</p>
+            <p>• Point mark types, which can be called using <a href="https://www.handspeak.com/word/search/index.php?id=10048">the word "Dot" in ASL</a> or the spoken English word "Point" from mobile;</p>
+            <p>• Axis creation for three variables from the Iris dataset, which can be called using <a href="https://www.handspeak.com/word/search/index.php?id=8843">the word "X-Axis" in ASL</a> or the spoken English word "Axis" from mobile; and</p>
+            <p>• Mark coloring using the species name from the Iris dataset, which can be called using <a href="https://www.handspeak.com/word/search/index.php?id=1591">the word "Paint" in ASL</a> or the spoken English word "Color" from mobile.</p>
+            <p>These commands can be called in any order.</p>
+            </div>
+          {isHL || new URLSearchParams(window.location.search).get("dev") ? (
+            <div className="DemoMain">
+            <VRCanvas>
+              <DefaultXRControllers />
+              <SpellPages spells={exampleSpells} />
+              <MageHand grimoire={[...primitives, ...grimoire]} context={WorkspaceContext}/>
 
-          </VRCanvas>
+              <OrbitControls />
+              <ambientLight />
+              <pointLight position={[1, 1, 1]} />
+              <color args={["black"]} attach="background" />
+
+            </VRCanvas>
+            </div>
+          ) : (
+            <div className="DemoMain">
+            <Dictaphone grimoire={[...primitives, ...grimoire]}/>
+            </div>
+          )}
           </div>
-        ) : (
-          <div className="DemoMain">
-          <Dictaphone grimoire={[...primitives, ...grimoire]}/>
-          </div>
-        )}
         </div>
-      </div>
-      <Counter />
+        <VRCanvas >
+          <OptomancyR3F />
+        </VRCanvas>
+      </WorkspaceContext.Provider>
     </DispatchContext.Provider>
   );
   //}

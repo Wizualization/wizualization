@@ -7,7 +7,8 @@ import { Workspace } from './OptomanticElements/Workspace';
 import { PlotArea } from "./OptomanticElements/PlotArea";
 import { Axis } from './OptomanticElements/Axis';
 import { MarkIcon } from './OptomanticElements/MarkIcon';
-import Optomancy from "optomancy";
+//import { OptomancyV2 } from "optomancy";
+import { OptomancyR3F } from 'optomancy-r3f';
 import ConfigGen from "./ConfigGen";
 /**Demo dataset */
 import iris from "../assets/iris.json";

@@ -1,6 +1,7 @@
-import { Root, Data, Workspace, View, Layer, Mark, Encoding, Tooltip, Channel, Scale, Axis, Legend } from 'optomancy';
+import { Config, Root, Data, Workspace, View, Layer, Mark, Encoding, Tooltip, Channel, Scale, Axis, Legend } from 'optomancy';
 
 /** Type declarations */
+declare type config = typeof Config; // NEW!! 
 declare type root = typeof Root;
 declare type workspace = typeof Workspace;
 declare type data = typeof Data;
@@ -15,6 +16,10 @@ declare type axis = typeof Axis;
 declare type legend = typeof Legend;
 
 /** Interfaces for config elements */
+interface Config {
+    config : config
+}
+
 interface RootConfig {
     root : root
 }
@@ -64,10 +69,34 @@ interface LegendConfig {
 }
 
 export default function ConfigGen(props: any){
+    console.log(props)
+    let sessionData : DataConfig[] = props.datasets.map(function(dataset : any){
+        let d : DataConfig = {
+            data: {
+                values: dataset.values,
+                name: dataset.name
+            }
+        }
+        return d;
+    })
+
+    //let workspaceNames = props
+
+    let sessionWorkspaces : WorkspaceConfig[] = props.workspaces.map(function(workspace: any){
+        return workspace
+    })
+
+    let sessionRoot : RootConfig = {
+        root: {
+            datasets: sessionData,
+            workspace: sessionWorkspaces
+        }
+    }
     //now we will have to "let varname : ConfigStructType[] = [props.etc]" and return
     // this will just be called as a simple function to return a dataset shaped appropriately.
     // the conversion into r3f happens in the interpreter. 
-    return props;
+    //We want to use the cast spells returned from reducer to give us our config
+    return sessionRoot;
 }
 
 /*

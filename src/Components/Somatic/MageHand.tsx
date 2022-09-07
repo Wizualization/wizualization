@@ -128,6 +128,9 @@ function MageHand(props: any) {
 
   const hand0 = gl.xr.getHand(0) as any
   const hand1 = gl.xr.getHand(1) as any
+
+  const WorkspaceContext = React.useContext(props.context);
+
   useEffect(() => {
     if (!ref.current ) return
     if (!dustRef.current ) return
@@ -212,7 +215,7 @@ function MageHand(props: any) {
                 if(dustRef.current){
                   dustRef.current.visible = false;
                 }
-                socket.emit('spellcast', JSON.stringify({'gesture':last_craft, 'words':''}))
+                socket.emit('spellcast', JSON.stringify({'gesture':last_craft, 'words':'', 'workspace': WorkspaceContext}))
                 crafting = false;
               }
             }
