@@ -215,7 +215,7 @@ function MageHand(props: any) {
                 if(dustRef.current){
                   dustRef.current.visible = false;
                 }
-                socket.emit('spellcast', JSON.stringify({'gesture':last_craft, 'words':'', 'workspace': WorkspaceContext}))
+                socket.emit('spellcast', JSON.stringify({'gesture':last_craft, 'words':''}))
                 crafting = false;
               }
             }
@@ -273,7 +273,7 @@ function MageHand(props: any) {
                       min_dist = 1*weighted_dist;
                     }
                   }
-                  socket.emit('spellmatched', JSON.stringify(crafted_spells[best_match_idx].key));
+                  socket.emit('spellmatched', JSON.stringify({'key': crafted_spells[best_match_idx].key, 'workspace': WorkspaceContext}));
               }
 
               }
