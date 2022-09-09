@@ -156,12 +156,14 @@ export default function App() {
     // Set up socketio here
     setupSocketEvents(dispatch);
   }, []);
-
+  
   useEffect(() => {
     // Set up socketio here
     console.log("STATE", state);
     console.log("GRIMOIRE", grimoire);
     console.log("CONFIG", config);
+    //console.log("CHECK LEN", config.workspace)
+
   })
   //why am i getting max call stack exceeded errors from this?
   // suspense doesnt really help in this case bc wont error out until it actually hits the max call stack
@@ -238,7 +240,10 @@ if(urlRoom != 'test'){
           </div>
         </div>
         <VRCanvas >
-          <OptomancyR3F />
+          { Object.keys(config).includes('workspaces') ? (
+          <OptomancyR3F config = {config}/>
+          ) : null
+          }
         </VRCanvas>
       </WorkspaceContext.Provider>
     </DispatchContext.Provider>
