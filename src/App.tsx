@@ -35,6 +35,7 @@ import { Workspace } from "optomancy";
 //import client from './utils/socketConfig';
 
 const WorkspaceContext = React.createContext('workspace_0');
+const ViewContext = React.createContext('view_0');
 // Hololens user agent is going to be a version of edge above the latest release
 let ua = navigator.userAgent.toLowerCase();
 console.log(ua);
@@ -162,44 +163,13 @@ export default function App() {
     console.log("STATE", state);
     console.log("GRIMOIRE", grimoire);
     console.log("CONFIG", config);
-    //console.log("CHECK LEN", config.workspace)
 
   })
-  //why am i getting max call stack exceeded errors from this?
-  // suspense doesnt really help in this case bc wont error out until it actually hits the max call stack
-  // is this a new problem from my latest version of the @react-three/xr package?
-  //<Suspense fallback={<></>}></Suspense>
-
-  //render() {
-  //Suppress/unsuppress during build for pre-release
-  //{(typeof state.matchedSpells == 'string') ? <div>Cast spell: {state.matchedSpells}</div> : <></>}
-
-function interpreterMap(el : any, i : number, arr: any) {
-  console.log('spell', el, typeof el.key);
-  console.log('state.matchedSpells', state.matchedSpells);
-  return state.matchedSpells.includes(el.key) ?  el : null
-}
-
-/*
-const urlRoom = new URLSearchParams(window.location.search).get("room");
-if(urlRoom != 'test'){
-  return (<div>Updated release date: This site will now be available beginning April 25, 2022.
-      <br />
-      <br />
-      In the meantime, please enjoy this brief demo of a sequence of interactions: Solo gesture, collaborative gesture, and solo spoken word inputs.
-      <video width="768" height="452" controls>
-        <source src="./WizDemoSequence.mp4" type="video/mp4"></source>
-      </video>
-  </div>)
-}
-*/
-//<Hands />
-//goes under magehand
-//<Interpreter castSpells={state.matchedSpells}/>
 
   return (
     <DispatchContext.Provider value={dispatch}>
       <WorkspaceContext.Provider value={'workspace_0'}>
+      <ViewContext.Provider value={'view_0'}>
         <div>
           <div className="DemoGrid">
             <div className="DemoVideo">
@@ -245,6 +215,7 @@ if(urlRoom != 'test'){
           ) : null
           }
         </VRCanvas>
+        </ViewContext.Provider>
       </WorkspaceContext.Provider>
     </DispatchContext.Provider>
   );
