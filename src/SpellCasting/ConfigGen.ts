@@ -76,14 +76,71 @@ export default function ConfigGen(props: any){
                 values: dataset.values,
                 name: dataset.name
             }
-        }
+        };
         return d;
-    })
+    });
+
+    //TODO: Correct the way we generate views. 
+    //Creating a single view, then looping through the cast spells looking for optoclasses 
+    // and then updating that single view is a little rough lol
+    let sessionViews : ViewConfig = {
+        view: {
+            title: "The Iris Flower Dataset",
+            mark: "point",
+            encoding: {}
+        }
+    };
+
+    let optoClasses = props.matchedSpells.map((s : any) => s.optoClass)
+    console.log(optoClasses)
+    
+    let markPrimitives = ["line", "point", "bar", "column"]
+
+    // "color"
+
+    let axes = ['x', 'y', 'z']
+    let axisVars = ['petalWidth', 'petalLength', 'sepalWidth']
+    // "axis"
+  
+    let axisCount = 0;
+
+    for(let i=0; i<optoClasses.length; i++){
+        let o = optoClasses[i]
+        if(markPrimitives.includes(o)){
+            sessionViews.view['mark'] = o
+        }
+
+        if(o == 'color'){
+            sessionViews.view['encoding']['color'] = {
+                field: "species",
+                type: "nominal",
+            }    
+        }
+
+        if(o == 'axis'){
+            sessionViews.view['encoding'][axes[axisCount % 3]] = {
+                field: axisVars[axisCount % 3],
+                type: "quantitative",
+            }
+            axisCount++;
+        }
+    }
+
+
+
 
     //let workspaceNames = props
-
+    //TODO: Correct the way we generate the workspaces. 
+    //Currently disconnected from dynamic user session, just defaults to first dataset
     let sessionWorkspaces : WorkspaceConfig[] = props.workspaces.map(function(workspace: any){
-        return workspace
+        let w : WorkspaceConfig = {
+            workspace: {
+                title: workspace,
+                data: props.datasets[0].name,
+                views: sessionViews
+            }
+        };
+        return w
     })
 
     let sessionRoot : RootConfig = {
