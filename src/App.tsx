@@ -163,6 +163,9 @@ export default function App() {
     console.log("STATE", state);
     console.log("GRIMOIRE", grimoire);
     console.log("CONFIG", config);
+    //test dispatch--works! don't want to do it this way though bc it will probably eventually exceed call stack 
+    //dispatch({type: 'WORKVIEW_CONTEXT', payload: {workspace: 'workspace_1', view: 'view_1'}})
+    //console.log("STATE", state);
 
   })
 
@@ -193,7 +196,7 @@ export default function App() {
             <VRCanvas>
               <DefaultXRControllers />
               <SpellPages spells={exampleSpells} />
-              <MageHand grimoire={[...primitives, ...grimoire]} context={WorkspaceContext}/>
+              <MageHand grimoire={[...primitives, ...grimoire]} context={state.workview.workspace}/>
 
               <OrbitControls />
               <ambientLight />

@@ -4,7 +4,11 @@ import { State } from '../Types'
   
   const initialState: State = {
     spells: {},
-    matchedSpells: []
+    matchedSpells: [],
+    workview: {
+      workspace: 'workspace_0',
+      view: 'view_0'
+    },
   };
   
   export default initialState;

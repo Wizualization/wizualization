@@ -22,6 +22,8 @@ const reducer = (state: State, action: Action) => {
     //   return actions.ioConnectError(state);
     // case socketEventTypes.IO_CLOSE:
     //   return actions.ioClosed(state);
+    case actionTypes.WORKVIEW_CONTEXT:
+      return actions.switchContext(state, action);
     default:
       console.error(`Unknown action type: ${action.type}`);
       throw new Error();

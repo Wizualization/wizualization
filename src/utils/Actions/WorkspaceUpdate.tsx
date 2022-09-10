@@ -5,7 +5,11 @@ const spellUpdate = (state: State, action: Action) => {
   console.log(state)
   console.log(action)
   console.log('action.spellUpdate: Updated spell in VSCode');
-  return {...JSON.parse(action.payload), matchedSpells: state.matchedSpells};
+  return {
+    ...JSON.parse(action.payload), 
+    matchedSpells: state.matchedSpells,
+    workview: state.workview
+  };
   /*{
     ...state, 
     spells: {
@@ -24,9 +28,23 @@ const spellMatched = (state: State, action: Action) => {
     spells: {
       ...state.spells
     },
-    matchedSpells:[...state.matchedSpells, action.payload]
+    matchedSpells:[...state.matchedSpells, action.payload],
+    workview: state.workview
   };
 };
 
+const switchContext = (state: State, action: Action) => {
+  console.log(state)
+  console.log(action)
+  console.log('action.switchContext: The user has switched to a new context or workspace');
+  //return JSON.parse(action.payload);
+  return {
+    spells: {
+      ...state.spells
+    },
+    matchedSpells: state.matchedSpells,
+    workview: action.payload
+  };
+};
 
-export { spellUpdate, spellMatched };
+export { spellUpdate, spellMatched, switchContext };
