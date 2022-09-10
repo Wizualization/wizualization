@@ -28,6 +28,7 @@ import { GesturePrimitives } from "./SpellBook/GesturePrimitives";
 import { SpellPages } from "./SpellBook/SpellPages";
 import MageHand from "./Components/Somatic/MageHand";
 import ConfigGen from "./SpellCasting/ConfigGen";
+import ConfigStepTrace from "./SpellCasting/ConfigStepTrace";
 import { iris, populations } from './examples/datasets';
 import { Workspace } from "optomancy";
 //import { Interpreter } from "./SpellCasting/Interpreter";
@@ -151,6 +152,8 @@ export default function App() {
     workspaces:  [...new Set(state.matchedSpells.map((spell: any) => spell.workspace))]
   });
 
+  const spellbookBlocks = ConfigStepTrace({matchedSpells: state.matchedSpells});
+
 
   // cdm
   useEffect(() => {
@@ -163,6 +166,7 @@ export default function App() {
     console.log("STATE", state);
     console.log("GRIMOIRE", grimoire);
     console.log("CONFIG", config);
+    console.log("SPELLBOOK_PAGES", spellbookBlocks);
     //test dispatch--works! don't want to do it this way though bc it will probably eventually exceed call stack 
     //dispatch({type: 'WORKVIEW_CONTEXT', payload: {workspace: 'workspace_1', view: 'view_1'}})
     //console.log("STATE", state);
@@ -195,7 +199,7 @@ export default function App() {
             <div className="DemoMain">
             <VRCanvas>
               <DefaultXRControllers />
-              <SpellPages spells={exampleSpells} />
+              <SpellPages spells={spellbookBlocks} />
               <MageHand grimoire={[...primitives, ...grimoire]} context={state.workview.workspace}/>
 
               <OrbitControls />

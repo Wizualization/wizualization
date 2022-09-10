@@ -5,6 +5,7 @@ import { CurveModifier } from '@react-three/drei'
 import { SpellBlock } from './SpellBlock'
 import * as THREE from 'three';
 import { Nodes, Node } from './Nodes'
+
 export const joints = [
     'thumb-tip',
 /*    'index-finger-metacarpal',
@@ -29,7 +30,7 @@ export const joints = [
     'pinky-finger-tip'*/
   ]
   
-
+//this one is not used; the Node class is where the grabbing happens.
 function Page({ position = [0.06, 0.06, 0.06], code, language }) { //: any
   const blockRef = useRef();
   const { gl } = useThree()

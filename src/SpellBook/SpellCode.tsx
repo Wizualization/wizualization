@@ -1,3 +1,4 @@
+//This is where the code is formatted into pretty syntax-highlighted blocks
 import { Suspense } from 'react';
 import { VRHtml } from './VRHtml'
 import Prism from "prismjs";

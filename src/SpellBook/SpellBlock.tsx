@@ -1,3 +1,4 @@
+//This is really just a mesh wrapper that is necessary for grabbing, scaling.
 import SpellCode from './SpellCode';
 //pass block position, code, and language params as props
 const SpellBlock = (props : any) => {
