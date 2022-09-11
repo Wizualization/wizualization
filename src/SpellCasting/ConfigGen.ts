@@ -29,12 +29,14 @@ export default function ConfigGen(props: any){
     //TODO: Correct the way we generate views. 
     //Creating a single view, then looping through the cast spells looking for optoclasses 
     // and then updating that single view is a little rough lol
+    const baseView = {
+        title: "The Iris Flower Dataset",
+        mark: "point",
+        encoding: {}
+    }
+
     let sessionViews : ViewConfig = [
-        {
-            title: "The Iris Flower Dataset",
-            mark: "point",
-            encoding: {}
-        }
+        baseView
     ];
 
     let optoClasses = props.matchedSpells.map((s : any) => s.optoClass)
@@ -49,26 +51,38 @@ export default function ConfigGen(props: any){
     // "axis"
   
     let axisCount = 0;
-
+    let workspace_idx = 0;
+    let view_idx = 0;
     for(let i=0; i<optoClasses.length; i++){
         let o = optoClasses[i]
         if(markPrimitives.includes(o)){
-            sessionViews[0]['mark'] = o
+            sessionViews[view_idx]['mark'] = o
         }
 
         if(o === 'color'){
-            sessionViews[0]['encoding']['color'] = {
+            sessionViews[view_idx]['encoding']['color'] = {
                 field: "species",
                 type: "nominal",
             }    
         }
 
         if(o === 'axis'){
-            sessionViews[0]['encoding'][axes[axisCount % 3]] = {
+            sessionViews[view_idx]['encoding'][axes[axisCount % 3]] = {
                 field: axisVars[axisCount % 3],
                 type: "quantitative",
             }
             axisCount++;
+        }
+
+        if(o === 'view'){
+            //logiiiic. we will probably need to add a list of views in this script.
+            // We should be able to extract as unique sorted array of view indices prefixed with 'view_' given our naming scheme.
+            // Then, use the indexOf instead of 0 in sessionViews[i]
+            // Finally, in this condition check block here, we add another view. 
+            // Also need to do this with workspaces.'
+            // But for now, we just add to view_idx and push another sessionView.
+            sessionViews = [...Array(sessionViews), baseView];
+            view_idx++;
         }
     }
 

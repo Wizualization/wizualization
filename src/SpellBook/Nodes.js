@@ -40,7 +40,7 @@ function Nodes({ children, ...props }) {
           end = end?.clone().add(temp.set(0, 0, 0))
           let mid = new THREE.Vector3(0,0,0);
           if(typeof start != 'undefined' && typeof end != 'undefined'){
-            mid = start?.clone().add(end?.clone().sub(start)).add(new THREE.Vector3((start?.x - end?.x), start?.y + 0.1, (start?.z - end?.z))) // prettier-ignore
+            mid = start?.clone().add(end?.clone().sub(start)).add(new THREE.Vector3((start?.x - end?.x), start?.y + 0.01, (start?.z - end?.z))) // prettier-ignore
           } 
           lines.push(new THREE.QuadraticBezierCurve3(start, mid, end).getPoints(30))
         })
