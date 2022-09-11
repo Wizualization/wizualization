@@ -25,10 +25,9 @@ function Nodes({ children, ...props }) {
   //Create the lines with useMemo();
   // the problem is that useMemo is not getting called after drag.
   const lines = useMemo(() => {
-    console.log('CALLING MEMO')
     const lines = []
     for (let node of nodes) {
-      if (node.connectedTo.length) {
+      if (node.connectedTo.length>0) {
         const connections = node.connectedTo?.map((ref) => {
           if(ref){
             return [node.position, ref.current?.position]

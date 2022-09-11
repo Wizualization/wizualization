@@ -73,7 +73,7 @@ export default function ConfigStepTrace(props: any){
         }
     }
     const spell_page_steps = config_steps.map((page : any) => ({
-        'code': JSON.stringify(page, null, "    "),
+        'code': JSON.stringify(page, null, "  "),
         'language': 'javascript'
     }))
     return spell_page_steps;

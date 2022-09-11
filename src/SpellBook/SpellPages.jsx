@@ -83,10 +83,41 @@ function Page({ position = [0.06, 0.06, 0.06], code, language }) { //: any
 }
 
 function SpellPages(props ) { //: any
-  const [[...pageRefs]] = useState(() => [...Array(props.spells)].map(createRef))
+  //This may have offered better performance, but it doesn't actually work. 
+  //const [[...pageRefs]] = useState(() => [...Array(props.spells)].map(createRef))
+  //this works.
+  const pageRefs = [...props.spells].map(createRef);
   useEffect(() => {
+    if(pageRefs.length < props.spells.length){
+      //This may have offered better performance, but it doesn't actually work. 
+      /*
+      for(let i = pageRefs.length-1; i < props.spells.length; i++){
+        pageRefs.push(createRef);
+      }
+      */
+      //this works.
+      pageRefs = [...props.spells].map(createRef);
+    }
  }, [props.spells]);
-
+ /*
+  return (
+    <Suspense fallback={<></>}> 
+    <Nodes dashed color="#ff1050" lineWidth={1}>
+      {[...Array(props.spells.length)].map((_, i) => (
+        <Node key={"node_"+i.toString()}  
+          ref={pageRefs[i]} 
+          name={"node_"+i.toString()} 
+          position={[Math.PI*0.1*i, 1.5, Math.PI*0.1*i]}  
+          code={props.spells[i]['code']} 
+          language={props.spells[i]['language']} 
+        /> 
+      ))}
+      </Nodes>
+    </Suspense>
+  )
+  */
+ //don't need the rotation to change
+  //          rotation={[Math.PI*0.1*i, 0, 0]}  
   return (
     <Suspense fallback={<></>}> 
     <Nodes dashed color="#ff1050" lineWidth={1}>
@@ -95,7 +126,6 @@ function SpellPages(props ) { //: any
           ref={pageRefs[i]} 
           name={"node_"+i.toString()} 
           position={[Math.PI*0.1*i, 1.5, Math.PI*0.1*i]}  
-          rotation={[Math.PI*0.1*i, 0, 0]}  
           code={props.spells[i]['code']} 
           language={props.spells[i]['language']} 
           connectedTo={[pageRefs[(i-1)]]}
@@ -104,7 +134,6 @@ function SpellPages(props ) { //: any
           ref={pageRefs[i]} 
           name={"node_"+i.toString()} 
           position={[Math.PI*0.1*i, 1.5, Math.PI*0.1*i]}  
-          rotation={[Math.PI*0.1*i, 0, 0]}  
           code={props.spells[i]['code']} 
           language={props.spells[i]['language']} 
         /> 
@@ -112,7 +141,6 @@ function SpellPages(props ) { //: any
       </Nodes>
     </Suspense>
   )
-
 }
 
 export { SpellPages };

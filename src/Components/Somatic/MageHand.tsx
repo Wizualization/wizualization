@@ -20,7 +20,6 @@ const start = new Vector3(-0.25, 1.0, -0.3)
 const end = new Vector3(0.25, 1.0, -0.3)
 const startEnd = new Vector3().copy(end).sub(start)
 
-
 function getTargetPos(handle: Vector3) {
   return new Vector3().copy(handle).sub(start).projectOnVector(startEnd).add(start)
 }
