@@ -86,7 +86,7 @@ function SpellPages(props ) { //: any
   //This may have offered better performance, but it doesn't actually work. 
   //const [[...pageRefs]] = useState(() => [...Array(props.spells)].map(createRef))
   //this works.
-  const pageRefs = [...props.spells].map(createRef);
+  let pageRefs = [...props.spells].map(createRef);
   useEffect(() => {
     if(pageRefs.length < props.spells.length){
       //This may have offered better performance, but it doesn't actually work. 

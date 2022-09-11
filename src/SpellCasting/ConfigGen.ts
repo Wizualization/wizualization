@@ -17,7 +17,7 @@ declare type LegendConfig = typeof Legend;
 
 /** Interfaces for config elements */
 export default function ConfigGen(props: any){
-    console.log(props)
+    //console.log(props)
     let sessionData : DataConfig[] = props.datasets.map(function(dataset : any){
         let d : DataConfig = {
             values: dataset.values,
@@ -40,7 +40,7 @@ export default function ConfigGen(props: any){
     ];
 
     let optoClasses = props.matchedSpells.map((s : any) => s.optoClass)
-    console.log(optoClasses)
+    //console.log(optoClasses)
     
     let markPrimitives = ["line", "point", "bar", "column"]
 

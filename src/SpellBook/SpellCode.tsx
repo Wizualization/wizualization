@@ -10,7 +10,7 @@ const SpellCode = ({ code, language } : any) => {
   const highlightedText = Prism.highlight(code, Prism.languages[language], language);
   return (
     <Suspense fallback={<></>}>
-    <VRHtml width={2} height={2}
+    <VRHtml width={2} height={1.25}
     style={{
       transition: 'all 0.2s',
       opacity: hidden ? 0 : 1,

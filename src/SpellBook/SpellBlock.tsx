@@ -2,7 +2,7 @@
 import SpellCode from './SpellCode';
 //pass block position, code, and language params as props
 const SpellBlock = (props : any) => {
-    console.log(props)
+    //console.log(props)
     const size = 0.1;
 return (
       <mesh scale={size}>

@@ -39,11 +39,11 @@ const WorkspaceContext = React.createContext('workspace_0');
 const ViewContext = React.createContext('view_0');
 // Hololens user agent is going to be a version of edge above the latest release
 let ua = navigator.userAgent.toLowerCase();
-console.log(ua);
+//console.log(ua);
 let isHL = ua.replace("edg", "").length < ua.length;
 let primitives: any = [];
 for (let prim of GesturePrimitives()) {
-  console.log(prim);
+  //console.log(prim);
   primitives.push(prim);
 }
 //const primitives: any = [];
@@ -84,54 +84,6 @@ export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
   //const [errState, setErrState] = useState({ error: false })
 
-  //todo: change this into sequence of cast spells
-  let exampleSpells : any = [
-    {
-      code: `var hello = "hello World";
-        console.log(hello);`,
-      language: "javascript",
-    },
-    {
-      code: `  componentWillMount() {
-          client.onopen = () => {
-            console.log('WebSocket Client Connected');
-          };
-          client.onmessage = (message) => {
-            console.log(message);
-          };
-        }`,
-      language: "javascript",
-    },
-    {
-      code: `const grimoire = Object.keys(state.spells).map(key=>{
-          return {
-            key: key,
-            gesture:state.spells[key]?.gesture, 
-            words:state.spells[key]?.words
-          };
-        });`,
-      language: "javascript",
-    },
-    /*
-      {
-        'code': `PROGRAM HELLO
-    WRITE (*,100)
-    STOP
-100 FORMAT (' Hello World! ' /)
-    END`,
-    'language': 'fortran'},
-    {
-      'code': `print("Hello World")`,
-      'language': 'python'
-    },
-    {
-      'code': `main = putStrLn "Hello World"`,
-      'language': 'haskell'
-    }
-    */
-  ];
-  //unsuppress if we want to drop our example spells;
-  exampleSpells = []
   const grimoire = Object.keys(state.spells).map((key) => {
     //let fn_arr = state.spells[key]?.spellname.split('.')
     return {

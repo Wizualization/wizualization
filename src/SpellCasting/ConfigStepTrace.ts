@@ -21,7 +21,6 @@ export default function ConfigStepTrace(props: any){
     let config_steps : any[] = [];
 
     let optoClasses = props.matchedSpells.map((s : any) => s.optoClass)
-    console.log(optoClasses)
     
     let markPrimitives = ["line", "point", "bar", "column"]
 
