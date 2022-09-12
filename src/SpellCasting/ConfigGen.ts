@@ -1,4 +1,5 @@
 import { Config, Root, Data, Workspace, View, Layer, Mark, Encoding, Tooltip, Channel, Scale, Axis, Legend } from 'optomancy';
+import { ConfigType } from 'optomancy/dist/types';
 
 /** Type declarations */
 declare type ConfigMain = typeof Config; // NEW!! 
@@ -29,15 +30,11 @@ export default function ConfigGen(props: any){
     //TODO: Correct the way we generate views. 
     //Creating a single view, then looping through the cast spells looking for optoclasses 
     // and then updating that single view is a little rough lol
-    const baseView = {
+    let sessionViews : ViewConfig[] = [{
         title: "The Iris Flower Dataset",
         mark: "point",
         encoding: {}
-    }
-
-    let sessionViews : ViewConfig = [
-        baseView
-    ];
+    }];
 
     let optoClasses = props.matchedSpells.map((s : any) => s.optoClass)
     //console.log(optoClasses)
@@ -81,7 +78,11 @@ export default function ConfigGen(props: any){
             // Finally, in this condition check block here, we add another view. 
             // Also need to do this with workspaces.'
             // But for now, we just add to view_idx and push another sessionView.
-            sessionViews = [...Array(sessionViews), baseView];
+            sessionViews = [...sessionViews, {
+                title: "The Iris Flower Dataset",
+                mark: "point",
+                encoding: {}
+            }];
             view_idx++;
         }
     }
@@ -102,9 +103,12 @@ export default function ConfigGen(props: any){
         datasets: sessionData,
         workspaces: sessionWorkspaces
     }
+
+    let configRespose : ConfigType = Object(sessionRoot);
+        
     //now we will have to "let varname : ConfigStructType[] = [props.etc]" and return
     // this will just be called as a simple function to return a dataset shaped appropriately.
     // the conversion into r3f happens in the interpreter. 
     //We want to use the cast spells returned from reducer to give us our config
-    return sessionRoot;
+    return configRespose;
 }
