@@ -19,7 +19,7 @@ import React, {
   useState,
 } from "react";
 import { VRCanvas, Hands, DefaultXRControllers } from "@react-three/xr";
-import { OptomancyR3F } from "optomancy-r3f";
+import { OptomancyR3F } from "./Interpreter";
 import { Dictaphone } from "./Components/Verbal/SpeechToText.js";
 import "./App.css";
 import { reducer, initialState, DispatchContext } from "./utils/Reducer";
@@ -34,6 +34,10 @@ import { iris, populations } from './examples/datasets';
 //import { Interpreter } from "./SpellCasting/Interpreter";
 //const spellbook = require('spellbook');
 //import client from './utils/socketConfig';
+
+//text test
+import { Text } from "@react-three/drei";
+
 
 const WorkspaceContext = React.createContext('workspace_0');
 const ViewContext = React.createContext('view_0');
@@ -1943,7 +1947,10 @@ export default function App() {
               <ambientLight />
               <pointLight position={[1, 1, 1]} />
               <color args={["black"]} attach="background" />
-
+              {Object.keys(config).includes('workspaces') ? (
+                <OptomancyR3F config = {config}/>
+              ) : null
+              }
             </VRCanvas>
             </div>
           ) : (
@@ -1953,12 +1960,6 @@ export default function App() {
           )}
           </div>
         </div>
-        <VRCanvas >
-          { Object.keys(config).includes('workspaces') ? (
-          <OptomancyR3F config = {example_config}/>
-          ) : null
-          }
-        </VRCanvas>
         </ViewContext.Provider>
       </WorkspaceContext.Provider>
     </DispatchContext.Provider>
