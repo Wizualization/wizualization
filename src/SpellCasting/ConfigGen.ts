@@ -33,7 +33,13 @@ export default function ConfigGen(props: any){
     let sessionViews : ViewConfig[] = [{
         title: "The Iris Flower Dataset",
         mark: "point",
-        encoding: {}
+        encoding: {},
+        width: 0.25,
+        height: 0.25,
+        depth: 0.25,
+        x: 1,
+        y: 5, 
+        z: 1
     }];
 
     let optoClasses = props.matchedSpells.map((s : any) => s.optoClass)
@@ -81,7 +87,13 @@ export default function ConfigGen(props: any){
             sessionViews = [...sessionViews, {
                 title: "The Iris Flower Dataset",
                 mark: "point",
-                encoding: {}
+                encoding: {},
+                width: 0.25,
+                height: 0.25,
+                depth: 0.25,
+                x: 1,
+                y: 5, 
+                z: 1
             }];
             view_idx++;
         }

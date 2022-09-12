@@ -164,7 +164,7 @@ export default function App() {
               <pointLight position={[1, 1, 1]} />
               <color args={["black"]} attach="background" />
               {Object.keys(config).includes('workspaces') ? (
-                config['workspaces'].length > 0 ? <OptomancyR3F config = {config}/> : null
+                config['workspaces'].length > 0 ? <OptomancyR3F position = {[0, 2, 0]} config = {config}/> : null
               ) : null
               }
             </VRCanvas>

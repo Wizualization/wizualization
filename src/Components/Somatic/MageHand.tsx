@@ -123,7 +123,7 @@ function MageHand(props: any) {
 
   
   const { gl } = useThree();
-  const { player } = useXR()
+  const { player } = useXR();
 
   const hand0 = gl.xr.getHand(0) as any
   const hand1 = gl.xr.getHand(1) as any
