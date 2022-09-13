@@ -21,25 +21,52 @@ export default function ConfigStepTrace(props: any){
     let config_steps : any[] = [];
 
     let optoClasses = props.matchedSpells.map((s : any) => s.optoClass)
+    //console.log(optoClasses)
     
     let markPrimitives = ["line", "point", "bar", "column"]
 
     // "color"
 
     let axes = ['x', 'y', 'z']
-    let axisVars = ['petalWidth', 'petalLength', 'sepalWidth']
+    //let axisVars = ['petalWidth', 'petalLength', 'sepalWidth']
+    let axisVars = props.datasets.map(function(dataset : any){
+        const unique = [...new Set(...dataset.values.map((d: any)=>Array(Object.keys(d))))][0];
+        return(unique);
+    });
     // "axis"
-  
+    let axisVarTypes = [];
+    for(let i = 0; i < axisVars.length; i++){
+        let types = axisVars[i].map(function(varname: string){
+            return isNaN(parseFloat(props.datasets[i].values[0][varname])) ? 'nominal' : 'quantitative'
+        })
+        axisVarTypes.push(types);
+    }
+
+    /*
+    let axisVars = props.datasets.map(function(dataset : any){
+        const unique = [...new Set(dataset.values.map((d: any)=>Array(Object.keys(d))))];
+        return(unique);
+    })
+    // "axis"
+    let axisVarTypes = props.datasets.map(function(dataset : any){
+        let axisTypes = axisVars.map((varname: string) => isNaN(parseFloat(dataset.values[0][varname])) ? 'nominal' : 'quantitative');
+        return(axisTypes);
+    })
+    */
+    //for now, this is just going to stay zero. 
+    let workspace_idx = 0;
+
     let axisCount = 0;
+    let view_idx = 0;
 
     for(let i=0; i<optoClasses.length; i++){
         let o = optoClasses[i]
         if(markPrimitives.includes(o)){
             config_steps.push({
                 'workspaces': [{
-                    'views': {
+                    'views': [{
                         'mark': o
-                    }
+                    }]
                 }]
             })
         }
@@ -49,30 +76,49 @@ export default function ConfigStepTrace(props: any){
                 'workspaces': [{
                     'encoding': {
                         'color': {
+                            field: axisVars[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
+                            type: axisVarTypes[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
+                        }
+                    }
+                }]
+            })
+            axisCount++;
+        }
+
+        if(o === 'axis'){
+            const axis_encoding = {
+                'workspaces': [{'views': [{
+                    'encoding': {}
+                }]}]
+            }
+
+
+            axis_encoding['workspaces'][0]['views'][0]['encoding'][axes[axisCount % 3]] = {
+                field: axisVars[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
+                type: axisVarTypes[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
+            }
+                    
+            config_steps.push(axis_encoding)
+            axisCount++;
+        }
+
+        if(o === 'view'){
+            config_steps.push({
+                'views': [{
+                    'mark': 'point',
+                    'encoding': {
+                        'x': {
                             field: "species",
                             type: "nominal",
                         }    
                     }
                 }]
             })
-        }
 
-        if(o === 'axis'){
-            const axis_encoding = {
-                'workspaces': [{
-                    'encoding': {}
-                }]
-            }
-            axis_encoding['workspaces'][0]['encoding'][axes[axisCount % 3]] = {
-                field: axisVars[axisCount % 3],
-                type: "quantitative",
-            }            
-            config_steps.push(axis_encoding)
-            axisCount++;
         }
     }
     const spell_page_steps = config_steps.map((page : any) => ({
-        'code': JSON.stringify(page, null, "  "),
+        'code': JSON.stringify(page), //, null, "  "
         'language': 'javascript'
     }))
     return spell_page_steps;

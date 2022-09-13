@@ -27,21 +27,21 @@ function Nodes({ children, ...props }) {
   const lines = useMemo(() => {
     const lines = []
     for (let node of nodes) {
-      if (node.connectedTo.length>0) {
+      if (node.connectedTo.length > 0) {
         const connections = node.connectedTo?.map((ref) => {
-          if(ref){
+          if (ref) {
             return [node.position, ref.current?.position]
           } else {
-            return [node.position, new THREE.Vector3(0,0,0)]
+            return [node.position, new THREE.Vector3(0, 0, 0)]
           }
         })
         connections.forEach(([start, end]) => {
           start = start?.clone().add(temp.set(0, 0, 0))
           end = end?.clone().add(temp.set(0, 0, 0))
-          let mid = new THREE.Vector3(0,0,0);
-          if(typeof start != 'undefined' && typeof end != 'undefined'){
+          let mid = new THREE.Vector3(0, 0, 0);
+          if (typeof start != 'undefined' && typeof end != 'undefined') {
             mid = start?.clone().add(end?.clone().sub(start)).add(new THREE.Vector3((start?.x - end?.x), start?.y - 1, (start?.z - end?.z))) // prettier-ignore
-          } 
+          }
           lines.push(new THREE.QuadraticBezierCurve3(start, mid, end).getPoints(10))
         })
       }
@@ -85,61 +85,61 @@ const Node = forwardRef(({ name, connectedTo = [], position = [0, 0, 0], ...prop
     return () => set((nodes) => without(nodes, state))
   }, [state, pos])
 
-    const { gl } = useThree()
-    const hand0 = (gl.xr).getHand(0);
-    const hand1 = (gl.xr).getHand(1);
-    useFrame(() => {
-      if (!ref) return
-      if (!ref.current) return
-      const index0 = hand0.joints['index-finger-tip']
-      const index1 = hand1.joints['index-finger-tip']
-      const thumb0 = hand0.joints['thumb-tip']
-      const thumb1 = hand1.joints['thumb-tip']
-        if(index0 && index1){
-          const left_isNear = Math.max(0, 1 - index0.position.distanceTo(ref.current.position) / 1) > 0.8
-        const right_isNear = Math.max(0, 1 - index1.position.distanceTo(ref.current.position) / 1) > 0.8
-        if(left_isNear){
-          const grabPinch_left = Math.max(0, 1 - index0.position.distanceTo(thumb0.position) / 0.1) > 0.6
-          if(grabPinch_left){
-            //ref.current?.position.set(index0.position.x, index0.position.y, index0.position.z);
-            ref.current.position.x = index0.position.x;
-            ref.current.position.y = index0.position.y;
-            ref.current.position.z = index0.position.z;
-            ref.current.rotation.x = index0?.rotation.x;
-            ref.current.rotation.y = index0?.rotation.y;
-            ref.current.rotation.z = index0?.rotation.z;
-            setPos(ref.current.position);
-            //do we need to re-register to get the lines to work?
-            set((nodes) => [...nodes, state]) //yes!! that did the trick
+  const { gl } = useThree()
+  const hand0 = (gl.xr).getHand(0);
+  const hand1 = (gl.xr).getHand(1);
+  useFrame(() => {
+    if (!ref) return
+    if (!ref.current) return
+    const index0 = hand0.joints['index-finger-tip']
+    const index1 = hand1.joints['index-finger-tip']
+    const thumb0 = hand0.joints['thumb-tip']
+    const thumb1 = hand1.joints['thumb-tip']
+    if (index0 && index1) {
+      const left_isNear = Math.max(0, 1 - index0.position.distanceTo(ref.current.position) / 1) > 0.8
+      const right_isNear = Math.max(0, 1 - index1.position.distanceTo(ref.current.position) / 1) > 0.8
+      if (left_isNear) {
+        const grabPinch_left = Math.max(0, 1 - index0.position.distanceTo(thumb0.position) / 0.1) > 0.6
+        if (grabPinch_left) {
+          //ref.current?.position.set(index0.position.x, index0.position.y, index0.position.z);
+          ref.current.position.x = index0.position.x;
+          ref.current.position.y = index0.position.y;
+          ref.current.position.z = index0.position.z;
+          ref.current.rotation.x = index0?.rotation.x;
+          ref.current.rotation.y = index0?.rotation.y;
+          ref.current.rotation.z = index0?.rotation.z;
+          setPos(ref.current.position);
+          //do we need to re-register to get the lines to work?
+          set((nodes) => [...nodes, state]) //yes!! that did the trick
 
-          }
-        } else {
-          //lefty dominance if trying to grab with both hands, which the user should never do bc it will craft a spell lol
-          if(right_isNear){
-            const grabPinch_right = Math.max(0, 1 - index1.position.distanceTo(thumb1.position) / 0.1) > 0.6
-            if(grabPinch_right){
-              ref.current.position.x = index1.position.x;
-              ref.current.position.y = index1.position.y;
-              ref.current.position.z = index1.position.z;
-              ref.current.rotation.x = index1?.rotation.x;
-              ref.current.rotation.y = index1?.rotation.y;
-              ref.current.rotation.z = index1?.rotation.z;
-              setPos(ref.current.position);
-              set((nodes) => [...nodes, state])
-
-            }
-              
-          }
-      
         }
+      } else {
+        //lefty dominance if trying to grab with both hands, which the user should never do bc it will craft a spell lol
+        if (right_isNear) {
+          const grabPinch_right = Math.max(0, 1 - index1.position.distanceTo(thumb1.position) / 0.1) > 0.6
+          if (grabPinch_right) {
+            ref.current.position.x = index1.position.x;
+            ref.current.position.y = index1.position.y;
+            ref.current.position.z = index1.position.z;
+            ref.current.rotation.x = index1?.rotation.x;
+            ref.current.rotation.y = index1?.rotation.y;
+            ref.current.rotation.z = index1?.rotation.z;
+            setPos(ref.current.position);
+            set((nodes) => [...nodes, state])
+
+          }
+
+        }
+
       }
-    });
-  
+    }
+  });
+
   return (
     <mesh ref={ref} position={position} {...props}>
       <Suspense fallback={<></>}>
         <mesh>
-        <SpellBlock code={props.code} language={props.language} />
+          <SpellBlock code={props.code} language={props.language} />
         </mesh>
       </Suspense>
     </mesh>

@@ -38,7 +38,7 @@ export default function ConfigGen(props: any){
         height: 0.25,
         depth: 0.25,
         x: 1,
-        y: 5, 
+        y: 1, 
         z: 1
     }];
 
@@ -50,12 +50,36 @@ export default function ConfigGen(props: any){
     // "color"
 
     let axes = ['x', 'y', 'z']
-    let axisVars = ['petalWidth', 'petalLength', 'sepalWidth']
+    //let axisVars = ['petalWidth', 'petalLength', 'sepalWidth']
+    let axisVars = props.datasets.map(function(dataset : any){
+        const unique = [...new Set(...dataset.values.map((d: any)=>Array(Object.keys(d))))][0];
+        return(unique);
+    });
     // "axis"
-  
-    let axisCount = 0;
+    let axisVarTypes = [];
+    for(let i = 0; i < axisVars.length; i++){
+        let types = axisVars[i].map(function(varname: string){
+            return isNaN(parseFloat(props.datasets[i].values[0][varname])) ? 'nominal' : 'quantitative'
+        })
+        axisVarTypes.push(types);
+    }
+    /*
+    let axisVarTypes = props.datasets.map(function(dataset : any[]){
+        let axisTypes = axisVars.map(function(varname: string){
+            console.log(dataset.values[0])
+            console.log(dataset.values[0][varname])
+            return isNaN(parseFloat(dataset.values[0][varname])) ? 'nominal' : 'quantitative'
+        });
+        return(axisTypes);
+    })*/
+    console.log(axisVars)
+    console.log(axisVarTypes)
+    //for now, this is just going to stay zero. 
     let workspace_idx = 0;
+
+    let axisCount = 0;
     let view_idx = 0;
+
     for(let i=0; i<optoClasses.length; i++){
         let o = optoClasses[i]
         if(markPrimitives.includes(o)){
@@ -64,15 +88,37 @@ export default function ConfigGen(props: any){
 
         if(o === 'color'){
             sessionViews[view_idx]['encoding']['color'] = {
-                field: "species",
-                type: "nominal",
+                field: axisVars[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
+                type: axisVarTypes[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
             }    
+            axisCount++;
         }
 
         if(o === 'axis'){
-            sessionViews[view_idx]['encoding'][axes[axisCount % 3]] = {
-                field: axisVars[axisCount % 3],
-                type: "quantitative",
+            if(axisCount > 0 && (axisCount % 3) === 0){
+                sessionViews = [...sessionViews, {
+                    title: "The Iris Flower Dataset",
+                    mark: "point",
+                    encoding: {
+                        x: {
+                            field: axisVars[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
+                            type: axisVarTypes[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
+                        }
+                    },
+                    width: 0.25,
+                    height: 0.25,
+                    depth: 0.25,
+                    x: 1+(0.375*view_idx),
+                    y: 1-(1.5*view_idx), 
+                    z: 1-(0.375*workspace_idx)
+                }];
+                view_idx++;
+    
+            } else {
+                sessionViews[view_idx]['encoding'][axes[axisCount % 3]] = {
+                    field: axisVars[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
+                    type: axisVarTypes[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
+                }
             }
             axisCount++;
         }
@@ -87,14 +133,20 @@ export default function ConfigGen(props: any){
             sessionViews = [...sessionViews, {
                 title: "The Iris Flower Dataset",
                 mark: "point",
-                encoding: {},
+                encoding: {
+                    x: {
+                        field: axisVars[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
+                        type: axisVarTypes[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
+                    }
+                },
                 width: 0.25,
                 height: 0.25,
                 depth: 0.25,
-                x: 1,
-                y: 5, 
-                z: 1
+                x: 1+(0.375*view_idx),
+                y: 4-(1.5*view_idx), 
+                z: 1-(0.375*workspace_idx)
             }];
+            axisCount++;                    
             view_idx++;
         }
     }

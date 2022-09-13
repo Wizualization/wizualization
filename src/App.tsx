@@ -36,8 +36,6 @@ import { iris, populations } from './examples/datasets';
 //const spellbook = require('spellbook');
 //import client from './utils/socketConfig';
 
-//text test
-import { Text } from "@react-three/drei";
 
 
 const WorkspaceContext = React.createContext('workspace_0');
@@ -109,7 +107,13 @@ export default function App() {
     workspaces:  [...new Set(state.matchedSpells.map((spell: any) => spell.workspace))]
   });
 
-  const spellbookBlocks = ConfigStepTrace({matchedSpells: state.matchedSpells});
+  const spellbookBlocks = ConfigStepTrace({
+    datasets: [
+      {values: iris, name: 'Iris'}, 
+      {values: populations, name: 'Populations'}
+    ], 
+    matchedSpells: state.matchedSpells
+  });
 
 
   // cdm

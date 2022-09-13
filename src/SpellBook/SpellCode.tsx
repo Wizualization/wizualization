@@ -8,6 +8,7 @@ const SpellCode = ({ code, language } : any) => {
   const hidden = false;
 
   const highlightedText = Prism.highlight(code, Prism.languages[language], language);
+  console.log(highlightedText);
   return (
     <Suspense fallback={<></>}>
     <VRHtml width={2} height={1.25}
@@ -24,7 +25,7 @@ const SpellCode = ({ code, language } : any) => {
 
     <div className="Code"        
       style={{
-          fontFamily: "Arial, sans-serif",
+          fontFamily: "Lucida Console, Courier, monospace",
           fontSize: "100px",
           margin: "1px",
           backgroundColor: 'white',
