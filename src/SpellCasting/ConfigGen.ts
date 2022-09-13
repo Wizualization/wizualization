@@ -97,9 +97,9 @@ export default function ConfigGen(props: any){
                     width: 0.25,
                     height: 0.25,
                     depth: 0.25,
-                    x: 1+(0.375*view_idx),
-                    y: 0-(1.5*view_idx), 
-                    z: 1-(0.375*workspace_idx)
+                    x: 1+0.375*(view_idx+1),
+                    y: 0-1.5*(view_idx+1), 
+                    z: 1-0.375*(workspace_idx)
                 }];
                 view_idx++;
     
@@ -131,9 +131,9 @@ export default function ConfigGen(props: any){
                 width: 0.25,
                 height: 0.25,
                 depth: 0.25,
-                x: 1+(0.375*view_idx),
-                y: 4-(1.5*view_idx), 
-                z: 1-(0.375*workspace_idx)
+                x: 1+0.375*(view_idx+1),
+                y: 0-1.5*(view_idx+1), 
+                z: 1-0.375*(workspace_idx)
             }];
             axisCount++;                    
             view_idx++;

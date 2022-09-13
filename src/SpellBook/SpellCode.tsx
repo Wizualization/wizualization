@@ -6,7 +6,7 @@ import { VRHtml } from './VRHtml'
 import Prism from "prismjs";
 import './prism.min.css';
 
-const SpellCode = ({ code, language } : any) => {
+const SpellCode = ({ code, language, optoClass } : any) => {
   const hidden = false;
 
   /**Choose whether we want to use HTML (inefficient, but has syntax highlighting) or react-three drei Text (efficient, no highlighting)*/
@@ -45,7 +45,7 @@ const SpellCode = ({ code, language } : any) => {
   const white = new THREE.MeshLambertMaterial({ color: "white", side: THREE.DoubleSide })
   return (
     <mesh >
-    <Plane args={[2, 2]} material={white}/>
+    <Plane args={[1.65, 2.25]} material={white}/>
     <Suspense fallback={null}>
     <Text 
       color="black" 
@@ -53,7 +53,7 @@ const SpellCode = ({ code, language } : any) => {
       anchorY="middle"
       position={[0,0,.1]}
     >
-      {code}
+      {'\n'+optoClass.toUpperCase()+'\n'+code}
     </Text>
     </Suspense>
     </mesh>

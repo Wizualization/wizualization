@@ -6,7 +6,7 @@ const SpellBlock = (props : any) => {
     const size = 0.1;
 return (
       <mesh scale={size}>
-          <SpellCode code={props.code} language={props.language} />
+          <SpellCode code={props.code} language={props.language} optoClass={props.optoClass} />
       </mesh>
     )
   }

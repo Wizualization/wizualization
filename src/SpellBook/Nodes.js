@@ -139,7 +139,7 @@ const Node = forwardRef(({ name, connectedTo = [], position = [0, 0, 0], ...prop
     <mesh ref={ref} position={position} {...props}>
       <Suspense fallback={<></>}>
         <mesh>
-          <SpellBlock code={props.code} language={props.language} />
+          <SpellBlock code={props.code} language={props.language} optoClass={props.optoClass} />
         </mesh>
       </Suspense>
     </mesh>

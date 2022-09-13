@@ -127,7 +127,8 @@ function SpellPages(props ) { //: any
           name={"node_"+i.toString()} 
           position={[Math.PI*0.1*i, 1.5, Math.PI*0.1*i]}  
           code={props.spells[i]['code']} 
-          language={props.spells[i]['language']} 
+          language={props.spells[i]['language']}
+          optoClass={props.spells[i]['optoClass']}
           connectedTo={[pageRefs[(i-1)]]}
           pinchOffset={0.02*i}
         /> : 
@@ -137,6 +138,7 @@ function SpellPages(props ) { //: any
           position={[Math.PI*0.1*i, 1.5, Math.PI*0.1*i]}  
           code={props.spells[i]['code']} 
           language={props.spells[i]['language']} 
+          optoClass={props.spells[i]['optoClass']}
           pinchOffset={0.02*i}
         /> 
       ))}

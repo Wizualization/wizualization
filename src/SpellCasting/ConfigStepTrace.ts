@@ -51,17 +51,17 @@ export default function ConfigStepTrace(props: any){
     for(let i=0; i<optoClasses.length; i++){
         let o = optoClasses[i]
         if(markPrimitives.includes(o)){
-            config_steps.push({
+            config_steps.push({'CLASS': o, 'BLOCK':{
                 'workspaces': [{
                     'views': [{
                         'mark': o
                     }]
                 }]
-            })
+            }})
         }
 
         if(o === 'color'){
-            config_steps.push({
+            config_steps.push({'CLASS': o, 'BLOCK':{
                 'workspaces': [{
                     'views': [{
                         'encoding': {
@@ -72,7 +72,7 @@ export default function ConfigStepTrace(props: any){
                         }
                     }]
                 }]
-            })
+            }})
             axisCount++;
         }
 
@@ -91,12 +91,12 @@ export default function ConfigStepTrace(props: any){
                 type: axisVarTypes[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
             }
                     
-            config_steps.push(axis_encoding)
+            config_steps.push({'CLASS': o, 'BLOCK':axis_encoding})
             axisCount++;
         }
 
         if(o === 'view'){
-            config_steps.push({
+            config_steps.push({'CLASS': o, 'BLOCK':{
                 'views': [{
                     'mark': 'point',
                     'encoding': {
@@ -106,14 +106,15 @@ export default function ConfigStepTrace(props: any){
                         }    
                     }
                 }]
-            })
+            }})
             axisCount++;
             view_idx++;
         }
     }
     const spell_page_steps = config_steps.map((page : any) => ({
-        'code': JSON.stringify(page, null, " "), //, null, "  "
-        'language': 'javascript'
+        'code': JSON.stringify(page.BLOCK, null, " "), //, null, "  "
+        'language': 'javascript',
+        'optoClass': page.CLASS
     }))
     return spell_page_steps;
 }
