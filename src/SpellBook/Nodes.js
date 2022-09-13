@@ -58,7 +58,7 @@ function Nodes({ children, ...props }) {
     <context.Provider value={set}>
       <group ref={group}>
         {lines.map((points, index) => (
-          <Line key={index} points={points} color="white" dashed dashScale={10} />
+          <Line key={index} points={points} color="white" dashed dashScale={30} />
         ))}
       </group>
       {children}
@@ -102,9 +102,9 @@ const Node = forwardRef(({ name, connectedTo = [], position = [0, 0, 0], ...prop
         const grabPinch_left = Math.max(0, 1 - index0.position.distanceTo(thumb0.position) / 0.1) > 0.6
         if (grabPinch_left) {
           //ref.current?.position.set(index0.position.x, index0.position.y, index0.position.z);
-          ref.current.position.x = index0.position.x;
+          ref.current.position.x = index0.position.x+props.pinchOffset;
           ref.current.position.y = index0.position.y;
-          ref.current.position.z = index0.position.z;
+          ref.current.position.z = index0.position.z+props.pinchOffset;
           ref.current.rotation.x = index0?.rotation.x;
           ref.current.rotation.y = index0?.rotation.y;
           ref.current.rotation.z = index0?.rotation.z;
@@ -118,9 +118,9 @@ const Node = forwardRef(({ name, connectedTo = [], position = [0, 0, 0], ...prop
         if (right_isNear) {
           const grabPinch_right = Math.max(0, 1 - index1.position.distanceTo(thumb1.position) / 0.1) > 0.6
           if (grabPinch_right) {
-            ref.current.position.x = index1.position.x;
+            ref.current.position.x = index1.position.x+props.pinchOffset;
             ref.current.position.y = index1.position.y;
-            ref.current.position.z = index1.position.z;
+            ref.current.position.z = index1.position.z+props.pinchOffset;
             ref.current.rotation.x = index1?.rotation.x;
             ref.current.rotation.y = index1?.rotation.y;
             ref.current.rotation.z = index1?.rotation.z;

@@ -42,17 +42,6 @@ export default function ConfigStepTrace(props: any){
         axisVarTypes.push(types);
     }
 
-    /*
-    let axisVars = props.datasets.map(function(dataset : any){
-        const unique = [...new Set(dataset.values.map((d: any)=>Array(Object.keys(d))))];
-        return(unique);
-    })
-    // "axis"
-    let axisVarTypes = props.datasets.map(function(dataset : any){
-        let axisTypes = axisVars.map((varname: string) => isNaN(parseFloat(dataset.values[0][varname])) ? 'nominal' : 'quantitative');
-        return(axisTypes);
-    })
-    */
     //for now, this is just going to stay zero. 
     let workspace_idx = 0;
 
@@ -74,12 +63,14 @@ export default function ConfigStepTrace(props: any){
         if(o === 'color'){
             config_steps.push({
                 'workspaces': [{
-                    'encoding': {
-                        'color': {
-                            field: axisVars[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
-                            type: axisVarTypes[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
+                    'views': [{
+                        'encoding': {
+                            'color': {
+                                field: axisVars[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
+                                type: axisVarTypes[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
+                            }
                         }
-                    }
+                    }]
                 }]
             })
             axisCount++;
@@ -87,9 +78,11 @@ export default function ConfigStepTrace(props: any){
 
         if(o === 'axis'){
             const axis_encoding = {
-                'workspaces': [{'views': [{
-                    'encoding': {}
-                }]}]
+                'workspaces': [{
+                        'views': [{
+                        'encoding': {}
+                    }]
+                }]
             }
 
 
@@ -108,17 +101,18 @@ export default function ConfigStepTrace(props: any){
                     'mark': 'point',
                     'encoding': {
                         'x': {
-                            field: "species",
-                            type: "nominal",
+                            field: axisVars[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
+                            type: axisVarTypes[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
                         }    
                     }
                 }]
             })
-
+            axisCount++;
+            view_idx++;
         }
     }
     const spell_page_steps = config_steps.map((page : any) => ({
-        'code': JSON.stringify(page), //, null, "  "
+        'code': JSON.stringify(page, null, " "), //, null, "  "
         'language': 'javascript'
     }))
     return spell_page_steps;

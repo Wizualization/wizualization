@@ -129,6 +129,7 @@ function SpellPages(props ) { //: any
           code={props.spells[i]['code']} 
           language={props.spells[i]['language']} 
           connectedTo={[pageRefs[(i-1)]]}
+          pinchOffset={0.02*i}
         /> : 
         <Node key={"node_"+i.toString()}  
           ref={pageRefs[i]} 
@@ -136,6 +137,7 @@ function SpellPages(props ) { //: any
           position={[Math.PI*0.1*i, 1.5, Math.PI*0.1*i]}  
           code={props.spells[i]['code']} 
           language={props.spells[i]['language']} 
+          pinchOffset={0.02*i}
         /> 
       ))}
       </Nodes>

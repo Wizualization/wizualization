@@ -38,7 +38,7 @@ export default function ConfigGen(props: any){
         height: 0.25,
         depth: 0.25,
         x: 1,
-        y: 1, 
+        y: 0, 
         z: 1
     }];
 
@@ -63,17 +63,6 @@ export default function ConfigGen(props: any){
         })
         axisVarTypes.push(types);
     }
-    /*
-    let axisVarTypes = props.datasets.map(function(dataset : any[]){
-        let axisTypes = axisVars.map(function(varname: string){
-            console.log(dataset.values[0])
-            console.log(dataset.values[0][varname])
-            return isNaN(parseFloat(dataset.values[0][varname])) ? 'nominal' : 'quantitative'
-        });
-        return(axisTypes);
-    })*/
-    console.log(axisVars)
-    console.log(axisVarTypes)
     //for now, this is just going to stay zero. 
     let workspace_idx = 0;
 
@@ -95,7 +84,7 @@ export default function ConfigGen(props: any){
         }
 
         if(o === 'axis'){
-            if(axisCount > 0 && (axisCount % 3) === 0){
+            if(axisCount > 0 && (axisCount % 3 === 0)){
                 sessionViews = [...sessionViews, {
                     title: "The Iris Flower Dataset",
                     mark: "point",
@@ -109,7 +98,7 @@ export default function ConfigGen(props: any){
                     height: 0.25,
                     depth: 0.25,
                     x: 1+(0.375*view_idx),
-                    y: 1-(1.5*view_idx), 
+                    y: 0-(1.5*view_idx), 
                     z: 1-(0.375*workspace_idx)
                 }];
                 view_idx++;
