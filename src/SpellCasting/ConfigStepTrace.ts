@@ -28,6 +28,7 @@ export default function ConfigStepTrace(props: any){
     // "color"
 
     let axes = ['x', 'y', 'z']
+    let axis_dim_count = 0;
     //let axisVars = ['petalWidth', 'petalLength', 'sepalWidth']
     let axisVars = props.datasets.map(function(dataset : any){
         const unique = [...new Set(...dataset.values.map((d: any)=>Array(Object.keys(d))))][0];
@@ -37,7 +38,7 @@ export default function ConfigStepTrace(props: any){
     let axisVarTypes = [];
     for(let i = 0; i < axisVars.length; i++){
         let types = axisVars[i].map(function(varname: string){
-            return isNaN(parseFloat(props.datasets[i].values[0][varname])) ? 'nominal' : 'quantitative'
+            return isNaN(Number(props.datasets[i].values[0][varname])) ? 'nominal' : 'quantitative'
         })
         axisVarTypes.push(types);
     }
@@ -86,11 +87,15 @@ export default function ConfigStepTrace(props: any){
             }
 
 
-            axis_encoding['workspaces'][0]['views'][0]['encoding'][axes[axisCount % 3]] = {
+            axis_encoding['workspaces'][0]['views'][0]['encoding'][axes[axis_dim_count % 3]] = {
                 field: axisVars[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
                 type: axisVarTypes[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
             }
-                    
+            if(axisCount > 0 && (axisCount % 3 === 0)){
+                axis_dim_count=1;
+            } else {
+                axis_dim_count++;
+            }                    
             config_steps.push({'CLASS': o, 'BLOCK':axis_encoding})
             axisCount++;
         }
@@ -107,6 +112,7 @@ export default function ConfigStepTrace(props: any){
                     }
                 }]
             }})
+            axis_dim_count=1;            
             axisCount++;
             view_idx++;
         }

@@ -19,6 +19,9 @@ declare type LegendConfig = typeof Legend;
 /** Interfaces for config elements */
 export default function ConfigGen(props: any){
     //console.log(props)
+    let initX=0;
+    let initY=-0.2;
+    let initZ=1;
     let sessionData : DataConfig[] = props.datasets.map(function(dataset : any){
         let d : DataConfig = {
             values: dataset.values,
@@ -37,9 +40,9 @@ export default function ConfigGen(props: any){
         width: 0.25,
         height: 0.25,
         depth: 0.25,
-        x: 1,
-        y: 0, 
-        z: 1
+        x: initX,
+        y: initY, 
+        z: initZ
     }];
 
     let optoClasses = props.matchedSpells.map((s : any) => s.optoClass)
@@ -50,6 +53,7 @@ export default function ConfigGen(props: any){
     // "color"
 
     let axes = ['x', 'y', 'z']
+    let axis_dim_count = 0;
     //let axisVars = ['petalWidth', 'petalLength', 'sepalWidth']
     let axisVars = props.datasets.map(function(dataset : any){
         const unique = [...new Set(...dataset.values.map((d: any)=>Array(Object.keys(d))))][0];
@@ -59,7 +63,7 @@ export default function ConfigGen(props: any){
     let axisVarTypes = [];
     for(let i = 0; i < axisVars.length; i++){
         let types = axisVars[i].map(function(varname: string){
-            return isNaN(parseFloat(props.datasets[i].values[0][varname])) ? 'nominal' : 'quantitative'
+            return isNaN(Number(props.datasets[i].values[0][varname])) ? 'nominal' : 'quantitative'
         })
         axisVarTypes.push(types);
     }
@@ -84,31 +88,26 @@ export default function ConfigGen(props: any){
         }
 
         if(o === 'axis'){
-            if(axisCount > 0 && (axisCount % 3 === 0)){
+            if(axisCount > 0 && (axis_dim_count % 3 === 0)){
                 sessionViews = [...sessionViews, {
                     title: "The Iris Flower Dataset",
                     mark: "point",
-                    encoding: {
-                        x: {
-                            field: axisVars[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
-                            type: axisVarTypes[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
-                        }
-                    },
+                    encoding: {},
                     width: 0.25,
                     height: 0.25,
                     depth: 0.25,
-                    x: 1+0.375*(view_idx+1),
-                    y: 0-1.5*(view_idx+1), 
-                    z: 1-0.375*(workspace_idx)
+                    x: initX+0.375*(view_idx+1),
+                    y: initY-1.5*(view_idx+1), 
+                    z: initZ-0.375*(workspace_idx)
                 }];
+                axis_dim_count = 0;
                 view_idx++;
-    
-            } else {
-                sessionViews[view_idx]['encoding'][axes[axisCount % 3]] = {
-                    field: axisVars[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
-                    type: axisVarTypes[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
-                }
             }
+            sessionViews[view_idx]['encoding'][axes[axis_dim_count % 3]] = {
+                field: axisVars[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
+                type: axisVarTypes[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
+            }
+            axis_dim_count++;
             axisCount++;
         }
 
@@ -131,11 +130,12 @@ export default function ConfigGen(props: any){
                 width: 0.25,
                 height: 0.25,
                 depth: 0.25,
-                x: 1+0.375*(view_idx+1),
-                y: 0-1.5*(view_idx+1), 
-                z: 1-0.375*(workspace_idx)
+                x: initX+0.375*(view_idx+1),
+                y: initY-1.5*(view_idx+1), 
+                z: initZ-0.375*(workspace_idx)
             }];
-            axisCount++;                    
+            axis_dim_count=1;
+            axisCount++;
             view_idx++;
         }
     }

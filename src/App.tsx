@@ -30,7 +30,7 @@ import { ConfigType } from 'optomancy/dist/types';
 import MageHand from "./Components/Somatic/MageHand";
 import ConfigGen from "./SpellCasting/ConfigGen";
 import ConfigStepTrace from "./SpellCasting/ConfigStepTrace";
-import { iris, populations } from './examples/datasets';
+import { nhanes, iris, populations } from './examples/datasets';
 //import { Workspace } from "optomancy";
 //import { Interpreter } from "./SpellCasting/Interpreter";
 //const spellbook = require('spellbook');
@@ -97,11 +97,11 @@ export default function App() {
     };
   });
 
-
   const config : ConfigType = ConfigGen({
     datasets: [
-      {values: iris, name: 'Iris'}, 
-      {values: populations, name: 'Populations'}
+        {values: nhanes, name: 'NHANES'}, 
+        {values: iris, name: 'Iris'}, 
+        {values: populations, name: 'Populations'}
     ], 
     matchedSpells: state.matchedSpells, 
     workspaces:  [...new Set(state.matchedSpells.map((spell: any) => spell.workspace))]
@@ -109,7 +109,8 @@ export default function App() {
 
   const spellbookBlocks = ConfigStepTrace({
     datasets: [
-      {values: iris, name: 'Iris'}, 
+    {values: nhanes, name: 'NHANES'}, 
+    {values: iris, name: 'Iris'}, 
       {values: populations, name: 'Populations'}
     ], 
     matchedSpells: state.matchedSpells
@@ -133,7 +134,7 @@ export default function App() {
     //console.log("STATE", state);
 
   })
-
+  
   return (
     <DispatchContext.Provider value={dispatch}>
       <WorkspaceContext.Provider value={'workspace_0'}>
@@ -168,7 +169,8 @@ export default function App() {
               <pointLight position={[1, 1, 1]} />
               <color args={["black"]} attach="background" />
               {Object.keys(config).includes('workspaces') ? (
-                config['workspaces'].length > 0 ? <OptomancyR3F position = {[0, 2, 0]} config = {config}/> : null
+                config['workspaces'].length > 0 ? 
+                <OptomancyR3F position = {[0, 2, -1]} config = {config}/> : null
               ) : null
               }
             </VRCanvas>

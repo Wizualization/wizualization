@@ -50,10 +50,19 @@ const SpellCode = ({ code, language, optoClass } : any) => {
     <Text 
       color="black" 
       anchorX="center" 
+      anchorY="top"
+      outlineWidth="5%"
+      position={[0,1.05,.1]}
+    >
+      {optoClass.toUpperCase()}
+    </Text>
+    <Text 
+      color="black" 
+      anchorX="center" 
       anchorY="middle"
       position={[0,0,.1]}
     >
-      {'\n'+optoClass.toUpperCase()+'\n'+code}
+      {'\n'+code}
     </Text>
     </Suspense>
     </mesh>
