@@ -99,7 +99,8 @@ function MageHand(props: any) {
     "pinky-finger-tip"
   ]
 
-
+  const [dustColor, setDustColor] = useState('lightblue');
+  
   /*
   const fingstart = new THREE.Vector3(0, 0, 0)
   const [curveThum, setCurveThum] = useState(new CatmullRomCurve3([fingstart, fingstart], false, 'catmullrom', 0.25));
@@ -155,6 +156,7 @@ function MageHand(props: any) {
         const index1 = hand1.joints['index-finger-tip'] as any;
         if(index1 === undefined) return
       if(index0 && index1){
+        //crafting a new spell
         if(player.position.y - 0.05 < hand0.position.y && player.position.y - 0.05 < hand1.position.y && player.position.y + 0.05 > hand0.position.y && player.position.y + 0.05 > hand1.position.y ){
           
           const thumb0 = hand0.joints['thumb-tip'] as any;
@@ -290,6 +292,7 @@ function MageHand(props: any) {
             //we set crafting to true, but we do not require pinch to continue crafting
             if(craftPinching && !crafting && !casting){
               console.log('crafting spell...')
+              setDustColor('red');
               crafting = true;
               last_craft = [];
               crafting_startTime = Date.now();
@@ -317,6 +320,7 @@ function MageHand(props: any) {
           //we set casting to true, but we do not require pinch to continue casting
           if(castPinching && !casting && !crafting){
             console.log('casting spell...')
+            setDustColor('lightblue');
             last_cast = [];
             casting = true;
             casting_startTime = Date.now();
@@ -345,7 +349,7 @@ function MageHand(props: any) {
     <>
     <mesh ref={ref}>
       <mesh ref={dustRef}>
-        <Swarm count={5000} />
+        <Swarm count={5000} color={dustColor} />
       </mesh>
     </mesh>
     </>

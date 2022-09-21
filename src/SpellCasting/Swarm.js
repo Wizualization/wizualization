@@ -4,7 +4,7 @@ import React, { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import Random from 'canvas-sketch-util/random';
 
-export default function Swarm({ count }) {
+export default function Swarm({ count, color }) {
   const mesh = useRef();
   const light = useRef();
 
@@ -62,10 +62,10 @@ export default function Swarm({ count }) {
   //previous property of instancedMesh: 
   return (
     <>
-      <pointLight ref={light} distance={40} intensity={8} color="lightblue" />
+      <pointLight ref={light} distance={40} intensity={8} color={color} />
       <instancedMesh ref={mesh} args={[null, null, count]}>
         <dodecahedronBufferGeometry args={[0.2, 0]} />
-        <meshPhongMaterial color="#050505" />
+        <meshPhongMaterial color={color} />
       </instancedMesh>
     </>
   );
