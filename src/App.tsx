@@ -180,10 +180,10 @@ export default function App() {
   
 
   */
-  let demo_cast_len = state.matchedSpells.length % demo_cast_order.length;
-  let demo_matchedSpells : any[] = Array.apply(null, Array(demo_cast_len)).map(function (x, i) { 
+  let demo_cast_len = demo_check ? state.matchedSpells.length % demo_cast_order.length : 0;
+  let demo_matchedSpells : any[] = demo_check ? Array.apply(null, Array(demo_cast_len)).map(function (x, i) { 
     return {"key":demo_primitives[demo_cast_order[i]], "optoClass": demo_cast_order[i]}; 
-  });
+  }) : [];
 
   let demo_config : ConfigType = ConfigGen({
     datasets: [
