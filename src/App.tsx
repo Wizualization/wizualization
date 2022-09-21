@@ -17,6 +17,7 @@ import React, {
   useEffect,
   useReducer,
   useState,
+  useRef
 } from "react";
 import { VRCanvas, Hands, DefaultXRControllers } from "@react-three/xr";
 import { OptomancyR3F } from "optomancy-r3f";
@@ -117,23 +118,113 @@ export default function App() {
   });
 
 
-  // cdm
+    //Simple demo room
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const roomName = urlParams.get('room')
+    const demo_check = roomName === 'solodemo' || roomName === 'collabdemo';
+    let demo_cast_order : string[] = [];
+
+    if(roomName === 'solodemo'){
+      demo_cast_order = ['axis', 'axis', 'color', 'axis', 'view', 'axis', 'axis', 'color'];
+    }
+
+    if(roomName === 'collabdemo'){
+      demo_cast_order = ['column', 'axis', 'axis', 'view', 'point', 'axis', 'axis', 'axis', 'color', 'view', 'point', 'axis', 'axis', 'color'];
+    }
+    let demo_primitives = {
+      "line": "a07ff089-2ca2-1341-cc58-74509f1d8577",
+      "point": "1f1459f2-688e-5d2a-2366-5cb00328eb2c",
+      "bar": "9458d9af-68e1-e137-d7c8-546055a92cdd",
+      "column": "75e76e72-acb2-350c-3a95-a86ab5255c66",
+      "color": "2818b295-2a1a-c14e-1259-da58eb3fe09e",
+      "axis": "f15012d8-a09f-c3b7-90a7-66f796e29fa6",
+      "view": "4a08f949-57a7-7604-33d2-dfdc4315d0b1"
+    }
+  
+
+  /*
+  //initialize with real config
+  let [demo_config, setDemoConfig] = useState<ConfigType>(config);
+  let [demo_matchedSpells, setDemoMatchedSpells] = useState<any[]>([]);
+  let [demo_spellbookBlocks, setDemoSpellbookBlocks] = useState<any[]>([]);
   useEffect(() => {
+    //demo for video just to avoid wasting time with gesture screw-ups
+      if(demo_check){
+        let demo_cast_len = state.matchedSpells.length % demo_cast_order.length;
+  
+        setDemoMatchedSpells(Array.apply(null, Array(demo_cast_len)).map(function (x, i) { 
+          return {"key":demo_primitives[demo_cast_order[i]], "optoClass": demo_cast_order[i]}; 
+        }));
+  
+        setDemoConfig(ConfigGen({
+          datasets: [
+              {values: nhanes, name: 'NHANES'}, 
+              {values: iris, name: 'Iris'}, 
+              {values: populations, name: 'Populations'}
+          ], 
+          matchedSpells: demo_matchedSpells, 
+          workspaces:  [...new Set(demo_matchedSpells.map((spell: any) => spell.workspace))]
+        }));
+
+        setDemoSpellbookBlocks(ConfigStepTrace({
+          datasets: [
+          {values: nhanes, name: 'NHANES'}, 
+          {values: iris, name: 'Iris'}, 
+            {values: populations, name: 'Populations'}
+          ], 
+          matchedSpells: demo_matchedSpells
+        }))
+      }
+    });
+  
+
+  */
+  let demo_cast_len = state.matchedSpells.length % demo_cast_order.length;
+  let demo_matchedSpells : any[] = Array.apply(null, Array(demo_cast_len)).map(function (x, i) { 
+    return {"key":demo_primitives[demo_cast_order[i]], "optoClass": demo_cast_order[i]}; 
+  });
+
+  let demo_config : ConfigType = ConfigGen({
+    datasets: [
+        {values: nhanes, name: 'NHANES'}, 
+        {values: iris, name: 'Iris'}, 
+        {values: populations, name: 'Populations'}
+    ], 
+    matchedSpells: demo_matchedSpells, 
+    workspaces:  [...new Set(demo_matchedSpells.map((spell: any) => spell.workspace))]
+  });
+
+  let demo_spellbookBlocks : any[] = ConfigStepTrace({
+    datasets: [
+    {values: nhanes, name: 'NHANES'}, 
+    {values: iris, name: 'Iris'}, 
+      {values: populations, name: 'Populations'}
+    ], 
+    matchedSpells: demo_matchedSpells
+  });
+
+ 
+   // cdm
+   useEffect(() => {
     // Set up socketio here
     setupSocketEvents(dispatch);
   }, []);
-  
+
   useEffect(() => {
-    // Set up socketio here
     console.log("STATE", state);
     console.log("GRIMOIRE", grimoire);
     console.log("CONFIG", config);
     console.log("SPELLBOOK_PAGES", spellbookBlocks);
-    //test dispatch--works! don't want to do it this way though bc it will probably eventually exceed call stack 
-    //dispatch({type: 'WORKVIEW_CONTEXT', payload: {workspace: 'workspace_1', view: 'view_1'}})
-    //console.log("STATE", state);
-
+    if(demo_check){
+      console.log("DEMO_MATCHED_SPELLS", demo_matchedSpells);
+      console.log("DEMO_CONFIG", demo_config);
+      console.log("DEMO_SPELLBOOK_PAGES", demo_spellbookBlocks);
+    }
   })
+  
+   
+
   
   return (
     <DispatchContext.Provider value={dispatch}>
@@ -161,7 +252,7 @@ export default function App() {
             <div className="DemoMain">
             <VRCanvas>
               <DefaultXRControllers />
-              <SpellPages spells={spellbookBlocks} />
+              <SpellPages spells={demo_check ? demo_spellbookBlocks : spellbookBlocks} />
               <MageHand grimoire={[...primitives, ...grimoire]} context={state.workview.workspace}/>
 
               <OrbitControls />
@@ -169,9 +260,9 @@ export default function App() {
               <pointLight position={[1, 1, 1]} />
               <color args={["black"]} attach="background" />
               {Object.keys(config).includes('workspaces') ? (
-                config['workspaces'].length > 0 ? 
-                <OptomancyR3F position = {[0, 2, -1]} config = {config}/> : null
-              ) : null
+                  config['workspaces'].length > 0 ? 
+                  <OptomancyR3F position = {[0, 2, -1]} config = {demo_check ? demo_config : config}/> : null
+                ) : null
               }
             </VRCanvas>
             </div>

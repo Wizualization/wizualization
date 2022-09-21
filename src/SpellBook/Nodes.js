@@ -1,9 +1,14 @@
 import * as THREE from 'three';
-import React, { createContext, useMemo, useRef, useState, useContext, useLayoutEffect, forwardRef, useEffect, Suspense } from 'react';
+import React, { createContext, useMemo, useRef, useState, useContext, useLayoutEffect, forwardRef, useEffect, Suspense, extend } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
+import { EffectComposer, Bloom, DepthOfField, Noise } from '@react-three/postprocessing';
+
 import { Line } from '@react-three/drei';
 import without from 'lodash-es/without';
 import { SpellBlock } from './SpellBlock';
+
+//extend({ EffectComposer, OutlinePass, ShaderPass })
+
 
 const temp = new THREE.Vector3()
 const context = createContext()
@@ -75,6 +80,7 @@ function Nodes({ children, ...props }) {
 const Node = forwardRef(({ name, connectedTo = [], position = [0, 0, 0], ...props }, ref) => {
   const set = useContext(context)
   const { size, camera } = useThree()
+  const [canGrab, setCanGrab] = useState(false);
   const [pos, setPos] = useState(() => new THREE.Vector3(...position))
   const state = useMemo(() => ({ position: pos, connectedTo }), [pos, connectedTo])
 
@@ -99,6 +105,7 @@ const Node = forwardRef(({ name, connectedTo = [], position = [0, 0, 0], ...prop
       const left_isNear = Math.max(0, 1 - index0.position.distanceTo(ref.current.position) / 1) > 0.8
       const right_isNear = Math.max(0, 1 - index1.position.distanceTo(ref.current.position) / 1) > 0.8
       if (left_isNear) {
+        setCanGrab(true);
         const grabPinch_left = Math.max(0, 1 - index0.position.distanceTo(thumb0.position) / 0.1) > 0.6
         if (grabPinch_left) {
           //ref.current?.position.set(index0.position.x, index0.position.y, index0.position.z);
@@ -116,6 +123,7 @@ const Node = forwardRef(({ name, connectedTo = [], position = [0, 0, 0], ...prop
       } else {
         //lefty dominance if trying to grab with both hands, which the user should never do bc it will craft a spell lol
         if (right_isNear) {
+          setCanGrab(true);
           const grabPinch_right = Math.max(0, 1 - index1.position.distanceTo(thumb1.position) / 0.1) > 0.6
           if (grabPinch_right) {
             ref.current.position.x = index1.position.x+props.pinchOffset;
@@ -129,6 +137,9 @@ const Node = forwardRef(({ name, connectedTo = [], position = [0, 0, 0], ...prop
 
           }
 
+        } else {
+          setCanGrab(false);
+
         }
 
       }
@@ -139,7 +150,14 @@ const Node = forwardRef(({ name, connectedTo = [], position = [0, 0, 0], ...prop
     <mesh ref={ref} position={position} {...props}>
       <Suspense fallback={<></>}>
         <mesh>
-          <SpellBlock code={props.code} language={props.language} optoClass={props.optoClass} />
+        {(canGrab ? 
+        <EffectComposer>
+          <DepthOfField focusDistance={0} focalLength={0.02} bokehScale={2} height={480} />
+          <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} />
+          <Noise opacity={0.02} />
+       </EffectComposer> : null
+        )}
+        <SpellBlock code={props.code} language={props.language} optoClass={props.optoClass} />
         </mesh>
       </Suspense>
     </mesh>
