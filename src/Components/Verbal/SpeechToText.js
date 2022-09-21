@@ -4,6 +4,8 @@ import {socket} from '../../utils/Socket';
 const levenshtein = require('js-levenshtein');
 
 const Dictaphone = (props) => {
+  const WorkspaceContext = React.useContext(props.context);
+
   const {
     transcript,
     listening,
@@ -33,13 +35,15 @@ const Dictaphone = (props) => {
     let minDist = 1000;
     let matchedSpell = {};
     for(let spell of props.grimoire){
+      console.log(spell)
       let dist = levenshtein(transcript, spell.words)
+      console.log(dist)
       if(dist < minDist){
         matchedSpell = structuredClone(spell);
         minDist = 1*dist;
       }
     }
-    socket.emit('spellmatched', JSON.stringify(matchedSpell.key));
+    socket.emit('spellmatched', JSON.stringify({'key': matchedSpell.key, 'workspace': WorkspaceContext}));
     // replace this with socketio listener
     SpeechRecognition.stopListening();
   }

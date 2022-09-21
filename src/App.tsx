@@ -271,7 +271,7 @@ export default function App() {
             </div>
           ) : (
             <div className="DemoMain">
-            <Dictaphone grimoire={[...primitives, ...grimoire]}/>
+            <Dictaphone grimoire={[...primitives, ...grimoire]} context={state.workview.workspace}/>
             </div>
           )}
           </div>

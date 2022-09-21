@@ -1148,7 +1148,7 @@ export function GesturePrimitives(){
                 }
               }
             ],
-            "words": ""
+            "words": "line"
           },
           {
             "key": "4f871493-ebf4-80b5-fc2b-b387d4e73a0d",
@@ -2246,7 +2246,7 @@ export function GesturePrimitives(){
                 }
               }
             ],
-            "words": ""
+            "words": "line"
           },
           {
             "key": "1f1459f2-688e-5d2a-2366-5cb00328eb2c",
@@ -3396,7 +3396,7 @@ export function GesturePrimitives(){
                 }
               }
             ],
-            "words": ""
+            "words": "point"
           },
           {
             "key": "9f7c9acd-c9e0-5051-71d5-889f13f8b145",
@@ -4546,7 +4546,7 @@ export function GesturePrimitives(){
                 }
               }
             ],
-            "words": ""
+            "words": "point"
           },
           {
             "key": "9458d9af-68e1-e137-d7c8-546055a92cdd",
@@ -5696,7 +5696,7 @@ export function GesturePrimitives(){
                 }
               }
             ],
-            "words": ""
+            "words": "bar"
           },
           {
             "key": "75e76e72-acb2-350c-3a95-a86ab5255c66",
@@ -6846,7 +6846,7 @@ export function GesturePrimitives(){
                 }
               }
             ],
-            "words": ""
+            "words": "column"
           },
           {
             "key": "d4fbd561-d1f4-4192-7546-242ffb03dd59",
@@ -7996,7 +7996,7 @@ export function GesturePrimitives(){
                 }
               }
             ],
-            "words": ""
+            "words": "column"
           },
           {
             "key": "2818b295-2a1a-c14e-1259-da58eb3fe09e",
@@ -8886,7 +8886,7 @@ export function GesturePrimitives(){
                 }
               }
             ],
-            "words": ""
+            "words": "color"
           },
           {
             "key": "82c46dfd-d3fe-6489-13cb-f32c1581ecc0",
@@ -9984,7 +9984,7 @@ export function GesturePrimitives(){
                 }
               }
             ],
-            "words": ""
+            "words": "color"
           },
           {
             "key": "f15012d8-a09f-c3b7-90a7-66f796e29fa6",
@@ -11082,7 +11082,7 @@ export function GesturePrimitives(){
                 }
               }
             ],
-            "words": ""
+            "words": "axis"
           },
           {
             "key": "e603c17a-18cd-3ad0-1504-f1ae4ab54dce",
@@ -12180,7 +12180,7 @@ export function GesturePrimitives(){
                 }
               }
             ],
-            "words": ""
+            "words": "axis"
           },
           {
             "key": "edeefb76-cebb-fff4-bdfb-850a5519436d",
@@ -13434,7 +13434,7 @@ export function GesturePrimitives(){
                     }
                 }
             ],
-            "words": ""
+            "words": "view"
         },
         {
           "key": "4a08f949-57a7-7604-33d2-dfdc4315d0b1",
@@ -14636,7 +14636,7 @@ export function GesturePrimitives(){
                   }
               }
           ],
-          "words": ""
+          "words": "view"
       }          
     ]
 } 
