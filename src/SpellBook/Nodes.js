@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import React, { createContext, useMemo, useRef, useState, useContext, useLayoutEffect, forwardRef, useEffect, Suspense, extend } from 'react';
+import React, { createContext, useMemo, useRef, useState, useContext, useLayoutEffect, forwardRef, Suspense } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { EffectComposer, Bloom, DepthOfField, Noise } from '@react-three/postprocessing';
+//import { EffectComposer, Bloom, DepthOfField, Noise } from '@react-three/postprocessing';
 
-import { Line } from '@react-three/drei';
+import { Line , Plane } from '@react-three/drei';
 import without from 'lodash-es/without';
 import { SpellBlock } from './SpellBlock';
 
@@ -145,18 +145,27 @@ const Node = forwardRef(({ name, connectedTo = [], position = [0, 0, 0], ...prop
       }
     }
   });
+  /*
+  <EffectComposer>
+    <DepthOfField focusDistance={0} focalLength={0.02} bokehScale={2} height={480} />
+    <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} />
+    <Noise opacity={0.02} />
+  </EffectComposer> 
+  */
+  const green = new THREE.MeshLambertMaterial({ color: "green", side: THREE.DoubleSide })
 
   return (
     <mesh ref={ref} position={position} {...props}>
       <Suspense fallback={<></>}>
         <mesh>
-        {(canGrab ? 
-        <EffectComposer>
-          <DepthOfField focusDistance={0} focalLength={0.02} bokehScale={2} height={480} />
-          <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} />
-          <Noise opacity={0.02} />
-       </EffectComposer> : null
-        )}
+        {(canGrab ?     
+        <mesh position={[0,0,-.001]}>
+        <Plane args={[0.175, 0.235]} material={green}/>
+        </mesh>
+        : 
+        null
+        )
+        }
         <SpellBlock code={props.code} language={props.language} optoClass={props.optoClass} />
         </mesh>
       </Suspense>

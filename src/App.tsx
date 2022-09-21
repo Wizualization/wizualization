@@ -261,7 +261,10 @@ export default function App() {
               <color args={["black"]} attach="background" />
               {Object.keys(config).includes('workspaces') ? (
                   config['workspaces'].length > 0 ? 
-                  <OptomancyR3F position = {[0, 2, -1]} config = {demo_check ? demo_config : config}/> : null
+                    <Suspense fallback={null}>
+                    <OptomancyR3F position = {[0, 2, -1]} config = {demo_check ? demo_config : config}/> 
+                    </Suspense>
+                    : null
                 ) : null
               }
             </VRCanvas>
