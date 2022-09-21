@@ -156,8 +156,13 @@ function MageHand(props: any) {
         const index1 = hand1.joints['index-finger-tip'] as any;
         if(index1 === undefined) return
       if(index0 && index1){
+        //console.log(hand0)
         //crafting a new spell
-        if(player.position.y - 0.05 < hand0.position.y && player.position.y - 0.05 < hand1.position.y && player.position.y + 0.05 > hand0.position.y && player.position.y + 0.05 > hand1.position.y ){
+        //console.log(player.children[0].position.y-hand0.position.y)
+        //console.log(player.children[0].position)
+        //console.log(hand0.position)
+        //console.log(hand1.position)
+        if(player.children[0].position.y - 0.225 < hand0.children[0].position.y && player.children[0].position.y - 0.225 < hand1.children[0].position.y && player.children[0].position.y + 0.225 > hand0.children[0].position.y && player.children[0].position.y + 0.225 > hand1.children[0].position.y ){
           
           const thumb0 = hand0.joints['thumb-tip'] as any;
           if(thumb0 === undefined) return
@@ -340,7 +345,7 @@ function MageHand(props: any) {
         }
         */
         prev_craftPinching = craftPinching
-      }
+        } 
     }
   })
 
