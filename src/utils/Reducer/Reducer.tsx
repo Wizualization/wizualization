@@ -16,6 +16,14 @@ const reducer = (state: State, action: Action) => {
     //   return actions.ioConnectError(state);
     // case socketEventTypes.IO_CLOSE:
     //   return actions.ioClosed(state);
+
+    case actionTypes.SPELL_UNCAST:
+      return actions.spellUncast(state, action);
+      // case socketEventTypes.IO_CONNECT_ERROR:
+    //   return actions.ioConnectError(state);
+    // case socketEventTypes.IO_CLOSE:
+    //   return actions.ioClosed(state);
+ 
     case actionTypes.SPELL_MATCHED:
       return actions.spellMatched(state, action);
       // case socketEventTypes.IO_CONNECT_ERROR:

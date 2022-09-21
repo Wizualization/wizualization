@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import React, { createContext, useMemo, useRef, useState, useContext, useLayoutEffect, forwardRef, Suspense } from 'react';
+import {socket} from '../utils/Socket';
 import { useFrame, useThree } from '@react-three/fiber';
 //import { EffectComposer, Bloom, DepthOfField, Noise } from '@react-three/postprocessing';
 
@@ -101,6 +102,8 @@ const Node = forwardRef(({ name, connectedTo = [], position = [0, 0, 0], ...prop
     const index1 = hand1.joints['index-finger-tip']
     const thumb0 = hand0.joints['thumb-tip']
     const thumb1 = hand1.joints['thumb-tip']
+    const pinky0 = hand0.joints['pinky-finger-tip']
+    const pinky1 = hand1.joints['pinky-finger-tip']
     if (index0 && index1) {
       const left_isNear = Math.max(0, 1 - index0.position.distanceTo(ref.current.position) / 1) > 0.8
       const right_isNear = Math.max(0, 1 - index1.position.distanceTo(ref.current.position) / 1) > 0.8
@@ -120,6 +123,16 @@ const Node = forwardRef(({ name, connectedTo = [], position = [0, 0, 0], ...prop
           set((nodes) => [...nodes, state]) //yes!! that did the trick
 
         }
+        //add kill pinch--push together thumb and index finger of opposite hands
+        if (pinky0){
+          const killPinch = Math.max(0, 1 - index0.position.distanceTo(thumb1.position) / 0.1) > 0.6 || Math.max(0, 1 - index1.position.distanceTo(thumb0.position) / 0.1) > 0.6 
+          if (killPinch){
+            socket.emit('uncast', name)
+            
+          }
+        }
+
+
       } else {
         //lefty dominance if trying to grab with both hands, which the user should never do bc it will craft a spell lol
         if (right_isNear) {
