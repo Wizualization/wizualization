@@ -65,9 +65,7 @@ export default function ConfigGen(props: any){
         axisVarTypes.push(types);
     }
 
-    //console.log(axisVars)
-    //console.log(axisVarTypes)
-
+ 
     let nominalAxisVars:any[] = [];
     let quantitativeAxisVars:any[] = [];
 
@@ -107,7 +105,7 @@ export default function ConfigGen(props: any){
 
         if(o === 'color'){
             sessionViews[view_idx]['encoding']['color'] = {
-                scale: { scheme: "interpolateOrRd"},
+                //scale: { scheme: "interpolateOrRd"},
                 field: nominalAxisVars[workspace_idx % props.datasets.length][nominalAxisCount % nominalAxisVars[workspace_idx].length],
                 type: 'nominal'
                 //field: axisVars[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],

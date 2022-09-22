@@ -255,7 +255,6 @@ function MageHand(props: any) {
           if(prev_frame < frame - 5 && crafting && !casting && !abstraction_casting && Date.now() + 5000 > uncraft_bufferStart ){
             //start crafting if it has been more than 1 seconds
             if(Date.now() > (crafting_startTime + 1000)){
-              //setMagicDustCount(5000);
               if(dustRef.current){
                 dustRef.current.visible = true;
               }
@@ -364,9 +363,6 @@ function MageHand(props: any) {
             //Want to give it some extra time here; dont want to go into endless craft loop.
             prev_frame = frame;
             uncraft_bufferStart = Date.now()
-            /*if(dustRef.current){
-              dustRef.current.visible = false;
-            }*/
             dustRef.current.visible = true;
 
             setDustColor('purple');            

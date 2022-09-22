@@ -43,11 +43,31 @@ export default function ConfigStepTrace(props: any){
         axisVarTypes.push(types);
     }
 
+    let nominalAxisVars:any[] = [];
+    let quantitativeAxisVars:any[] = [];
+
+    for(let i = 0; i < axisVars.length; i++){
+        nominalAxisVars[i] = [];
+        quantitativeAxisVars[i] = [];
+        for(let j = 0; j < axisVars[i].length; j++){
+            if(axisVarTypes[i][j] === 'nominal'){
+                nominalAxisVars[i].push(axisVars[i][j]);
+            } else {
+                quantitativeAxisVars[i].push(axisVars[i][j]);
+            }
+    
+        }
+    }
+
     //for now, this is just going to stay zero. 
     let workspace_idx = 0;
 
     let axisCount = 0;
     let view_idx = 0;
+    let nominalAxisCount = 0;
+    let quantitativeAxisCount = 0;
+    
+    let barChartCheck = false;
 
     for(let i=0; i<optoClasses.length; i++){
         let o = optoClasses[i]
@@ -59,6 +79,12 @@ export default function ConfigStepTrace(props: any){
                     }]
                 }]
             }})
+            if(o === 'bar' || o === 'column'){
+                barChartCheck = true;
+            } else {
+                barChartCheck = false;
+            }
+
         }
 
         if(o === 'color'){
@@ -67,16 +93,20 @@ export default function ConfigStepTrace(props: any){
                     'views': [{
                         'encoding': {
                             'color': {
-                                field: axisVars[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
-                                type: axisVarTypes[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
+                                field: nominalAxisVars[workspace_idx % props.datasets.length][nominalAxisCount % nominalAxisVars[workspace_idx].length],
+                                type: 'nominal'
+                                //may someday want to change these back
+                                //field: axisVars[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
+                                //type: axisVarTypes[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
                             }
                         }
                     }]
                 }]
             }})
-            axisCount++;
+            nominalAxisCount++;
         }
 
+        /*
         if(o === 'axis'){
             const axis_encoding = {
                 'workspaces': [{
@@ -99,7 +129,8 @@ export default function ConfigStepTrace(props: any){
             config_steps.push({'CLASS': o, 'BLOCK':axis_encoding})
             axisCount++;
         }
-
+        }
+        */
         if(o === 'view'){
             config_steps.push({'CLASS': o, 'BLOCK':{
                 'views': [{
@@ -116,7 +147,60 @@ export default function ConfigStepTrace(props: any){
             axisCount++;
             view_idx++;
         }
+        
+
+        if(o === 'axis' && barChartCheck){
+            const axis_encoding = {
+                'workspaces': [{
+                        'views': [{
+                        'encoding': {}
+                    }]
+                }]
+            }
+
+
+            axis_encoding['workspaces'][0]['views'][0]['encoding'][axes[axis_dim_count % 3]] = {
+                field: nominalAxisVars[workspace_idx % props.datasets.length][nominalAxisCount % nominalAxisVars[workspace_idx].length],
+                type: 'nominal',
+            }
+            if(axisCount > 0 && (axisCount % 3 === 0)){
+                axis_dim_count=1;
+            } else {
+                axis_dim_count++;
+            }                    
+            config_steps.push({'CLASS': o, 'BLOCK':axis_encoding})
+            nominalAxisCount++;
+            barChartCheck = false;
+            continue;
+        }
+
+        if(o === 'axis' && !barChartCheck){
+            const axis_encoding = {
+                'workspaces': [{
+                        'views': [{
+                        'encoding': {}
+                    }]
+                }]
+            }
+
+
+            axis_encoding['workspaces'][0]['views'][0]['encoding'][axes[axis_dim_count % 3]] = {
+                field: quantitativeAxisVars[workspace_idx % props.datasets.length][quantitativeAxisCount % quantitativeAxisVars[workspace_idx].length],
+                type: 'quantitative',
+            }
+            if(quantitativeAxisCount > 0 && (quantitativeAxisCount % 3 === 0)){
+                axis_dim_count=1;
+            } else {
+                axis_dim_count++;
+            }                    
+            config_steps.push({'CLASS': o, 'BLOCK':axis_encoding})
+            quantitativeAxisCount++;
+            continue;
+        }
+
     }
+
+
     const spell_page_steps = config_steps.map((page : any) => ({
         'code': JSON.stringify(page.BLOCK, null, " "), //, null, "  "
         'language': 'javascript',
