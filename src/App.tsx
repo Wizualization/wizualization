@@ -32,12 +32,110 @@ import MageHand from "./Components/Somatic/MageHand";
 import ConfigGen from "./SpellCasting/ConfigGen";
 import ConfigStepTrace from "./SpellCasting/ConfigStepTrace";
 import { nhanes, iris, populations } from './examples/datasets';
+
 //import { Workspace } from "optomancy";
 //import { Interpreter } from "./SpellCasting/Interpreter";
 //const spellbook = require('spellbook');
 //import client from './utils/socketConfig';
 
-
+const rainfall =  [
+  {
+    month: "January",
+    rainfall: 188.9,
+    meanTempC: 4.9,
+    meanTempF: 2.9,
+    meanTempS: "4.9C",
+    month2: "January",
+  },
+  {
+    month: "February",
+    rainfall: 79.9,
+    meanTempC: 2.7,
+    meanTempF: 2.9,
+    meanTempS: "2.7C",
+    month2: "February",
+  },
+  {
+    month: "March",
+    rainfall: 151.4,
+    meanTempC: 4.1,
+    meanTempF: 4.9,
+    meanTempS: "4.1C",
+    month2: "March",
+  },
+  {
+    month: "April",
+    rainfall: 120.2,
+    meanTempC: 8.7,
+    meanTempF: 8.9,
+    meanTempS: "8.7C",
+    month2: "April",
+  },
+  {
+    month: "May",
+    rainfall: 64.3,
+    meanTempC: 11.8,
+    meanTempF: 11.9,
+    meanTempS: "11.8C",
+    month2: "May",
+  },
+  {
+    month: "June",
+    rainfall: 19,
+    meanTempC: 15.4,
+    meanTempF: 15.9,
+    meanTempS: "15.4C",
+    month2: "June",
+  },
+  {
+    month: "July",
+    rainfall: 16.4,
+    meanTempC: 17.2,
+    meanTempF: 17.9,
+    meanTempS: "17.2C",
+    month2: "July",
+  },
+  {
+    month: "August",
+    rainfall: 101.5,
+    meanTempC: 15.2,
+    meanTempF: 15.9,
+    meanTempS: "15.2C",
+    month2: "August",
+  },
+  {
+    month: "September",
+    rainfall: 144.6,
+    meanTempC: 12.5,
+    meanTempF: 12.9,
+    meanTempS: "12.5C",
+    month2: "September",
+  },
+  {
+    month: "October",
+    rainfall: 135.8,
+    meanTempC: 9.6,
+    meanTempF: 9.9,
+    meanTempS: "9.6C",
+    month2: "October",
+  },
+  {
+    month: "November",
+    rainfall: 169.8,
+    meanTempC: 7.5,
+    meanTempF: 7.9,
+    meanTempS: "7.5C",
+    month2: "November",
+  },
+  {
+    month: "December",
+    rainfall: 201.4,
+    meanTempC: 7.0,
+    meanTempF: 7,
+    meanTempS: "7.0C",
+    month2: "December",
+  },
+]
 
 const WorkspaceContext = React.createContext('workspace_0');
 const ViewContext = React.createContext('view_0');
@@ -100,6 +198,7 @@ export default function App() {
 
   const config : ConfigType = ConfigGen({
     datasets: [
+        {values: rainfall, name: 'cy_weather'}, 
         {values: nhanes, name: 'NHANES'}, 
         {values: iris, name: 'Iris'}, 
         {values: populations, name: 'Populations'}
@@ -110,8 +209,9 @@ export default function App() {
 
   const spellbookBlocks = ConfigStepTrace({
     datasets: [
-    {values: nhanes, name: 'NHANES'}, 
-    {values: iris, name: 'Iris'}, 
+      {values: rainfall, name: 'cy_weather'}, 
+      {values: nhanes, name: 'NHANES'}, 
+      {values: iris, name: 'Iris'}, 
       {values: populations, name: 'Populations'}
     ], 
     matchedSpells: state.matchedSpells
@@ -122,12 +222,18 @@ export default function App() {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const roomName = urlParams.get('room')
-    const demo_check = roomName === 'solodemo' || roomName === 'collabdemo';
+    const demo_check = roomName === 'solodemo' || roomName === 'collabdemo' || roomName === 'demobars';
     let demo_cast_order : string[] = [];
 
     if(roomName === 'solodemo'){
       demo_cast_order = ['axis', 'axis', 'color', 'axis', 'view', 'axis', 'axis', 'color'];
     }
+
+    if(roomName === 'demobars'){
+      demo_cast_order = ['axis', 'point', 'axis', 'color', 'bar', 'bar'];
+    }
+
+
 
     if(roomName === 'collabdemo'){
       //demo_cast_order = ['column', 'axis', 'axis', 'view', 'point', 'axis', 'axis', 'axis', 'color', 'view', 'point', 'axis', 'axis', 'color'];
@@ -188,6 +294,7 @@ export default function App() {
 
   let demo_config : ConfigType = ConfigGen({
     datasets: [
+        {values: rainfall, name: 'cy_weather'}, 
         {values: nhanes, name: 'NHANES'}, 
         {values: iris, name: 'Iris'}, 
         {values: populations, name: 'Populations'}
@@ -198,8 +305,9 @@ export default function App() {
 
   let demo_spellbookBlocks : any[] = ConfigStepTrace({
     datasets: [
-    {values: nhanes, name: 'NHANES'}, 
-    {values: iris, name: 'Iris'}, 
+      {values: rainfall, name: 'cy_weather'}, 
+      {values: nhanes, name: 'NHANES'}, 
+      {values: iris, name: 'Iris'}, 
       {values: populations, name: 'Populations'}
     ], 
     matchedSpells: demo_matchedSpells
@@ -223,10 +331,7 @@ export default function App() {
       console.log("DEMO_SPELLBOOK_PAGES", demo_spellbookBlocks);
     }
   })
-  
-   
-
-  
+    
   return (
     <DispatchContext.Provider value={dispatch}>
       <WorkspaceContext.Provider value={'workspace_0'}>

@@ -18,7 +18,6 @@ declare type LegendConfig = typeof Legend;
 
 /** Interfaces for config elements */
 export default function ConfigGen(props: any){
-    //console.log(props)
     let initX=0;
     let initY=-0.2;
     let initZ=1;
@@ -30,7 +29,6 @@ export default function ConfigGen(props: any){
         return d;
     });
 
-    //TODO: Correct the way we generate views. 
     //Creating a single view, then looping through the cast spells looking for optoclasses 
     // and then updating that single view is a little rough lol
     let sessionViews : ViewConfig[] = [{
@@ -46,7 +44,6 @@ export default function ConfigGen(props: any){
     }];
 
     let optoClasses = props.matchedSpells.map((s : any) => s.optoClass)
-    //console.log(optoClasses)
     
     let markPrimitives = ["line", "point", "bar", "column"]
 
@@ -110,6 +107,7 @@ export default function ConfigGen(props: any){
 
         if(o === 'color'){
             sessionViews[view_idx]['encoding']['color'] = {
+                scale: { scheme: "interpolateOrRd"},
                 field: nominalAxisVars[workspace_idx % props.datasets.length][nominalAxisCount % nominalAxisVars[workspace_idx].length],
                 type: 'nominal'
                 //field: axisVars[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
@@ -123,7 +121,7 @@ export default function ConfigGen(props: any){
             if(nominalAxisCount > 0 && (axis_dim_count % 3 === 0)){
                 sessionViews = [...sessionViews, {
                     title: "The X Dataset",
-                    mark: "point",
+                    mark: "bar",
                     encoding: {},
                     width: 0.25,
                     height: 0.25,
@@ -141,6 +139,8 @@ export default function ConfigGen(props: any){
             }
             axis_dim_count++;
             nominalAxisCount++;
+            barChartCheck = false;
+            continue;
         }
 
         if(o === 'axis' && !barChartCheck){
@@ -165,6 +165,7 @@ export default function ConfigGen(props: any){
             }
             axis_dim_count++;
             quantitativeAxisCount++;
+            continue;
         }
 
         /*
