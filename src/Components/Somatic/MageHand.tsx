@@ -32,8 +32,11 @@ const finger_weights = {
   'pinky': 1
 }
 
-//for now we will just store these for a given session but we NEED TO CONNECT TO SERVER DB
+//for now we will just store these for a given server session 
 let last_craft:any[] = [];
+let abstract_casts:any[] = [];
+let abstraction_casting = false;
+let uncraft_bufferStart = Date.now()
 /*
 const curve = new CatmullRomCurve3([start, new Vector3().lerpVectors(start, end, 0.5), end], false, 'catmullrom', 0.25)
 
@@ -190,7 +193,66 @@ function MageHand(props: any) {
 
           //for now we substitute this empty vector... why bc why not
           let dummyVec = new THREE.Vector3(1,1,1);
-          if(prev_frame < frame - 5 && crafting){
+          if(prev_frame < frame - 5 && casting && abstraction_casting){
+            //start casting if it has been more than 1 second
+            if(Date.now() > (casting_startTime + 1000)){
+              if(dustRef.current){
+                dustRef.current.visible = true;
+              }
+          
+              last_cast.push({
+                thumb0: thumb0 ? {...thumb0.position} : dummyVec, 
+                index0: index0 ? {...index0.position} : dummyVec, 
+                middle0: middle0 ? {...middle0.position} : dummyVec, 
+                ring0: ring0 ? {...ring0.position} : dummyVec, 
+                pinky0: pinky0 ? {...pinky0.position} : dummyVec,
+                thumb1: thumb1 ? {...thumb1.position} : dummyVec, 
+                index1: index1 ? {...index1.position} : dummyVec, 
+                middle1: middle1 ? {...middle1.position} : dummyVec, 
+                ring1: ring1 ? {...ring1.position} : dummyVec, 
+                pinky1: pinky1 ? {...pinky1.position} : dummyVec
+              })
+
+              prev_frame = frame;
+
+              //stop casting if it has been more than 5 seconds
+              if(Date.now() > (casting_startTime + 5000)){
+                if(dustRef.current){
+                  dustRef.current.visible = false;
+                }
+                casting = false;
+            
+                if(crafted_spells.length > 0){
+                  let spell_dtws:any = []
+                  let min_dist = 10000;
+                  let best_match_idx = -1;
+                  for (var i = 0; i < crafted_spells.length; i++) {
+                    const dtw = ComputeDTW(last_cast, crafted_spells[i].gesture);
+                    spell_dtws.push(dtw)
+                    let dthumb = finger_weights['thumb'] * (dtw['dist']['thumb0'] + dtw['dist']['thumb1'])
+                      dthumb = isNaN(dthumb) ? 0 : dthumb
+                    let dindex = finger_weights['index'] * (dtw['dist']['index0'] + dtw['dist']['index1'])
+                      dindex = isNaN(dindex) ? 0 : dindex
+                    let dmiddle = finger_weights['middle'] * (dtw['dist']['middle0'] + dtw['dist']['middle1'])
+                      dmiddle = isNaN(dmiddle) ? 0 : dmiddle
+                    let dring = finger_weights['ring'] * (dtw['dist']['ring0'] + dtw['dist']['ring1'])
+                      dring = isNaN(dring) ? 0 : dring
+                    let dpinky = finger_weights['pinky'] * (dtw['dist']['pinky0'] + dtw['dist']['pinky1'])
+                      dpinky = isNaN(dpinky) ? 0 : dpinky
+                    let weighted_dist = dthumb + dindex + dmiddle + dring + dpinky;
+                    if(min_dist > weighted_dist){
+                      best_match_idx = 1*i;
+                      min_dist = 1*weighted_dist;
+                    }
+                  }
+                  abstract_casts.push({'key': crafted_spells[best_match_idx].key, 'workspace': WorkspaceContext})
+                }
+
+              }
+            }
+          }
+          
+          if(prev_frame < frame - 5 && crafting && !casting && !abstraction_casting && Date.now() + 5000 > uncraft_bufferStart ){
             //start crafting if it has been more than 1 seconds
             if(Date.now() > (crafting_startTime + 1000)){
               //setMagicDustCount(5000);
@@ -221,13 +283,14 @@ function MageHand(props: any) {
                 if(dustRef.current){
                   dustRef.current.visible = false;
                 }
-                socket.emit('spellcast', JSON.stringify({'gesture':last_craft, 'words':''}))
+                //socket.emit('spellcast', JSON.stringify({'gesture':last_craft, 'words':'', 'casts':[]}))
                 crafting = false;
+                abstraction_casting = true;
               }
             }
           }
 
-          if(prev_frame < frame - 5 && casting){
+          if(prev_frame < frame - 5 && casting && !crafting && !abstraction_casting){
             //start casting if it has been more than 1 second
             if(Date.now() > (casting_startTime + 1000)){
               if(dustRef.current){
@@ -287,15 +350,42 @@ function MageHand(props: any) {
           }
 
           frame++
-
           //Update: I switched from left & right pinch for craft vs cast, to using both hands to pinch for craft vs putting hands together to cast
           //if (index0 && thumb0 && index1 && thumb1) {
             const craftPinch_left = Math.max(0, 1 - index0.position.distanceTo(thumb0.position) / 0.1)
             craftPinching = craftPinch_left > 0.52
             const craftPinch_right = Math.max(0, 1 - index1.position.distanceTo(thumb1.position) / 0.1)
             craftPinching = craftPinching && (craftPinch_right > 0.52)
-            //we set crafting to true, but we do not require pinch to continue crafting
-            if(craftPinching && !crafting && !casting){
+
+          //THIS MUST COME FIRST
+          //end the craft abstraction phase if the user pinches during abstraction casting after craft phase 1 (recording abstraction gesture) has ended.
+          if(craftPinching && !casting && !crafting && abstraction_casting){
+            //end casting if it has been more than 1 second and the user pinches.
+            //Want to give it some extra time here; dont want to go into endless craft loop.
+            prev_frame = frame;
+            uncraft_bufferStart = Date.now()
+            /*if(dustRef.current){
+              dustRef.current.visible = false;
+            }*/
+            dustRef.current.visible = true;
+
+            setDustColor('purple');            
+            setTimeout(()=>{
+              if(dustRef.current){
+                dustRef.current.visible = false;
+              }
+            }, 4000)
+            
+            socket.emit('spellcast', JSON.stringify({'gesture':last_craft, 'words':'', 'casts':abstract_casts}))
+            abstract_casts = [];
+            abstraction_casting = false;
+            crafting = false;
+            uncraft_bufferStart = Date.now()
+          }
+
+
+           //we set crafting to true, but we do not require pinch to continue crafting
+            if(craftPinching && !crafting && !casting && !abstraction_casting && (Date.now() - 5000) > uncraft_bufferStart){
               console.log('crafting spell...')
               setDustColor('red');
               crafting = true;
@@ -322,14 +412,25 @@ function MageHand(props: any) {
           castPinching = castThumbtips > 0.52
           const castIndextips = Math.max(0, 1 - index0.position.distanceTo(index1.position) / 0.1)
           castPinching = castPinching && (castIndextips > 0.52)
+
           //we set casting to true, but we do not require pinch to continue casting
-          if(castPinching && !casting && !crafting){
+          if(castPinching && !abstraction_casting && !casting && !crafting){
             console.log('casting spell...')
             setDustColor('lightblue');
             last_cast = [];
             casting = true;
             casting_startTime = Date.now();
           }
+
+          //cast abstraction
+          if(castPinching && abstraction_casting && !casting && !crafting){
+            console.log('casting spell as part of macro...')
+            setDustColor('green');
+            last_cast = [];
+            casting = true;
+            casting_startTime = Date.now();
+          }
+
         //}
 
 
