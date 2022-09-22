@@ -130,7 +130,8 @@ export default function App() {
     }
 
     if(roomName === 'collabdemo'){
-      demo_cast_order = ['column', 'axis', 'axis', 'view', 'point', 'axis', 'axis', 'axis', 'color', 'view', 'point', 'axis', 'axis', 'color'];
+      //demo_cast_order = ['column', 'axis', 'axis', 'view', 'point', 'axis', 'axis', 'axis', 'color', 'view', 'point', 'axis', 'axis', 'color'];
+      demo_cast_order = ['point', 'axis', 'axis', 'axis', 'color', 'view', 'point', 'axis', 'axis', 'color'];
     }
     let demo_primitives = {
       "line": "a07ff089-2ca2-1341-cc58-74509f1d8577",

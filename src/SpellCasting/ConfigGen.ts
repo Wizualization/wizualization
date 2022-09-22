@@ -34,7 +34,7 @@ export default function ConfigGen(props: any){
     //Creating a single view, then looping through the cast spells looking for optoclasses 
     // and then updating that single view is a little rough lol
     let sessionViews : ViewConfig[] = [{
-        title: "The Iris Flower Dataset",
+        title: "The X Dataset",
         mark: "point",
         encoding: {},
         width: 0.25,
@@ -67,26 +67,107 @@ export default function ConfigGen(props: any){
         })
         axisVarTypes.push(types);
     }
+
+    //console.log(axisVars)
+    //console.log(axisVarTypes)
+
+    let nominalAxisVars:any[] = [];
+    let quantitativeAxisVars:any[] = [];
+
+    for(let i = 0; i < axisVars.length; i++){
+        nominalAxisVars[i] = [];
+        quantitativeAxisVars[i] = [];
+        for(let j = 0; j < axisVars[i].length; j++){
+            if(axisVarTypes[i][j] === 'nominal'){
+                nominalAxisVars[i].push(axisVars[i][j]);
+            } else {
+                quantitativeAxisVars[i].push(axisVars[i][j]);
+            }
+    
+        }
+    }
+
     //for now, this is just going to stay zero. 
     let workspace_idx = 0;
 
     let axisCount = 0;
     let view_idx = 0;
+    let nominalAxisCount = 0;
+    let quantitativeAxisCount = 0;
+    
+    let barChartCheck = false;
 
     for(let i=0; i<optoClasses.length; i++){
         let o = optoClasses[i]
         if(markPrimitives.includes(o)){
-            sessionViews[view_idx]['mark'] = o
+            sessionViews[view_idx]['mark'] = o === 'column' ? 'bar' : o
+            if(sessionViews[view_idx]['mark'] === 'bar'){
+                barChartCheck = true;
+            } else {
+                barChartCheck = false;
+            }
         }
 
         if(o === 'color'){
             sessionViews[view_idx]['encoding']['color'] = {
-                field: axisVars[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
-                type: axisVarTypes[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
-            }    
-            axisCount++;
+                field: nominalAxisVars[workspace_idx % props.datasets.length][nominalAxisCount % nominalAxisVars[workspace_idx].length],
+                type: 'nominal'
+                //field: axisVars[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
+                //type: axisVarTypes[workspace_idx % props.datasets.length][axisCount % axisVars[workspace_idx].length],
+            }
+            nominalAxisCount++;
+            //axisCount++;
         }
 
+        if(o === 'axis' && barChartCheck){
+            if(nominalAxisCount > 0 && (axis_dim_count % 3 === 0)){
+                sessionViews = [...sessionViews, {
+                    title: "The X Dataset",
+                    mark: "point",
+                    encoding: {},
+                    width: 0.25,
+                    height: 0.25,
+                    depth: 0.25,
+                    x: initX+0.375*(view_idx+1),
+                    y: initY-1.5*(view_idx+1), 
+                    z: initZ-0.375*(workspace_idx)
+                }];
+                axis_dim_count = 0;
+                view_idx++;
+            }
+            sessionViews[view_idx]['encoding'][axes[axis_dim_count % 3]] = {
+                field: nominalAxisVars[workspace_idx % props.datasets.length][nominalAxisCount % nominalAxisVars[workspace_idx].length],
+                type: 'nominal',
+            }
+            axis_dim_count++;
+            nominalAxisCount++;
+        }
+
+        if(o === 'axis' && !barChartCheck){
+            if(quantitativeAxisCount > 0 && (axis_dim_count % 3 === 0)){
+                sessionViews = [...sessionViews, {
+                    title: "The X Dataset",
+                    mark: "point",
+                    encoding: {},
+                    width: 0.25,
+                    height: 0.25,
+                    depth: 0.25,
+                    x: initX+0.375*(view_idx+1),
+                    y: initY-1.5*(view_idx+1), 
+                    z: initZ-0.375*(workspace_idx)
+                }];
+                axis_dim_count = 0;
+                view_idx++;
+            }
+            sessionViews[view_idx]['encoding'][axes[axis_dim_count % 3]] = {
+                field: quantitativeAxisVars[workspace_idx % props.datasets.length][quantitativeAxisCount % quantitativeAxisVars[workspace_idx].length],
+                type: 'quantitative',
+            }
+            axis_dim_count++;
+            quantitativeAxisCount++;
+        }
+
+        /*
         if(o === 'axis'){
             if(axisCount > 0 && (axis_dim_count % 3 === 0)){
                 sessionViews = [...sessionViews, {
@@ -110,7 +191,7 @@ export default function ConfigGen(props: any){
             axis_dim_count++;
             axisCount++;
         }
-
+        */
         if(o === 'view'){
             //logiiiic. we will probably need to add a list of views in this script.
             // We should be able to extract as unique sorted array of view indices prefixed with 'view_' given our naming scheme.
@@ -119,7 +200,7 @@ export default function ConfigGen(props: any){
             // Also need to do this with workspaces.'
             // But for now, we just add to view_idx and push another sessionView.
             sessionViews = [...sessionViews, {
-                title: "The Iris Flower Dataset",
+                title: "The X Dataset",
                 mark: "point",
                 encoding: {
                     x: {
