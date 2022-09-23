@@ -99,7 +99,7 @@ export default function App() {
         <div>
           <div className="DemoGrid">
             <div className="DemoVideo">
-              <video  controls>
+              <video style={{width:'50vw'}} controls>
                 <source src="./WizDemoSequence.mp4" type="video/mp4"></source>
               </video>
             </div>
