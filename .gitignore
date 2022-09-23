@@ -1,5 +1,6 @@
 # Demo video
 *.mp4
+public/WizDemoSequence.mp4
 
 # Logs
 logs
