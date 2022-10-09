@@ -49,6 +49,141 @@ if(new URLSearchParams(window.location.search).get("room") == null){
   joinNewRoom();
 }
 
+/** A special little demo just for Pete setup */
+    //Simple demo room
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const roomName = urlParams.get('room')
+  const demo_check = roomName === 'petesolodemo' || roomName === 'petecollabdemo' /*|| roomName === 'petedemobars'*/; //demobars does not work due to OptomancyR3F being picky lol
+
+  const rainfall =  [
+    {
+      month: "January",
+      rainfall: 188.9,
+      meanTempC: 4.9,
+      meanTempF: 2.9,
+      meanTempS: "4.9C",
+      month2: "January",
+    },
+    {
+      month: "February",
+      rainfall: 79.9,
+      meanTempC: 2.7,
+      meanTempF: 2.9,
+      meanTempS: "2.7C",
+      month2: "February",
+    },
+    {
+      month: "March",
+      rainfall: 151.4,
+      meanTempC: 4.1,
+      meanTempF: 4.9,
+      meanTempS: "4.1C",
+      month2: "March",
+    },
+    {
+      month: "April",
+      rainfall: 120.2,
+      meanTempC: 8.7,
+      meanTempF: 8.9,
+      meanTempS: "8.7C",
+      month2: "April",
+    },
+    {
+      month: "May",
+      rainfall: 64.3,
+      meanTempC: 11.8,
+      meanTempF: 11.9,
+      meanTempS: "11.8C",
+      month2: "May",
+    },
+    {
+      month: "June",
+      rainfall: 19,
+      meanTempC: 15.4,
+      meanTempF: 15.9,
+      meanTempS: "15.4C",
+      month2: "June",
+    },
+    {
+      month: "July",
+      rainfall: 16.4,
+      meanTempC: 17.2,
+      meanTempF: 17.9,
+      meanTempS: "17.2C",
+      month2: "July",
+    },
+    {
+      month: "August",
+      rainfall: 101.5,
+      meanTempC: 15.2,
+      meanTempF: 15.9,
+      meanTempS: "15.2C",
+      month2: "August",
+    },
+    {
+      month: "September",
+      rainfall: 144.6,
+      meanTempC: 12.5,
+      meanTempF: 12.9,
+      meanTempS: "12.5C",
+      month2: "September",
+    },
+    {
+      month: "October",
+      rainfall: 135.8,
+      meanTempC: 9.6,
+      meanTempF: 9.9,
+      meanTempS: "9.6C",
+      month2: "October",
+    },
+    {
+      month: "November",
+      rainfall: 169.8,
+      meanTempC: 7.5,
+      meanTempF: 7.9,
+      meanTempS: "7.5C",
+      month2: "November",
+    },
+    {
+      month: "December",
+      rainfall: 201.4,
+      meanTempC: 7.0,
+      meanTempF: 7,
+      meanTempS: "7.0C",
+      month2: "December",
+    },
+  ]
+
+  let demo_cast_order : string[] = [];
+
+  if(roomName === 'petesolodemo'){
+    demo_cast_order = ['axis', 'axis', 'color', 'axis', 'view', 'axis', 'axis', 'color'];
+  }
+
+  if(roomName === 'petedemobars'){
+    demo_cast_order = ['axis', 'point', 'axis', 'color', 'bar', 'bar'];
+  }
+
+
+
+  if(roomName === 'petecollabdemo'){
+    //demo_cast_order = ['column', 'axis', 'axis', 'view', 'point', 'axis', 'axis', 'axis', 'color', 'view', 'point', 'axis', 'axis', 'color'];
+    demo_cast_order = ['point', 'axis', 'axis', 'axis', 'color', 'view', 'point', 'axis', 'axis', 'color'];
+  }
+  let demo_primitives = {
+    "line": "a07ff089-2ca2-1341-cc58-74509f1d8577",
+    "point": "1f1459f2-688e-5d2a-2366-5cb00328eb2c",
+    "bar": "9458d9af-68e1-e137-d7c8-546055a92cdd",
+    "column": "75e76e72-acb2-350c-3a95-a86ab5255c66",
+    "color": "2818b295-2a1a-c14e-1259-da58eb3fe09e",
+    "axis": "f15012d8-a09f-c3b7-90a7-66f796e29fa6",
+    "view": "4a08f949-57a7-7604-33d2-dfdc4315d0b1"
+  }
+  /** end block of special little demo just for Pete, to be continued in-app */
+
+
+
 export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -78,6 +213,35 @@ export default function App() {
     ], 
     matchedSpells: state.matchedSpells
   });
+
+  /**Continue the special little demo just for Pete in-app */
+  let demo_cast_len = demo_check ? state.matchedSpells.length % demo_cast_order.length : 0;
+  let demo_matchedSpells : any[] = demo_check ? Array.apply(null, Array(demo_cast_len)).map(function (x, i) { 
+    return {"key":demo_primitives[demo_cast_order[i]], "optoClass": demo_cast_order[i]}; 
+  }) : [];
+
+  let demo_config : ConfigType = ConfigGen({
+    datasets: [
+        {values: rainfall, name: 'cy_weather'}, 
+        {values: nhanes, name: 'NHANES'}, 
+        {values: iris, name: 'Iris'}, 
+        {values: populations, name: 'Populations'}
+    ], 
+    matchedSpells: demo_matchedSpells, 
+    workspaces:  [...new Set(demo_matchedSpells.map((spell: any) => spell.workspace))]
+  });
+
+  let demo_spellbookBlocks : any[] = ConfigStepTrace({
+    datasets: [
+      {values: rainfall, name: 'cy_weather'}, 
+      {values: nhanes, name: 'NHANES'}, 
+      {values: iris, name: 'Iris'}, 
+      {values: populations, name: 'Populations'}
+    ], 
+    matchedSpells: demo_matchedSpells
+  });    
+  /** end block of special little demo just for Pete */
+
 
    // cdm
    useEffect(() => {
@@ -118,7 +282,7 @@ export default function App() {
             <div className="DemoMain">
             <VRCanvas>
               <DefaultXRControllers />
-              <SpellPages spells={ spellbookBlocks } />
+              <SpellPages spells={ demo_check ? demo_spellbookBlocks : spellbookBlocks } />
               <MageHand grimoire={[...primitives, ...grimoire]} context={state.workview.workspace}/>
 
               <OrbitControls />
@@ -128,7 +292,7 @@ export default function App() {
               {Object.keys(config).includes('workspaces') ? (
                   config['workspaces'].length > 0 ? 
                     <Suspense fallback={null}>
-                    <OptomancyR3F position = {[0, 2, -1]} config = { config }/> 
+                    <OptomancyR3F position = {[0, 2, -1]}  config = {demo_check ? demo_config : config}/> 
                     </Suspense>
                     : null
                 ) : null
