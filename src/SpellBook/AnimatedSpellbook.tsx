@@ -7,6 +7,10 @@ import { Stats, OrbitControls, Text, useTexture } from "@react-three/drei";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
 import * as iris from "../examples/datasets/iris.json";
 import "./styles.css";
+import { SpellBlock } from "./SpellBlock";
+
+// Icon textures
+//import axisIconTexture from "icons/axis.png";
 
 let page_width = 0.175;
 let page_height = 0.235;
@@ -22,60 +26,99 @@ const spell_references = [
     spoken: "Workspace",
     description:
       "Initializes a new workspace, allowing a user to switch between collections of views within the same room",
-    icon: "assets/200.png"
+    icon: "assets/icons-png/workspace.png"
   },
   {
     name: "View Creation",
     spoken: "View",
     description: "Creates new views in the current workspace",
-    icon: "assets/200.png"
+    icon: "assets/icons-png/new-view.png"
   },
   {
     name: "Axis Creation",
     spoken: "Axis",
     description: "Creates a new axis in the current view",
-    icon: "assets/200.png"
+    icon: "assets/icons-png/axis.png"
   },
   {
     name: "Color",
     spoken: "Color",
     description: "Colors marks by variable values",
-    icon: "assets/200.png"
+    icon: "assets/icons-png/color.png"
   },
   {
     name: "Object Grouping",
     spoken: "Group",
     description:
       "Initializes a free selection sequence that allows the user to select multiple objects in the scene for shared application of grammar translations",
-    icon: "assets/200.png"
+    icon: "assets/icons-png/group.png"
   },
   {
     name: "Point Mark Type",
     spoken: "Point",
     description:
       "Modifies the type of mark used for a selected visualization or group such that the figure is a scatter plot",
-    icon: "assets/200.png"
+    icon: "assets/icons-png/point.png"
   },
   {
     name: "Bar Mark Type",
     spoken: "Bar",
     description:
       "Modifies the type of mark used for a selected visualization or group such that the figure is a bar chart",
-    icon: "assets/200.png"
+    icon: "assets/icons-png/bar.png"
   },
   {
     name: "Column Mark Type",
     spoken: "Column",
     description:
       "Modifies the type of mark used for a selected visualization or group such that the figure is a column chart",
-    icon: "assets/200.png"
+    icon: "assets/icons-png/columns.png"
   },
   {
     name: "Line Mark Type",
     spoken: "Bar",
     description:
       "Modifies the type of mark used for a selected visualization or group such that the figure is a line chart",
-    icon: "assets/200.png"
+    icon: "assets/icons-png/line.png"
+  }
+];
+
+const demo_spellbookBlocks = [
+  {
+    code:
+      '{\n "workspaces": [\n  {\n   "views": [\n    {\n     "mark": "point"\n    }\n   ]\n  }\n ]\n}',
+    language: "javascript",
+    optoClass: "point"
+  },
+  {
+    code:
+      '{\n "workspaces": [\n  {\n   "views": [\n    {\n     "mark": "point"\n    }\n   ]\n  }\n ]\n}',
+    language: "javascript",
+    optoClass: "point"
+  },
+  {
+    code:
+      '{\n "workspaces": [\n  {\n   "views": [\n    {\n     "mark": "point"\n    }\n   ]\n  }\n ]\n}',
+    language: "javascript",
+    optoClass: "point"
+  },
+  {
+    code:
+      '{\n "workspaces": [\n  {\n   "views": [\n    {\n     "mark": "point"\n    }\n   ]\n  }\n ]\n}',
+    language: "javascript",
+    optoClass: "point"
+  },
+  {
+    code:
+      '{\n "workspaces": [\n  {\n   "views": [\n    {\n     "mark": "point"\n    }\n   ]\n  }\n ]\n}',
+    language: "javascript",
+    optoClass: "point"
+  },
+  {
+    code:
+      '{\n "workspaces": [\n  {\n   "views": [\n    {\n     "mark": "point"\n    }\n   ]\n  }\n ]\n}',
+    language: "javascript",
+    optoClass: "point"
   }
 ];
 
@@ -96,7 +139,7 @@ const data_unq_vars = data_placeholder.map((d) => {
 
 const SpellReference = (props: any) => {
   const white = new THREE.MeshLambertMaterial({
-    color: 0x999999,
+    color: 0xffffff,
     side: THREE.DoubleSide
   });
   const blue = new THREE.MeshLambertMaterial({
@@ -119,19 +162,24 @@ const SpellReference = (props: any) => {
 
   const iconTexture = useTexture(iconAsset);
 
-  console.log(iconTexture);
+  console.log("Icon Texture", iconTexture);
 
   return (
     <mesh position={[0, props.y_pos, -0.0001]}>
-      <Plane args={[page_width - page_margin, spellHeight]} material={white} />
+      <Plane args={[page_width - page_margin, spellHeight]} />
       <mesh
-        position={[(page_width - page_margin - spellHeight) / 2, 0, -0.001]}
+        position={[(page_width - page_margin - spellHeight) / 2, 0, -0.0001]}
+        rotation={[
+          THREE.MathUtils.degToRad(180),
+          0,
+          THREE.MathUtils.degToRad(180)
+        ]}
       >
         <planeBufferGeometry
           attach="geometry"
           args={[spellHeight, spellHeight]}
         />
-        <meshStandardMaterial attach="material" map={iconTexture} />
+        <meshStandardMaterial attach="material" map={iconTexture} transparent />
       </mesh>
 
       <Text
@@ -141,7 +189,6 @@ const SpellReference = (props: any) => {
         anchorY="middle"
         textAlign="left"
         maxWidth={page_width - page_margin - padding - spellHeight}
-        // outlineWidth="5%"
         position={[spellHeight - padding, 0, -0.0002]}
         rotation={new THREE.Euler(0, -Math.PI, 0)}
       >
@@ -227,7 +274,7 @@ const Cube = () => {
       : MathUtils.lerp(
           DataSelect.current!.position.y,
           0.35 * page_height,
-          0.02
+          dataview_time
         );
     SpellCards.current!.position.y = dataSelectViewed
       ? MathUtils.lerp(
@@ -277,13 +324,44 @@ const Cube = () => {
     side: THREE.DoubleSide
   });
 
+  const offwhite = new THREE.MeshLambertMaterial({
+    color: 0x999999,
+    side: THREE.DoubleSide
+  });
+
+  const arrowTexture = useTexture("assets/arrow.png");
+
+  const leftPageTexture = useTexture("assets/left-page.jpg");
+  const rightPageTexture = useTexture("assets/right-page.jpg");
+
+  const leftPageMaterial = new THREE.MeshStandardMaterial({
+    map: leftPageTexture
+  });
+  const rightPageMaterial = new THREE.MeshStandardMaterial({
+    map: rightPageTexture
+  });
+
   const blue = new THREE.MeshLambertMaterial({
     color: "blue",
     side: THREE.DoubleSide
   });
 
+  /* Preload test */
+  // const preloadGroupTexture = useTexture("assets/icons-png/group.png");
+
   return (
     <mesh scale={[scale_factor, scale_factor, scale_factor]}>
+      {/* Preload test */}
+      {/* <mesh
+        position={[0, 0, 0]}
+      >
+        <planeBufferGeometry
+          attach="geometry"
+          args={[0.1, 0.1]}
+        />
+        <meshStandardMaterial attach="material" map={preloadGroupTexture} transparent />
+      </mesh> */}
+
       <mesh ref={book}>
         <mesh ref={frontcover}>
           <mesh
@@ -309,25 +387,42 @@ const Cube = () => {
         <mesh ref={frontcube}>
           <mesh position={new THREE.Vector3(plane_offset, 0, 0)}>
             {/* Page */}
-            <Plane args={[page_width, page_height]} material={white} />
+            <Plane
+              args={[page_width, page_height]}
+              material={leftPageMaterial}
+              rotation={[
+                THREE.MathUtils.degToRad(180),
+                0,
+                THREE.MathUtils.degToRad(180)
+              ]}
+            />
 
             {/* Scroll up */}
-            <Plane
-              args={[0.05, 0.02]}
-              material={red}
-              position={[0, page_height / 2 - 0.02 / 2, -0.001]}
+            <mesh
+              position={[0, page_height / 2 - 0.02 / 2, -0.0001]}
+              rotation={[
+                THREE.MathUtils.degToRad(180),
+                0,
+                THREE.MathUtils.degToRad(180)
+              ]}
               onPointerDown={() =>
                 updateSpellRefViewStart(
                   spellRefViewStart > 0 ? spellRefViewStart - 1 : 0
                 )
               }
-            />
+            >
+              <planeBufferGeometry attach="geometry" args={[0.05, 0.02]} />
+              <meshStandardMaterial
+                attach="material"
+                map={arrowTexture}
+                transparent
+              />
+            </mesh>
 
             {/* Scroll down */}
-            <Plane
-              args={[0.05, 0.02]}
-              material={green}
-              position={[0, -page_height / 2 + 0.02 / 2, -0.001]}
+            <mesh
+              position={[0, -page_height / 2 + 0.02 / 2, -0.0001]}
+              rotation={[THREE.MathUtils.degToRad(180), 0, 0]}
               onPointerDown={() =>
                 updateSpellRefViewStart(
                   spellRefViewStart < spell_references.length - 4
@@ -335,7 +430,14 @@ const Cube = () => {
                     : spellRefViewStart
                 )
               }
-            />
+            >
+              <planeBufferGeometry attach="geometry" args={[0.05, 0.02]} />
+              <meshStandardMaterial
+                attach="material"
+                map={arrowTexture}
+                transparent
+              />
+            </mesh>
 
             {/* Spell References */}
             {/* TODO: FINISH FORMATTING */}
@@ -406,30 +508,31 @@ const Cube = () => {
         </mesh>
         <mesh ref={backcube}>
           <mesh position={new THREE.Vector3(plane_offset, 0, 0)}>
-            <Plane args={[page_width, page_height]} material={white} />
-            <Text
-              fontSize={0.01}
-              color="black"
-              anchorX="center"
-              anchorY="top"
-              // outlineWidth="5%"
-              position={[0, 0, 0.001]}
-              //rotation={new THREE.Euler(0, -Math.PI, 0)}
-            >
-              Test Text
-            </Text>
+            <Plane
+              args={[page_width, page_height]}
+              material={rightPageMaterial}
+              // rotation={[
+              //   THREE.MathUtils.degToRad(180),
+              //   0,
+              //   THREE.MathUtils.degToRad(180)
+              // ]}
+            />
           </mesh>
         </mesh>
 
         <mesh
           ref={DataSelect}
-          position={new THREE.Vector3(plane_offset, 0.25 * page_height, 0.001)}
+          position={
+            DataSelect.current
+              ? DataSelect.current.position
+              : new THREE.Vector3(plane_offset, 0.25 * page_height, 0.001)
+          }
         >
           {/* Page */}
           <Plane
             ref={DataSelectPlane}
             args={[0.95 * page_width, 0.45 * page_height]}
-            material={blue}
+            material={offwhite}
             onPointerDown={() => isDataSelectViewed(true)}
           />
           {data_placeholder.map((d, i) => {
@@ -438,13 +541,13 @@ const Cube = () => {
                 <Text
                   fontSize={0.01}
                   color="black"
-                  anchorX="left"
+                  anchorX="center"
                   anchorY="top"
                   // outlineWidth="5%"
                   position={[
-                    -0.35 * page_width,
+                    0,
                     dataSelectViewed ? 0.25 * page_height : 0.05 * page_height,
-                    0.001
+                    0.003
                   ]}
                   //rotation={new THREE.Euler(0, -Math.PI, 0)}
                 >
@@ -455,28 +558,37 @@ const Cube = () => {
                     return (
                       <mesh>
                         <Plane
-                          args={[0.85 * page_width, 0.1 * page_height * j]}
-                          material={red}
+                          args={[
+                            0.85 * page_width,
+                            (0.45 * page_height * j) / data_unq_vars[i].length
+                          ]}
+                          material={white}
                           position={[
                             0 * page_width,
-                            0.1 * page_height * j - 0.33 * page_height,
+                            (0.45 * page_height * j) / data_unq_vars[i].length -
+                              0.33 * page_height,
                             0.001
                           ]}
                         >
                           <Text
-                            fontSize={0.01}
+                            fontSize={Math.min(
+                              0.009,
+                              0.045 / data_unq_vars[i].length
+                            )}
                             color="black"
-                            anchorX="center"
+                            anchorX="left"
                             anchorY="middle"
                             // outlineWidth="5%"
                             position={[
-                              0,
+                              -0.4 * page_width,
                               0.03, //* page_height * j - 0.225 * page_height,
                               0.001
                             ]}
                             //rotation={new THREE.Euler(0, -Math.PI, 0)}
                           >
-                            {varname}
+                            {(data_unq_vars[i].length - j).toString() +
+                              ". " +
+                              varname}
                           </Text>
                         </Plane>{" "}
                       </mesh>
@@ -493,16 +605,79 @@ const Cube = () => {
         <mesh
           ref={SpellCards}
           position={
-            new THREE.Vector3(plane_offset, -0.25 * page_height, cover_offset)
+            SpellCards.current
+              ? SpellCards.current.position
+              : new THREE.Vector3(
+                  plane_offset,
+                  -0.25 * page_height,
+                  cover_offset
+                )
           }
         >
           {/* Page */}
           <Plane
             ref={SpellCardsPlane}
             args={[0.95 * page_width, 0.45 * page_height]}
-            material={blue}
+            material={offwhite}
             onPointerDown={() => isDataSelectViewed(false)}
-          />
+          >
+            {dataSelectViewed ? (
+              <mesh>
+                {demo_spellbookBlocks.map((props, i) => {
+                  return (
+                    <mesh
+                      position={[
+                        (0.85 * page_width * i) / demo_spellbookBlocks.length -
+                          0.35 * page_width,
+                        -0.01 * page_height,
+                        0.001
+                      ]}
+                    >
+                      <Plane
+                        args={[
+                          (0.75 * page_width) / demo_spellbookBlocks.length,
+                          0.3 * page_height
+                        ]}
+                        material={white}
+                        position={[0, 0, 0.001]}
+                      >
+                        <Text
+                          fontSize={Math.min(
+                            0.009,
+                            0.045 / demo_spellbookBlocks.length
+                          )}
+                          color="black"
+                          anchorX="center"
+                          anchorY="middle"
+                          // outlineWidth="5%"
+                          position={[
+                            0,
+                            0, //* page_height * j - 0.225 * page_height,
+                            0.001
+                          ]}
+                          //rotation={new THREE.Euler(0, -Math.PI, 0)}
+                        >
+                          {props.optoClass}
+                        </Text>
+                      </Plane>{" "}
+                    </mesh>
+                  );
+                })}
+              </mesh>
+            ) : (
+              demo_spellbookBlocks.map((props, i) => {
+                return (
+                  <mesh position={[0.005 * i, -0.01 * i, 0.005 * i + 0.001]}>
+                    <SpellBlock
+                      code={props.code}
+                      language={props.language}
+                      optoClass={props.optoClass}
+                    />
+                  </mesh>
+                );
+              })
+            )}
+          </Plane>
         </mesh>
       </mesh>
     </mesh>
@@ -529,7 +704,6 @@ const App = () => {
       }}
     >
       <Canvas
-//        concurrent
         camera={{
           near: 0.1,
           far: 1000,

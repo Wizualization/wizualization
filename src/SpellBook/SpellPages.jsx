@@ -1,6 +1,6 @@
 import { useState, useEffect, Fragment, useRef, useMemo, createRef, useLayoutEffect, Suspense } from 'react'
 import { Mesh } from 'three';
-import { useThree, useFrame, ThreeEvent } from '@react-three/fiber'
+import { useThree, useFrame } from '@react-three/fiber'
 import { CurveModifier } from '@react-three/drei'
 import { SpellBlock } from './SpellBlock'
 import * as THREE from 'three';
