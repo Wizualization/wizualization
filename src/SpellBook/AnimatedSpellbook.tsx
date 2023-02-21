@@ -8,6 +8,7 @@ import { TextureLoader } from "three/src/loaders/TextureLoader";
 import * as iris from "../examples/datasets/iris.json";
 import "./styles.css";
 import { SpellBlock } from "./SpellBlock";
+import { SpellPages } from "./SpellPages";
 
 // Icon textures
 //import axisIconTexture from "icons/axis.png";
@@ -19,6 +20,7 @@ let cover_offset = 0.005;
 let scale_factor = 10;
 let page_margin = 0.01;
 let dataview_time = 0.2;
+const numVarsMaxView = 5;
 
 const spell_references = [
   {
@@ -198,10 +200,13 @@ const SpellReference = (props: any) => {
   );
 };
 
-const SpellBook = (props: any) => {
+const SpellBook = () => {
+  const [selectedVarName, selectVarName] = useState("");
   const [bookOpened, isBookOpened] = useState(true);
   const [dataSelectViewed, isDataSelectViewed] = useState(true);
+  const [pagesUnfolded, arePagesUnfolded] = useState(false);
   const [spellRefViewStart, updateSpellRefViewStart] = useState(0);
+  const [varStart, updateVarStart] = useState(0);
   const book = useRef<THREE.Mesh>();
   const frontcube = useRef<THREE.Mesh>();
   const backcube = useRef<THREE.Mesh>();
@@ -268,7 +273,7 @@ const SpellBook = (props: any) => {
     DataSelect.current!.position.y = dataSelectViewed
       ? MathUtils.lerp(
           DataSelect.current!.position.y,
-          0.1 * page_height,
+          0.135 * page_height,
           dataview_time + 0.005
         )
       : MathUtils.lerp(
@@ -304,9 +309,11 @@ const SpellBook = (props: any) => {
       */
   });
 
-  const white = new THREE.MeshLambertMaterial({
+  const white = new THREE.MeshPhongMaterial({
     color: "white",
-    side: THREE.DoubleSide
+    side: THREE.DoubleSide,
+    opacity: 0.1,
+    transparent: true
   });
 
   const brown = new THREE.MeshLambertMaterial({
@@ -324,9 +331,18 @@ const SpellBook = (props: any) => {
     side: THREE.DoubleSide
   });
 
-  const offwhite = new THREE.MeshLambertMaterial({
+  const offwhite = new THREE.MeshPhongMaterial({
     color: 0x999999,
-    side: THREE.DoubleSide
+    side: THREE.DoubleSide,
+    opacity: 0.1,
+    transparent: true
+  });
+
+  const blue = new THREE.MeshPhongMaterial({
+    color: "blue",
+    side: THREE.DoubleSide,
+    opacity: 0.5,
+    transparent: true
   });
 
   const arrowTexture = useTexture("assets/arrow.png");
@@ -341,27 +357,34 @@ const SpellBook = (props: any) => {
     map: rightPageTexture
   });
 
-  const blue = new THREE.MeshLambertMaterial({
-    color: "blue",
-    side: THREE.DoubleSide
-  });
-
   /* Preload test */
-  // const preloadGroupTexture = useTexture("assets/icons-png/group.png");
+  const preloadGroupTexture = useTexture("assets/icons-png/group.png");
+
+  const PreloadedTexture = (props: any) => {
+    let iconAsset: "string" =
+      props.refIcon !== null &&
+      props.refIcon !== undefined &&
+      typeof props.refIcon === "string"
+        ? props.refIcon
+        : "assets/200.jpg";
+
+    const t = useTexture(iconAsset);
+
+    return (
+      <mesh position={[0, 0, 0.0001]}>
+        <planeBufferGeometry attach="geometry" args={[0.0001, 0.0001]} />
+        <meshStandardMaterial attach="material" map={t} transparent />
+      </mesh>
+    );
+  };
+
+  /* Preload textures */
+  const preloadedTextures = spell_references.map((el, i) => (
+    <PreloadedTexture key={`preload${i}`} refIcon={el.icon} />
+  ));
 
   return (
     <mesh scale={[scale_factor, scale_factor, scale_factor]}>
-      {/* Preload test */}
-      {/* <mesh
-        position={[0, 0, 0]}
-      >
-        <planeBufferGeometry
-          attach="geometry"
-          args={[0.1, 0.1]}
-        />
-        <meshStandardMaterial attach="material" map={preloadGroupTexture} transparent />
-      </mesh> */}
-
       <mesh ref={book}>
         <mesh ref={frontcover}>
           <mesh
@@ -381,6 +404,8 @@ const SpellBook = (props: any) => {
               material={brown}
               //onPointerDown={() => isBookOpened(!bookOpened)}
             />
+            {/* Preloaded textures */}
+            {preloadedTextures}
           </mesh>
         </mesh>
 
@@ -538,6 +563,54 @@ const SpellBook = (props: any) => {
           {data_placeholder.map((d, i) => {
             return (
               <mesh position={new THREE.Vector3(0, 0, 0.001)}>
+                <mesh
+                  position={[
+                    0,
+                    dataSelectViewed ? 0.25 * page_height + 0.01 : 0,
+                    0.0001
+                  ]}
+                  rotation={[
+                    0,
+                    dataSelectViewed ? 0 : THREE.MathUtils.degToRad(180),
+                    0
+                  ]}
+                  onPointerDown={() =>
+                    updateVarStart(
+                      varStart < data_unq_vars[i].length - numVarsMaxView
+                        ? varStart + 1
+                        : varStart
+                    )
+                  }
+                >
+                  <planeBufferGeometry attach="geometry" args={[0.05, 0.02]} />
+                  <meshStandardMaterial
+                    attach="material"
+                    map={arrowTexture}
+                    transparent
+                  />
+                </mesh>
+                <mesh
+                  position={[
+                    0,
+                    dataSelectViewed ? -0.2 * page_height - 0.025 : 0,
+                    0.0001
+                  ]}
+                  rotation={[
+                    0,
+                    dataSelectViewed ? 0 : THREE.MathUtils.degToRad(180),
+                    THREE.MathUtils.degToRad(180)
+                  ]}
+                  onPointerDown={() =>
+                    updateVarStart(varStart > 0 ? varStart - 1 : 0)
+                  }
+                >
+                  <planeBufferGeometry attach="geometry" args={[0.05, 0.02]} />
+                  <meshStandardMaterial
+                    attach="material"
+                    map={arrowTexture}
+                    transparent
+                  />
+                </mesh>
                 <Text
                   fontSize={0.01}
                   color="black"
@@ -554,44 +627,48 @@ const SpellBook = (props: any) => {
                   {d.name}
                 </Text>
                 {dataSelectViewed ? (
-                  data_unq_vars[i].map((varname, j) => {
-                    return (
-                      <mesh>
+                  data_unq_vars[i].map((varname, j_interm) => {
+                    let j = j_interm - varStart;
+                    let var_view_len = Math.min(
+                      data_unq_vars[i].length,
+                      numVarsMaxView
+                    );
+                    return j < var_view_len && j >= 0 ? (
+                      <mesh onPointerDown={() => selectVarName(varname)}>
                         <Plane
                           args={[
                             0.85 * page_width,
-                            (0.45 * page_height * j) / data_unq_vars[i].length
+                            (0.45 * page_height) / var_view_len
                           ]}
-                          material={white}
+                          material={varname === selectedVarName ? blue : white}
                           position={[
                             0 * page_width,
-                            (0.45 * page_height * j) / data_unq_vars[i].length -
-                              0.33 * page_height,
+                            (0.45 * page_height * j) / var_view_len -
+                              0.23 * page_height,
                             0.001
                           ]}
                         >
                           <Text
-                            fontSize={Math.min(
-                              0.009,
-                              0.045 / data_unq_vars[i].length
-                            )}
+                            fontSize={Math.min(0.009, 0.045 / var_view_len)}
                             color="black"
                             anchorX="left"
                             anchorY="middle"
                             // outlineWidth="5%"
                             position={[
                               -0.4 * page_width,
-                              0.03, //* page_height * j - 0.225 * page_height,
+                              0, //* page_height * j - 0.225 * page_height,
                               0.001
                             ]}
                             //rotation={new THREE.Euler(0, -Math.PI, 0)}
                           >
-                            {(data_unq_vars[i].length - j).toString() +
+                            {(data_unq_vars[i].length - j_interm).toString() +
                               ". " +
                               varname}
                           </Text>
                         </Plane>{" "}
                       </mesh>
+                    ) : (
+                      <mesh />
                     );
                   })
                 ) : (
@@ -667,12 +744,20 @@ const SpellBook = (props: any) => {
             ) : (
               demo_spellbookBlocks.map((props, i) => {
                 return (
-                  <mesh position={[0.005 * i, -0.01 * i, 0.005 * i + 0.001]}>
-                    <SpellBlock
-                      code={props.code}
-                      language={props.language}
-                      optoClass={props.optoClass}
-                    />
+                  <mesh onPointerDown={() => arePagesUnfolded(!pagesUnfolded)}>
+                    <mesh
+                      position={
+                        pagesUnfolded
+                          ? [0.175 * i, 0, 0.006]
+                          : [0.005 * i, -0.01 * i, 0.005 * i + 0.001]
+                      }
+                    >
+                      <SpellBlock
+                        code={props.code}
+                        language={props.language}
+                        optoClass={props.optoClass}
+                      />
+                    </mesh>
                   </mesh>
                 );
               })
