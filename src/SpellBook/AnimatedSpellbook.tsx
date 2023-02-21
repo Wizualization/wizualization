@@ -198,7 +198,7 @@ const SpellReference = (props: any) => {
   );
 };
 
-const Cube = () => {
+const SpellBook = (props: any) => {
   const [bookOpened, isBookOpened] = useState(true);
   const [dataSelectViewed, isDataSelectViewed] = useState(true);
   const [spellRefViewStart, updateSpellRefViewStart] = useState(0);
@@ -683,14 +683,14 @@ const Cube = () => {
     </mesh>
   );
 };
-
+/*
 const Scene = () => {
   return (
     <>
       <gridHelper />
       <axesHelper />
       <pointLight intensity={1.0} position={[5, 3, 5]} />
-      <Cube />
+      <SpellBook />
     </>
   );
 };
@@ -722,5 +722,5 @@ const App = () => {
     </div>
   );
 };
-
-export default App;
+*/
+export {SpellBook};
