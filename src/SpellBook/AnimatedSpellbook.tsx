@@ -1,12 +1,11 @@
 import * as THREE from "three";
 import { MathUtils } from "three";
-import { Suspense, useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useRef, useState } from "react";
+import { useFrame } from "@react-three/fiber";
 import { Plane } from "@react-three/drei";
-import { Stats, OrbitControls, Text, useTexture } from "@react-three/drei";
-import { TextureLoader } from "three/src/loaders/TextureLoader";
-import * as iris from "../examples/datasets/iris.json";
-import "./styles.css";
+import { Text, useTexture } from "@react-three/drei";
+//import { TextureLoader } from "three/src/loaders/TextureLoader";
+//import * as iris from "../examples/datasets/iris.json";
 import { SpellBlock } from "./SpellBlock";
 import { SpellPages } from "./SpellPages";
 
@@ -17,7 +16,7 @@ let page_width = 0.175;
 let page_height = 0.235;
 let plane_offset = page_width / 2;
 let cover_offset = 0.005;
-let scale_factor = 10;
+let scale_factor = 2.5;
 let page_margin = 0.01;
 let dataview_time = 0.2;
 const numVarsMaxView = 5;
@@ -124,21 +123,6 @@ const demo_spellbookBlocks = [
   }
 ];
 
-const data_placeholder = [{ values: iris, name: "Iris" }];
-const data_unq_vars = data_placeholder.map((d) => {
-  return Object.keys(d.values[0]);
-  //eh just use the keys
-  /*
-  d.values.filter(item => {
-    var i = data_unq_vars[d.name].findIndex(
-      (x) => x.name == item.name && x.date == item.date && x.amt == item.amt
-    );
-    if (i <= -1) {
-      data_unq_vars[d.name].push(item);
-    }
-    return null;*/
-});
-
 const SpellReference = (props: any) => {
   const white = new THREE.MeshLambertMaterial({
     color: 0xffffff,
@@ -200,7 +184,26 @@ const SpellReference = (props: any) => {
   );
 };
 
-const SpellBook = () => {
+const SpellBook = (props: any) => {
+  //const data_placeholder = [{ values: iris, name: "Iris" }];
+  const data_placeholder = [...props.spells];
+  
+  console.log(data_placeholder)
+  const data_unq_vars = data_placeholder.map((d) => {
+    console.log(d)
+    return Object.keys(d.values[0]);
+    //eh just use the keys
+    /*
+    d.values.filter(item => {
+      var i = data_unq_vars[d.name].findIndex(
+        (x) => x.name == item.name && x.date == item.date && x.amt == item.amt
+      );
+      if (i <= -1) {
+        data_unq_vars[d.name].push(item);
+      }
+      return null;*/
+  });
+  
   const [selectedVarName, selectVarName] = useState("");
   const [bookOpened, isBookOpened] = useState(true);
   const [dataSelectViewed, isDataSelectViewed] = useState(true);
@@ -219,6 +222,11 @@ const SpellBook = () => {
 
   const SpellCardsPlane = useRef<THREE.Mesh>();
   const DataSelectPlane = useRef<THREE.Mesh>();
+
+  setTimeout(() => {
+    //isDataSelectViewed(!dataSelectViewed)
+
+    }, 3000);
 
   useFrame(() => {
     //cube.current!.rotation.x += 0.01;
@@ -384,7 +392,7 @@ const SpellBook = () => {
   ));
 
   return (
-    <mesh scale={[scale_factor, scale_factor, scale_factor]}>
+    <mesh scale={[scale_factor, scale_factor, scale_factor]} position={new THREE.Vector3(0, 1.5, 0)}>
       <mesh ref={book}>
         <mesh ref={frontcover}>
           <mesh

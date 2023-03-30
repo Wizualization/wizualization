@@ -20,7 +20,7 @@ import { reducer, initialState, DispatchContext } from "./utils/Reducer";
 import { setupSocketEvents } from "./utils/Socket";
 import { GesturePrimitives } from "./SpellBook/GesturePrimitives";
 import { SpellBook } from "./SpellBook/AnimatedSpellbook";
-import { SpellPages } from "./SpellBook/SpellPages";
+// import { SpellPages } from "./SpellBook/SpellPages";
 import { ConfigType } from 'optomancy/dist/types';
 import MageHand from "./Components/Somatic/MageHand";
 import ConfigGen from "./SpellCasting/ConfigGen";
@@ -283,8 +283,10 @@ export default function App() {
             <div className="DemoMain">
             <VRCanvas>
               <DefaultXRControllers />
+              <Suspense fallback={null}>
               <SpellBook spells={ demo_check ? demo_spellbookBlocks : spellbookBlocks } />
-              <SpellPages spells={ demo_check ? demo_spellbookBlocks : spellbookBlocks } />
+              </Suspense>
+              {/* <SpellPages spells={ demo_check ? demo_spellbookBlocks : spellbookBlocks } /> */}
               <MageHand grimoire={[...primitives, ...grimoire]} context={state.workview.workspace}/>
 
               <OrbitControls />
