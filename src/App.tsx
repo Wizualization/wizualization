@@ -284,7 +284,7 @@ export default function App() {
             <VRCanvas>
               <DefaultXRControllers />
               <Suspense fallback={null}>
-              <SpellBook spells={ demo_check ? demo_spellbookBlocks : spellbookBlocks } />
+              <SpellBook spells={ demo_check ? demo_spellbookBlocks : spellbookBlocks } demo_dataset={iris} />
               </Suspense>
               {/* <SpellPages spells={ demo_check ? demo_spellbookBlocks : spellbookBlocks } /> */}
               <MageHand grimoire={[...primitives, ...grimoire]} context={state.workview.workspace}/>

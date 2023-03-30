@@ -1,11 +1,11 @@
 import * as THREE from "three";
 import { MathUtils } from "three";
-import { Suspense, useRef, useState } from "react";
+import {useRef, useState, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Plane, Line } from "@react-three/drei";
 import { Text, useTexture } from "@react-three/drei";
 //import { TextureLoader } from "three/src/loaders/TextureLoader";
-import * as iris from "../examples/datasets/iris.json";
+//import * as iris from "../examples/datasets/iris.json";
 import { SpellBlock } from "./SpellBlock";
 import { SpellPages } from "./SpellPages";
 
@@ -239,9 +239,8 @@ const SpellReference = (props: any) => {
 };
 
 const SpellBook = (props: any) => {
-  const data_placeholder = [...props.spells];
-
-  // const data_placeholder = [{ values: iris, name: "Iris" }];
+  const data_placeholder = [{ values: props.demo_dataset, name: "Iris" }];
+  //const data_placeholder = [{ values: iris, name: "Iris" }];
   const data_unq_vars = data_placeholder.map((d) => {
     return Object.keys(d.values[0]);
     //eh just use the keys
@@ -471,6 +470,67 @@ const SpellBook = (props: any) => {
 
   lines.shift();
   console.log(lines);
+
+   /* Set playback loop (remove me when Edge/chromium gets fixed)  */
+
+   const [playback_case, setPlaybackCase] = useState(0);
+
+   useEffect(() => {
+     setTimeout(() => {
+       console.log(playback_case);
+       switch (playback_case) {
+         case 0:
+           selectVarName("");
+           isBookOpened(false);
+           isDataSelectViewed(true);
+           arePagesUnfolded(false);
+           updateSpellRefViewStart(0);
+           break;
+         case 1:
+           selectVarName("");
+           isBookOpened(true);
+           isDataSelectViewed(true);
+           arePagesUnfolded(false);
+           updateSpellRefViewStart(0);
+           break;
+         case 2:
+           selectVarName("");
+           isBookOpened(true);
+           isDataSelectViewed(true);
+           arePagesUnfolded(false);
+           updateSpellRefViewStart(1);
+           break;
+         case 3:
+           selectVarName("petalWidth");
+           isBookOpened(true);
+           isDataSelectViewed(true);
+           arePagesUnfolded(false);
+           updateSpellRefViewStart(1);
+           break;
+         case 4:
+           selectVarName("petalWidth");
+           isBookOpened(true);
+           isDataSelectViewed(false);
+           arePagesUnfolded(false);
+           updateSpellRefViewStart(1);
+           break;
+         case 5:
+           selectVarName("petalWidth");
+           isBookOpened(true);
+           isDataSelectViewed(false);
+           arePagesUnfolded(true);
+           updateSpellRefViewStart(1);
+           break;
+         default:
+           console.log(
+             "Empty action received at case " + playback_case.toString()
+           );
+           break;
+       }
+       setPlaybackCase(playback_case > 5 ? 0 : playback_case + 1);
+     }, 4000);
+   }, [playback_case]);
+ 
   return (
     <mesh
       position={[0, 0, 2]}
@@ -837,7 +897,7 @@ const SpellBook = (props: any) => {
                 return (
                   <mesh onPointerDown={() => arePagesUnfolded(!pagesUnfolded)}>
                     <group>
-                      {lines.map((points, index) => (
+                      {pagesUnfolded ? lines.map((points, index) => (
                         <Line
                           key={index.toString() + "_lineidx"}
                           points={points}
@@ -845,7 +905,7 @@ const SpellBook = (props: any) => {
                           dashed
                           dashScale={30} 
                           alphaWrite={undefined}                        />
-                      ))}
+                      )) : <></>}
                     </group>
 
                     <mesh
