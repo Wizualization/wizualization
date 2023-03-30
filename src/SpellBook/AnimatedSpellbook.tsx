@@ -1,11 +1,11 @@
 import * as THREE from "three";
 import { MathUtils } from "three";
-import { useRef, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
-import { Plane } from "@react-three/drei";
+import { Plane, Line } from "@react-three/drei";
 import { Text, useTexture } from "@react-three/drei";
 //import { TextureLoader } from "three/src/loaders/TextureLoader";
-//import * as iris from "../examples/datasets/iris.json";
+import * as iris from "../examples/datasets/iris.json";
 import { SpellBlock } from "./SpellBlock";
 import { SpellPages } from "./SpellPages";
 
@@ -16,7 +16,7 @@ let page_width = 0.175;
 let page_height = 0.235;
 let plane_offset = page_width / 2;
 let cover_offset = 0.005;
-let scale_factor = 2.5;
+let scale_factor = 10;
 let page_margin = 0.01;
 let dataview_time = 0.2;
 const numVarsMaxView = 5;
@@ -86,40 +86,94 @@ const spell_references = [
 
 const demo_spellbookBlocks = [
   {
-    code:
-      '{\n "workspaces": [\n  {\n   "views": [\n    {\n     "mark": "point"\n    }\n   ]\n  }\n ]\n}',
+    code: `{
+  "workspaces": [
+    {
+      "views": [
+        {
+          "mark": "point"
+        }
+      ]
+    }
+  ]
+}`,
+    language: "javascript",
+    optoClass: "column"
+  },
+  {
+    code: `{
+  "workspaces": [
+    {
+      "views": [
+        {
+          "mark": "point"
+        }
+      ]
+    }
+  ]
+}`,
+    language: "javascript",
+    optoClass: "axis"
+  },
+  {
+    code: `{
+  "workspaces": [
+    {
+      "views": [
+        {
+          "mark": "point"
+        }
+      ]
+    }
+  ]
+}`,
+    language: "javascript",
+    optoClass: "axis"
+  },
+  {
+    code: `{
+  "workspaces": [
+    {
+      "views": [
+        {
+          "mark": "point"
+        }
+      ]
+    }
+  ]
+}`,
+    language: "javascript",
+    optoClass: "view"
+  },
+  {
+    code: `{
+  "workspaces": [
+    {
+      "views": [
+        {
+          "mark": "point"
+        }
+      ]
+    }
+  ]
+}`,
     language: "javascript",
     optoClass: "point"
   },
   {
-    code:
-      '{\n "workspaces": [\n  {\n   "views": [\n    {\n     "mark": "point"\n    }\n   ]\n  }\n ]\n}',
+    code: `{
+  "workspaces": [
+    {
+      "views": [
+        {
+          "mark": "point"
+        }
+      ]
+    }
+  ]
+}`,
     language: "javascript",
-    optoClass: "point"
-  },
-  {
-    code:
-      '{\n "workspaces": [\n  {\n   "views": [\n    {\n     "mark": "point"\n    }\n   ]\n  }\n ]\n}',
-    language: "javascript",
-    optoClass: "point"
-  },
-  {
-    code:
-      '{\n "workspaces": [\n  {\n   "views": [\n    {\n     "mark": "point"\n    }\n   ]\n  }\n ]\n}',
-    language: "javascript",
-    optoClass: "point"
-  },
-  {
-    code:
-      '{\n "workspaces": [\n  {\n   "views": [\n    {\n     "mark": "point"\n    }\n   ]\n  }\n ]\n}',
-    language: "javascript",
-    optoClass: "point"
-  },
-  {
-    code:
-      '{\n "workspaces": [\n  {\n   "views": [\n    {\n     "mark": "point"\n    }\n   ]\n  }\n ]\n}',
-    language: "javascript",
-    optoClass: "point"
+    optoClass: "axis"
   }
 ];
 
@@ -185,12 +239,10 @@ const SpellReference = (props: any) => {
 };
 
 const SpellBook = (props: any) => {
-  //const data_placeholder = [{ values: iris, name: "Iris" }];
   const data_placeholder = [...props.spells];
-  
-  console.log(data_placeholder)
+
+  // const data_placeholder = [{ values: iris, name: "Iris" }];
   const data_unq_vars = data_placeholder.map((d) => {
-    console.log(d)
     return Object.keys(d.values[0]);
     //eh just use the keys
     /*
@@ -203,7 +255,6 @@ const SpellBook = (props: any) => {
       }
       return null;*/
   });
-  
   const [selectedVarName, selectVarName] = useState("");
   const [bookOpened, isBookOpened] = useState(true);
   const [dataSelectViewed, isDataSelectViewed] = useState(true);
@@ -222,11 +273,6 @@ const SpellBook = (props: any) => {
 
   const SpellCardsPlane = useRef<THREE.Mesh>();
   const DataSelectPlane = useRef<THREE.Mesh>();
-
-  setTimeout(() => {
-    //isDataSelectViewed(!dataSelectViewed)
-
-    }, 3000);
 
   useFrame(() => {
     //cube.current!.rotation.x += 0.01;
@@ -391,8 +437,45 @@ const SpellBook = (props: any) => {
     <PreloadedTexture key={`preload${i}`} refIcon={el.icon} />
   ));
 
+  /* Lines prep */
+  const lines = demo_spellbookBlocks.map((node, i) => {
+    let curvepoints = [];
+    if (i > 0) {
+      const start = new THREE.Vector3(
+        (0.85 * page_width * 7 * i) / demo_spellbookBlocks.length,
+        -0.01 * page_height,
+        0.001
+      );
+      const end = new THREE.Vector3(
+        (0.85 * page_width * 7 * (i - 1)) / demo_spellbookBlocks.length,
+        -0.01 * page_height,
+        0.001
+      );
+
+      let mid = new THREE.Vector3(0, 0, 0);
+      mid = start.clone().add(end.clone().sub(start)).add(new THREE.Vector3((start.x - end.x), start.y + 0.5, (start.z - end.z))) // prettier-ignore
+      curvepoints = new THREE.QuadraticBezierCurve3(start, mid, end).getPoints(
+        10
+      );
+    } else {
+      curvepoints = [new THREE.Vector3(0, 0, 0)];
+    }
+
+    // const curvepoints_arr = curvepoints.map((v) => {
+    //   return [v.x, v.y, v.z];
+    // });
+
+    // return curvepoints_arr;
+    return curvepoints;
+  });
+
+  lines.shift();
+  console.log(lines);
   return (
-    <mesh scale={[scale_factor, scale_factor, scale_factor]} position={new THREE.Vector3(0, 1.5, 0)}>
+    <mesh
+      position={[0, 0, 2]}
+      scale={[scale_factor, scale_factor, scale_factor]}
+    >
       <mesh ref={book}>
         <mesh ref={frontcover}>
           <mesh
@@ -753,6 +836,18 @@ const SpellBook = (props: any) => {
               demo_spellbookBlocks.map((props, i) => {
                 return (
                   <mesh onPointerDown={() => arePagesUnfolded(!pagesUnfolded)}>
+                    <group>
+                      {lines.map((points, index) => (
+                        <Line
+                          key={index.toString() + "_lineidx"}
+                          points={points}
+                          color="white"
+                          dashed
+                          dashScale={30} 
+                          alphaWrite={undefined}                        />
+                      ))}
+                    </group>
+
                     <mesh
                       position={
                         pagesUnfolded
