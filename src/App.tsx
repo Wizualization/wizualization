@@ -12,7 +12,7 @@ import React, {
   useEffect,
   useReducer,
 } from "react";
-import { VRCanvas, DefaultXRControllers } from "@react-three/xr";
+import { ARCanvas, VRCanvas, DefaultXRControllers } from "@react-three/xr";
 import { OptomancyR3F } from "optomancy-r3f";
 import { Dictaphone } from "./Components/Verbal/SpeechToText.js";
 import "./App.css";
@@ -31,7 +31,7 @@ const WorkspaceContext = React.createContext('workspace_0');
 const ViewContext = React.createContext('view_0');
 // Hololens user agent is going to be a version of edge above the latest release
 let ua = navigator.userAgent.toLowerCase();
-let isHL = ua.replace("edg", "").length < ua.length;
+let isHL = ua.replace("edg", "").length < ua.length || ua.replace("oculusbrowser", "").length < ua.length;
 let primitives: any = [];
 for (let prim of GesturePrimitives()) {
   primitives.push(prim);
@@ -281,7 +281,7 @@ export default function App() {
             </div>
           {isHL || new URLSearchParams(window.location.search).get("dev") ? (
             <div className="DemoMain">
-            <VRCanvas>
+            <ARCanvas>
               <DefaultXRControllers />
               <Suspense fallback={null}>
               <SpellBook spells={ demo_check ? demo_spellbookBlocks : spellbookBlocks } demo_dataset={iris} />
@@ -301,7 +301,7 @@ export default function App() {
                     : null
                 ) : null
               }
-            </VRCanvas>
+            </ARCanvas>
             </div>
           ) : (
             <div className="DemoMain">

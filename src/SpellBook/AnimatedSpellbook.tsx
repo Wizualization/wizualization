@@ -16,7 +16,7 @@ let page_width = 0.175;
 let page_height = 0.235;
 let plane_offset = page_width / 2;
 let cover_offset = 0.005;
-let scale_factor = 10;
+let scale_factor = 1.5;
 let page_margin = 0.01;
 let dataview_time = 0.2;
 const numVarsMaxView = 5;
@@ -472,7 +472,6 @@ const SpellBook = (props: any) => {
   console.log(lines);
 
    /* Set playback loop (remove me when Edge/chromium gets fixed)  */
-
    const [playback_case, setPlaybackCase] = useState(0);
 
    useEffect(() => {
@@ -533,7 +532,7 @@ const SpellBook = (props: any) => {
  
   return (
     <mesh
-      position={[0, 0, 2]}
+      position={[0, 1.25, 0]}
       scale={[scale_factor, scale_factor, scale_factor]}
     >
       <mesh ref={book}>
